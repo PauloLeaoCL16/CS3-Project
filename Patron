@@ -1,0 +1,24 @@
+import java.awt.*;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.io.*;
+import java.util.*;
+
+public class Patron
+{
+  private int value = 3;
+  private BufferedImage face;
+  private TreeMap<String, Integer> cost;
+
+  public Card(int v, String t, BufferedImage f, TreeMap<String, Integer> c)
+  {
+    face = f;
+    cost = c;
+  }
+
+  public TreeMap<String, Integer> getCost()
+  {
+    return cost;
+  }
+}
