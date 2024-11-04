@@ -28,4 +28,8 @@ public class Card
   {
     return type;
   }
+  public TreeMap<String, Integer> getCost()
+  {
+    return cost;
+  }
 }
