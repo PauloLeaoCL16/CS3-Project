@@ -1,0 +1,28 @@
+import java.awt.*;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.io.*;
+
+public class Card
+{
+  private int value;
+  private String type;
+  private BufferedImage face;
+
+  public Card(int v, String t, BufferedImage f)
+  {
+    value = v;
+    type = t;
+    face = f;
+  }
+
+  public int getValue()
+  {
+    return value;
+  }
+  public String getType()
+  {
+    return type;
+  }
+}
