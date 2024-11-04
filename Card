@@ -3,18 +3,21 @@ import java.awt.image.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.*;
+import java.util.*;
 
 public class Card
 {
   private int value;
   private String type;
   private BufferedImage face;
+  private TreeMap<String, Integer> cost;
 
-  public Card(int v, String t, BufferedImage f)
+  public Card(int v, String t, BufferedImage f, TreeMap<String, Integer> c)
   {
     value = v;
     type = t;
     face = f;
+    cost = c;
   }
 
   public int getValue()
