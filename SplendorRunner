@@ -1,0 +1,9 @@
+public class SplendorRunner 
+{
+
+	public static void main(String[] args) 
+	{
+		SplendorFrame run = new SplendorFrame("Splendor");
+	}
+
+}
