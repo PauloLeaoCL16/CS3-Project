@@ -1,0 +1,25 @@
+import java.util.*;
+import static java.lang.System.*;
+
+class PlayerHand
+{
+  private int numChips;
+  private TreeMap<String, Integer> Chips;
+
+  public PlayerHand(int num, TreeMap<String, Integer> c)
+  {
+    numChips = num;
+    Chips = c;
+  }
+
+  public int getNumChips()
+  {
+    return numChips;
+  }
+
+  public TreeMap<String, Integer> getChips()
+  {
+    return Chips;
+  }
+
+}
