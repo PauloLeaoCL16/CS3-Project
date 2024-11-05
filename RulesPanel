@@ -1,0 +1,14 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import java.io.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+import java.util.*;
+import java.lang.System.*;
+
+public class RulesPanel extends JPanel implements MouseListener
+{
+
+}
