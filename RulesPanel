@@ -10,5 +10,45 @@ import java.lang.System.*;
 
 public class RulesPanel extends JPanel implements MouseListener
 {
+  public void drawRules()
+  {
+    
+  }
+
+  public void drawRulesButton()
+  {
+    
+  }
+
+  public voiddrawBackButton()
+  {
+
+  }
+
+  public void mouseClicked(MouseEvent e)
+  {
+
+  }
+
+  public void mouseReleased(MouseEvent e)
+  {
+
+  }
+
+  public void mousePressed(MouseEvent e)
+  {
+
+  }
+
+  public void mouseEntered(MouseEvent e)
+  {
+
+  }
+
+  public void mouseExited(MouseEvent e)
+  {
+
+  }
+
 
 }
