@@ -10,27 +10,27 @@ import java.lang.System.*;
 
 public class EndGamePanel extends JPanel implements MouseListener
 {
-  public void drawCurrentCards()
+  public void drawEndGame()
   {
     
   }
 
-  public void drawCurrentChips()
+  public void drawWinner()
   {
     
   }
 
-  public void drawCurrentPatreon()
+  public void drawLeaderBoard()
   {
 
   }
 
-  public void drawCurrentReserved()
+  public void drawPlayAgainButton()
   {
 
   }
 
-  public void mouseCurrentPoints(MouseEvent e)
+  public void mouseClicked(MouseEvent e)
   {
 
   }
