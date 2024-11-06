@@ -1,0 +1,94 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import java.io.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+import java.util.*;
+import java.lang.System.*;
+
+public class GameBoardPanel extends JPanel implements MouseListener
+{
+  public void drawCardBacks()
+  {
+    
+  }
+
+  public void drawChips()
+  {
+    
+  }
+
+  public void drawPatreons()
+  {
+
+  }
+
+  public void drawLevel1Cards()
+  {
+
+  }
+
+  public void drawLevel2Cards()
+  {
+
+  }
+
+  public void drawLevel3Cards()
+  {
+
+  }
+
+  public void drawPlayer1Box()
+  {
+
+  }
+
+  public void drawPlayer2Box()
+  {
+
+  }
+
+  public void drawPlayer3Box()
+  {
+
+  }
+
+  public void drawPlayer4Box()
+  {
+
+  }
+
+  public void drawRulesButton()
+  {
+
+  }
+
+  public void mouseClicked(MouseEvent e)
+  {
+
+  }
+
+  public void mouseReleased(MouseEvent e)
+  {
+
+  }
+
+  public void mousePressed(MouseEvent e)
+  {
+
+  }
+
+  public void mouseEntered(MouseEvent e)
+  {
+
+  }
+
+  public void mouseExited(MouseEvent e)
+  {
+
+  }
+
+
+}
