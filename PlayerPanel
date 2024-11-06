@@ -30,7 +30,7 @@ public class PlayerPanel extends JPanel implements MouseListener
 
   }
 
-  public void mouseCurrentPoints(MouseEvent e)
+  public void mouseClicked(MouseEvent e)
   {
 
   }
