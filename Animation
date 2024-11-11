@@ -1,17 +1,63 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import java.io.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 import java.util.*;
-import static java.lang.System.*;
+import java.lang.System.*;
+public class SplendorPanel extends JPanel implements Runnable, MouseListener {
+	private String word;
+	private int xloc,yloc;
+	public SplendorPanel() {
+		xloc=800;
+		yloc=800;
+		new Thread(new Runnable() {
+            @Override
+            public void run() {
+                animateStart();  // Call the animation method
+            }
+        }).start(); 
+	}
+	  public void mouseClicked(MouseEvent e)
+	  {
+		  
+	  }
 
-public class Animation implements Runnable
-{
-  private HashMap<String,Integer> variable;
-  public Animation(){
-     variable = new HashMap<String,Intger>();
-  }
-  public int Animate(){
-    new Thread(new Runnable(){
-      public void run(){
-        
-      }
-    }
-  }
+	  public void mouseReleased(MouseEvent e)
+	  {
+
+	  }
+
+	  public void mousePressed(MouseEvent e)
+	  {
+
+	  }
+
+	  public void mouseEntered(MouseEvent e)
+	  {
+
+	  }
+
+	  public void mouseExited(MouseEvent e)
+	  {
+
+	  }
+	  public void animateStart() {
+		  while(xloc<1600) {
+			  xloc++;
+			  repaint();
+			  try {
+	              Thread.sleep(10); 
+	          } catch (InterruptedException e) {
+	              e.printStackTrace();
+	          }
+		  }
+	  }
+	  public void paint(Graphics g) {
+		  Graphics2D g2d = (Graphics2D)g;
+		  g2d.drawString("Kush",xloc,yloc);
+	  }
+	
 }
