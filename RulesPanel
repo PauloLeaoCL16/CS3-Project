@@ -10,45 +10,70 @@ import java.lang.System.*;
 
 public class RulesPanel extends JPanel implements MouseListener
 {
-  public void drawRules()
-  {
-    
-  }
+  private BufferedImage background;   // The full background (splendorbackground.jpg)
+	private BufferedImage backButton;   // The back button
 
-  public void drawRulesButton()
-  {
-    
-  }
+	public RulesPanel() {
+	    try {
+	        // Load the background and back button images
+	        background = ImageIO.read(RulesPanel.class.getResource("/splendorImages/splendorbackground.jpg"));
+	        backButton = ImageIO.read(RulesPanel.class.getResource("/splendorImages/backButton.JPG"));
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    addMouseListener(this);
+	}
 
-  public voiddrawBackButton()
-  {
+	@Override
+	protected void paintComponent(Graphics g) {
+	    super.paintComponent(g);
 
-  }
+	    // Draw the background image (splendorbackground.jpg)
+	    g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
-  public void mouseClicked(MouseEvent e)
-  {
+	    // Set up font and color for rules text
+	    g.setColor(Color.WHITE);
+	    g.setFont(new Font("Arial", Font.BOLD, 30));
 
-  }
+	    // Draw the Skyjo rules
+	    g.drawString("Skyjo Rules:", 50, 100);
+	    g.drawString("1. The objective is to have the fewest points at the end of the game.", 50, 150);
+	    g.drawString("2. Players take turns drawing from the deck or discard pile.", 50, 200);
+	    g.drawString("3. The game ends when a player reveals all cards.", 50, 250);
 
-  public void mouseReleased(MouseEvent e)
-  {
+	    // New Y position for the back button (shifted up even more)
+	    int backButtonY = getHeight() - 200; // Further adjusted Y position
 
-  }
+	    // Draw the back button at the new position
+	    g.drawImage(backButton, getWidth() / 2 - backButton.getWidth() / 2, backButtonY, null);
+	}
 
-  public void mousePressed(MouseEvent e)
-  {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	    int mouseX = e.getX();
+	    int mouseY = e.getY();
 
-  }
+	    // Adjusted clickable area for the back button based on the new Y position
+	    int backButtonY = getHeight() - 200; // Same as in paintComponent
 
-  public void mouseEntered(MouseEvent e)
-  {
+	    // Check if the back button is clicked
+	    if (mouseX >= getWidth() / 2 - backButton.getWidth() / 2 &&
+	        mouseX <= getWidth() / 2 + backButton.getWidth() / 2 &&
+	        mouseY >= backButtonY && mouseY <= backButtonY + backButton.getHeight()) {
+	        // Back button clicked, go back to MainMenuPanel
+	        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+	        topFrame.getContentPane().removeAll();
+	        topFrame.add(new MainMenuPanel()); // Return to the MainMenuPanel
+	        topFrame.revalidate();
+	        topFrame.repaint();
+	    }
+	}
 
-  }
-
-  public void mouseExited(MouseEvent e)
-  {
-
-  }
+	// Empty implementations for other MouseListener methods
+	@Override public void mousePressed(MouseEvent e) {}
+	@Override public void mouseReleased(MouseEvent e) {}
+	@Override public void mouseEntered(MouseEvent e) {}
+	@Override public void mouseExited(MouseEvent e) {}
 
 
 }
