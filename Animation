@@ -9,16 +9,21 @@ import java.util.*;
 import java.lang.System.*;
 public class SplendorPanel extends JPanel implements Runnable, MouseListener {
 	private String word;
-	private int xloc,yloc;
+	private float transparency;
+	private int xloc,yloc,fontSize;
+	
 	public SplendorPanel() {
-		xloc=800;
-		yloc=800;
+		transparency=0.01f;
+		word="PAULOLDS PRESENTS";
+		xloc=450; yloc=550; fontSize=100;
 		new Thread(new Runnable() {
             @Override
             public void run() {
-                animateStart();  // Call the animation method
+                animateStart();
+                animateStart();// Call the animation method
             }
         }).start(); 
+		
 	}
 	  public void mouseClicked(MouseEvent e)
 	  {
@@ -45,19 +50,40 @@ public class SplendorPanel extends JPanel implements Runnable, MouseListener {
 
 	  }
 	  public void animateStart() {
-		  while(xloc<1600) {
-			  xloc++;
-			  repaint();
-			  try {
-	              Thread.sleep(10); 
-	          } catch (InterruptedException e) {
-	              e.printStackTrace();
-	          }
-		  }
+		   while(transparency<0.99) {
+				  transparency+=0.01;
+				  repaint();
+				  try {
+		              Thread.sleep(10); 
+		          } catch (InterruptedException e) {
+		              e.printStackTrace();
+		          }
+			  }
+		   while(transparency>0.01) {
+				  transparency-=0.01;
+				  repaint();
+				  try {
+		              Thread.sleep(10); 
+		          } catch (InterruptedException e) {
+		              e.printStackTrace();
+		          }
+		    }
+		  word="Splendor";
+		  transparency = 0.01f;
+		  xloc=590;
+		  yloc=540;
+		  fontSize=200;
+		  
 	  }
 	  public void paint(Graphics g) {
 		  Graphics2D g2d = (Graphics2D)g;
-		  g2d.drawString("Kush",xloc,yloc);
+		  AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
+		  g2d.setColor(Color.BLACK);
+		  g2d.fillRect(0, 0, 1920, 1080);
+		  g2d.setColor(Color.WHITE);
+		  g2d.setComposite(alphaComposite);
+		  g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
+		  g2d.drawString(word,xloc,yloc);
 	  }
 	
 }
