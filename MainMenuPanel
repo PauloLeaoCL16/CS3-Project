@@ -10,50 +10,86 @@ import java.lang.System.*;
 
 public class MainMenuPanel extends JPanel implements MouseListener
 {
-  public void drawMenu()
-  {
-    
-  }
+  private BufferedImage background;   // The full background (splendorbackground.jpg)
+    private BufferedImage splendorImage; // The left side image (weeedwd.jpg)
+    private BufferedImage playButton;   // Play button
+    private BufferedImage rulesButton;  // Rules button
 
-  public void drawPlayButton()
-  {
-    
-  }
+    public MainMenuPanel() {
+        try {
+            // Load images with the correct package path
+            background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorbackground.jpg"));
+            splendorImage = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/weeedwd.jpg"));
+            playButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/playButton.PNG"));
+            rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.PNG"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // Add mouse listener so the panel responds to mouse events
+        addMouseListener(this);
 
-  public void drawRulesButton()
-  {
+        // Set this panel to be focusable to ensure mouse events work
+        setFocusable(true);
+    }
 
-  }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-  public void startGame()
-  {
+        // Draw the background (splendorbackground.jpg) covering the entire panel
+        g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
-  }
+        // Draw the splendorImage (weeedwd.jpg) on the left side (half the width)
+        g.drawImage(splendorImage, 0, 0, getWidth() / 2, getHeight(), null);
 
-  public void mouseClicked(MouseEvent e)
-  {
+        // Calculate the position of the Play button
+        int playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
+        int playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
+        g.drawImage(playButton, playButtonX, playButtonY, null);
 
-  }
+        // Calculate the position of the Rules button, directly below the Play button
+        int rulesButtonX = getWidth() * 3 / 4 - rulesButton.getWidth() / 2;
+        int rulesButtonY = playButtonY + playButton.getHeight() + 20;  // Rules button is placed directly below Play button, 20px gap
+        g.drawImage(rulesButton, rulesButtonX, rulesButtonY, null);
+    }
 
-  public void mouseReleased(MouseEvent e)
-  {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int mouseX = e.getX();
+        int mouseY = e.getY();
 
-  }
+        // Calculate Play button bounds
+        int playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
+        int playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
+        if (mouseX >= playButtonX && mouseX <= playButtonX + playButton.getWidth() &&
+            mouseY >= playButtonY && mouseY <= playButtonY + playButton.getHeight()) {
+            // Play button clicked, go to the game board panel
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            topFrame.getContentPane().removeAll();
+            topFrame.add(new GameBoardPanel()); // Transition to the GameBoardPanel
+            topFrame.revalidate();
+            topFrame.repaint();
+        }
 
-  public void mousePressed(MouseEvent e)
-  {
+        // Calculate Rules button bounds
+        int rulesButtonX = getWidth() * 3 / 4 - rulesButton.getWidth() / 2;
+        int rulesButtonY = playButtonY + playButton.getHeight() + 20;  // Rules button is placed directly below Play button
+        if (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButton.getWidth() &&
+            mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButton.getHeight()) {
+            // Rules button clicked, show the rules
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            topFrame.getContentPane().removeAll();
+            topFrame.add(new RulesPanel()); // Navigate to RulesPanel
+            topFrame.revalidate();
+            topFrame.repaint();
+        }
+    }
 
-  }
-
-  public void mouseEntered(MouseEvent e)
-  {
-
-  }
-
-  public void mouseExited(MouseEvent e)
-  {
-
-  }
-
+    // Empty implementations for other MouseListener methods
+    @Override public void mousePressed(MouseEvent e) {}
+    @Override public void mouseReleased(MouseEvent e) {}
+    @Override public void mouseEntered(MouseEvent e) {}
+    @Override public void mouseExited(MouseEvent e) {}
 
 }
