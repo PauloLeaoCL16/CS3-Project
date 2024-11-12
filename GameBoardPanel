@@ -10,85 +10,153 @@ import java.lang.System.*;
 
 public class GameBoardPanel extends JPanel implements MouseListener
 {
-  public void drawCardBacks()
-  {
+	private BufferedImage background, blackGem, blueGem, redGem, greenGem, whiteGem, reserveGem;
+    private BufferedImage level1Card, level2Card, level3Card;
+    private BufferedImage[] blackCards = new BufferedImage[18];
+    private BufferedImage[] blueCards = new BufferedImage[18];
+    private BufferedImage[] redCards = new BufferedImage[18];
+    private BufferedImage[] greenCards = new BufferedImage[18];
+    private BufferedImage[] whiteCards = new BufferedImage[18];
+    private BufferedImage[] patreons = new BufferedImage[10];
     
-  }
+    public GameBoardPanel() {
+        loadImages();
+    }
 
-  public void drawChips()
-  {
-    
-  }
+    private void loadImages() {
+        try {
+            // Background
+            background = ImageIO.read(getClass().getResource("/splendorImages/creamylol.jpg"));
 
-  public void drawPatreons()
-  {
+            // Gems
+            blackGem = ImageIO.read(getClass().getResource("/splendorImages/BlackGem.png"));
+            blueGem = ImageIO.read(getClass().getResource("/splendorImages/BlueGem.png"));
+            redGem = ImageIO.read(getClass().getResource("/splendorImages/RedGem.png"));
+            greenGem = ImageIO.read(getClass().getResource("/splendorImages/GreenGem.png"));
+            whiteGem = ImageIO.read(getClass().getResource("/splendorImages/WhiteGem.png"));
+            reserveGem = ImageIO.read(getClass().getResource("/splendorImages/ReserveGem.png"));
 
-  }
+            // Deck levels
+            level1Card = ImageIO.read(getClass().getResource("/splendorImages/Level1Card.png"));
+            level2Card = ImageIO.read(getClass().getResource("/splendorImages/Level2Card.png"));
+            level3Card = ImageIO.read(getClass().getResource("/splendorImages/Level3Card.png"));
 
-  public void drawLevel1Cards()
-  {
+            // Cards by color
+            for (int i = 1; i <= 18; i++) {
+                blackCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/BlackCard" + i + ".png"));
+                blueCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + ".png"));
+                redCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + ".png"));
+                greenCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + ".png"));
+                whiteCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + ".png"));
+            }
 
-  }
+            // Patreons
+            for (int i = 1; i <= 10; i++) {
+                patreons[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/Patreon" + i + ".png"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading images");
+        }
+    }
 
-  public void drawLevel2Cards()
-  {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
 
-  }
+        // Draw background
+        g2d.drawImage(background, 0, 0, getWidth(), getHeight(), this);
 
-  public void drawLevel3Cards()
-  {
+        // Divide the screen
+        int leftWidth = getWidth() / 3;
+        int rightWidth = (getWidth() * 2) / 3;
 
-  }
+        // Draw dividing line
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(5));
+        g2d.drawLine(leftWidth, 0, leftWidth, getHeight());
 
-  public void drawPlayer1Box()
-  {
+        // Left Side - Decks, 5x4 Card Layout, Gems
+        drawDecks(g2d, leftWidth);
+        drawCards(g2d, leftWidth);
+        drawGems(g2d, leftWidth);
 
-  }
+        // Right Side - Player Boxes
+        drawPlayerBoxes(g2d, leftWidth, rightWidth);
+    }
 
-  public void drawPlayer2Box()
-  {
+    private void drawDecks(Graphics2D g2d, int leftWidth) {
+        int deckWidth = (leftWidth - 40) / 2; // Fit the first column with space
+        int x = 10, y = 20;
 
-  }
+        // Level 3 deck in the second row
+        g2d.drawImage(level3Card, x, y + deckWidth + 10, deckWidth, deckWidth, this);
 
-  public void drawPlayer3Box()
-  {
+        // Level 2 deck in the third row
+        g2d.drawImage(level2Card, x, y + 2 * (deckWidth + 10), deckWidth, deckWidth, this);
 
-  }
+        // Level 1 deck in the last row
+        g2d.drawImage(level1Card, x, y + 3 * (deckWidth + 10), deckWidth, deckWidth, this);
+    }
 
-  public void drawPlayer4Box()
-  {
+    private void drawCards(Graphics2D g2d, int leftWidth) {
+        int cardWidth = (leftWidth - 50) / 5; // Fit 5 columns with spacing
+        int cardHeight = 60; // Adjusted for better spacing
+        int x = 10;
+        int y = 120; // Positioned below decks
+        for (int row = 0; row < 4; row++) { // 4 rows
+            for (int col = 0; col < 5; col++) { // 5 columns
+                BufferedImage card = blackCards[(row * 5 + col) % blackCards.length];
+                g2d.drawImage(card, x + col * (cardWidth + 10), y, cardWidth, cardHeight, this);
+            }
+            y += cardHeight + 10;
+        }
+    }
 
-  }
+    private void drawGems(Graphics2D g2d, int leftWidth) {
+        int gemSize = (leftWidth - 50) / 6; // Adjust gem size to fit across the 1/3 space evenly
+        int x = 10;
+        int y = 400; // Position gems below card grid
 
-  public void drawRulesButton()
-  {
+        // Draw gems in a single line with space between them
+        g2d.drawImage(blackGem, x, y, gemSize, gemSize, this);
+        g2d.drawImage(blueGem, x + gemSize + 10, y, gemSize, gemSize, this);
+        g2d.drawImage(redGem, x + 2 * (gemSize + 10), y, gemSize, gemSize, this);
+        g2d.drawImage(greenGem, x + 3 * (gemSize + 10), y, gemSize, gemSize, this);
+        g2d.drawImage(whiteGem, x + 4 * (gemSize + 10), y, gemSize, gemSize, this);
+        g2d.drawImage(reserveGem, x + 5 * (gemSize + 10), y, gemSize, gemSize, this);
+    }
 
-  }
+    private void drawPlayerBoxes(Graphics2D g2d, int leftWidth, int rightWidth) {
+        int boxWidth = rightWidth - 40;
+        int boxHeight = getHeight() / 6 - 20; // Smaller but thicker boxes
+        int totalUsedHeight = 3 * (boxHeight + 15) + 20 + 60 + 80; // Decks, gems, cards area height
+        int remainingHeight = getHeight() - totalUsedHeight; // Remaining space
+        int verticalMargin = remainingHeight / 2; // Divide remaining space evenly
 
-  public void mouseClicked(MouseEvent e)
-  {
+        int x = leftWidth + 20;
+        int y = verticalMargin;
 
-  }
+        for (int i = 1; i <= 4; i++) {
+            g2d.setColor(Color.WHITE);
+            g2d.fillRect(x, y, boxWidth, boxHeight);
+            g2d.setColor(Color.BLACK);
+            g2d.drawRect(x, y, boxWidth, boxHeight);
 
-  public void mouseReleased(MouseEvent e)
-  {
+            g2d.setFont(new Font("Serif", Font.BOLD, 24));
+            g2d.drawString("Player " + i, x + 10, y + 30);
 
-  }
+            y += boxHeight + 15; // Adjust spacing between boxes
+        }
+    }
 
-  public void mousePressed(MouseEvent e)
-  {
-
-  }
-
-  public void mouseEntered(MouseEvent e)
-  {
-
-  }
-
-  public void mouseExited(MouseEvent e)
-  {
-
-  }
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
 
 
 }
