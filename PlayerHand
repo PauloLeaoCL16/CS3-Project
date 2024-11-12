@@ -3,18 +3,18 @@ import static java.lang.System.*;
 
 class PlayerHand
 {
-  private int TotalChips;
+  private int totalChips;
   private TreeMap<String, Integer> Chips;
 
   public PlayerHand(int num, TreeMap<String, Integer> c)
   {
-    TotalChips = num;
+    totalChips = num;
     Chips = c;
   }
 
   public int getTotalChips()
   {
-    return numChips;
+    return tumChips;
   }
 
   public TreeMap<String, Integer> getChips()
