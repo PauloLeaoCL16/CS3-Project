@@ -50,29 +50,29 @@ public class SplendorPanel extends JPanel implements Runnable, MouseListener {
 
 	  }
 	  public void animateStart() {
-		   while(transparency<0.99) {
-				  transparency+=0.01;
-				  repaint();
-				  try {
+		while(transparency<0.99) {
+	  		transparency+=0.01;
+ 			repaint();
+			try {
 		              Thread.sleep(10); 
-		          } catch (InterruptedException e) {
+		        } catch (InterruptedException e) {
 		              e.printStackTrace();
-		          }
-			  }
-		   while(transparency>0.01) {
-				  transparency-=0.01;
-				  repaint();
-				  try {
+			}
+		}
+		while(transparency>0.01) {
+			transparency-=0.01;
+			repaint();
+			try {
 		              Thread.sleep(10); 
-		          } catch (InterruptedException e) {
+		        } catch (InterruptedException e) {
 		              e.printStackTrace();
-		          }
-		    }
-		  word="Splendor";
-		  transparency = 0.01f;
-		  xloc=590;
-		  yloc=540;
-		  fontSize=200;
+		        }
+		}
+		word="Splendor";
+	  	transparency = 0.01f;
+		xloc=590;
+		yloc=540;
+		fontSize=200;
 		  
 	  }
 	  public void paint(Graphics g) {
