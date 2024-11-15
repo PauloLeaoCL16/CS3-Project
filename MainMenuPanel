@@ -54,30 +54,32 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
 	        int mouseY = e.getY();
 
 	        // Calculate Play button bounds
-	        int playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
-	        int playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
-	        if (mouseX >= playButtonX && mouseX <= playButtonX + playButton.getWidth() &&
-	            mouseY >= playButtonY && mouseY <= playButtonY + playButton.getHeight()) {
-	            // Play button clicked, go to the game board panel
-	            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-	            topFrame.getContentPane().removeAll();
-	            topFrame.add(new GameBoardPanel()); // Transition to the GameBoardPanel
-	            topFrame.revalidate();
-	            topFrame.repaint();
-	        }
-
-	        // Calculate Rules button bounds
-	        int rulesButtonX = getWidth() * 3 / 4 - rulesButton.getWidth() / 2;
-	        int rulesButtonY = playButtonY + playButton.getHeight() + 20;  // Rules button is placed directly below Play button
-	        if (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButton.getWidth() &&
-	            mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButton.getHeight()) {
-	            // Rules button clicked, show the rules
-	            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-	            topFrame.getContentPane().removeAll();
-	            topFrame.add(new RulesPanel()); // Navigate to RulesPanel
-	            topFrame.revalidate();
-	            topFrame.repaint();
-	        }
+		    if(phase==1) {
+	        	int playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
+		        int playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
+		        if (mouseX >= playButtonX && mouseX <= playButtonX + playButton.getWidth() &&
+		            mouseY >= playButtonY && mouseY <= playButtonY + playButton.getHeight()) {
+		            // Play button clicked, go to the game board panel
+		            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+		            topFrame.getContentPane().removeAll();
+		            topFrame.add(new GameBoardPanel()); // Transition to the GameBoardPanel
+		            topFrame.revalidate();
+		            topFrame.repaint();
+		        }
+	
+		        // Calculate Rules button bounds
+		        int rulesButtonX = getWidth() * 3 / 4 - rulesButton.getWidth() / 2;
+		        int rulesButtonY = playButtonY + playButton.getHeight() + 20;  // Rules button is placed directly below Play button
+		        if (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButton.getWidth() &&
+		            mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButton.getHeight()) {
+		            // Rules button clicked, show the rules
+		            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+		            topFrame.getContentPane().removeAll();
+		            topFrame.add(new RulesPanel()); // Navigate to RulesPanel
+		            topFrame.revalidate();
+		            topFrame.repaint();
+		        }
+		    }
 	    }
 
 	  public void mouseReleased(MouseEvent e)
