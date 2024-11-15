@@ -17,7 +17,7 @@ public class SplendorFrame extends JFrame
 	setSize(WIDTH,HEIGHT);
 	setExtendedState(JFrame.MAXIMIZED_BOTH); 
 	setUndecorated(false);
-	add(new MainMenuPanel());
+	add(new MainMenuPanel(true));
 	setVisible(true);
 	}
 }
