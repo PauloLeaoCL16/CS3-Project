@@ -16,7 +16,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
     private BufferedImage playButton;   // Play button
     private BufferedImage rulesButton;  // Rules button
     private int phase;
-	public MainMenuPanel() {
+	public MainMenuPanel(boolean bool) {
 		phase=0;
 		transparency=0.01f;
 		word="PAULOLDS PRESENTS";
@@ -34,7 +34,8 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
 
 	        // Set this panel to be focusable to ensure mouse events work
 	        setFocusable(true);
-		new Thread(new Runnable() {
+		if(bool) {
+			new Thread(new Runnable() {
             @Override
             public void run() {
                 animateStart();
@@ -42,7 +43,10 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
                 phase=1;
                 repaint();
             }
-        }).start(); 
+			}).start(); 
+		}else {
+			phase=1;
+		}
 		
 	}
 	 public void mouseClicked(MouseEvent e) {
@@ -88,7 +92,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
 
 	  public void mouseEntered(MouseEvent e)
 	  {
-
+	
 	  }
 
 	  public void mouseExited(MouseEvent e)
