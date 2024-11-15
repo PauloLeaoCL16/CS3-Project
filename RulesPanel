@@ -63,7 +63,7 @@ public class RulesPanel extends JPanel implements MouseListener
 	        // Back button clicked, go back to MainMenuPanel
 	        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
 	        topFrame.getContentPane().removeAll();
-	        topFrame.add(new MainMenuPanel()); // Return to the MainMenuPanel
+	        topFrame.add(new MainMenuPanel(false)); // Return to the MainMenuPanel
 	        topFrame.revalidate();
 	        topFrame.repaint();
 	    }
