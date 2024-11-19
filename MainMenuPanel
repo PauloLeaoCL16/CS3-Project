@@ -128,7 +128,12 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 			     repaint();
 			}
 		}
-
+	  public void mouseDragged(MouseEvent e)
+	  {
+		  
+	  }
+	  
+	  
 	  public void mouseExited(MouseEvent e)
 	  {
 		  
