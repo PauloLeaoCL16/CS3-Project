@@ -1,4 +1,4 @@
-package ACM;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -132,7 +132,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         g2d.drawImage(level1Card, deckX, deckY + 2 * (deckHeight + deckSpacing), deckWidth, deckHeight, this);
 
         // Draw the green line below all elements in the middle section
-        int greenLineY = gridY + 3 * (cardHeight + cardSpacing) + 20;
+        int greenLineY = 800;
         g2d.setColor(Color.GREEN);
         g2d.drawLine(sectionWidth, greenLineY, 2 * sectionWidth, greenLineY);
 
