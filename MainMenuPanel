@@ -21,10 +21,11 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
     private int theta =0;
     private int playButtonX;
     private int playButtonY;
-    private int rulesButtonX;
-    private int rulesButtonY;
+    private int  rulesButtonX = 1340 , rulesButtonY = 550;
     private boolean animate =false;
     private Thread animationThread;
+    private boolean forward = true;
+    
     	public MainMenuPanel(boolean bool) {
 		phase=0;
 		transparency=0.01f;
@@ -116,6 +117,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 
 			if (isOverRulesButton && !animate) {
 				animate = true;
+				theta=-30;
 				new Thread(new Runnable() {
 		            @Override
 		            public void run() {
@@ -125,15 +127,15 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 			} else if (!isOverRulesButton && animate) {
 				animate = false;
 				 theta = 0;
+				 rulesButtonX = 1340;
+				 rulesButtonY = 550;
 			     repaint();
 			}
 		}
-	  public void mouseDragged(MouseEvent e)
-	  {
+	  public void mouseDragged(MouseEvent e) {
 		  
 	  }
-	  
-	  
+
 	  public void mouseExited(MouseEvent e)
 	  {
 		  
@@ -165,16 +167,30 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 	  }
 	 public void animateRules() {
 		 while (animate) {
-             theta = (theta + 2) % 360;
-             repaint();
-             try {
-                 Thread.sleep(10);
-             } catch (InterruptedException e) {
-                 e.printStackTrace();
+			 if(theta==30) {
+				 forward=true;
+			 }else if(theta==-30) {
+				 forward=false;
+			 }
+             if(forward) { 
+            	 theta = theta - 1;
+            	 rulesButtonX++;
+            	 rulesButtonY--;
              }
+             else {
+            	 theta = theta + 1;
+            	 rulesButtonX--;
+            	 rulesButtonY++;
+             }
+            	 repaint();
+                 try {
+                     Thread.sleep(10);
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+             }
+          
          }
-
-		}
 	  public void paint(Graphics g) {
 		  Graphics2D g2d = (Graphics2D)g;
 		  AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
@@ -192,13 +208,12 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 			playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
 			playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
 			    // Calculate the position of the Rules button, directly below the Play button
-		    rulesButtonX = getWidth() * 3 / 4 - rulesButton.getWidth() / 2;
-			rulesButtonY = playButtonY + playButton.getHeight() + 20;  // Rules button is placed directly below Play button, 20px gap
+		     // Rules button is placed directly below Play button, 20px gap
 	        g.drawImage(splendorImage, 0, 0, getWidth() / 2, getHeight(), null);
 	        g.drawImage(playButton, playButtonX, playButtonY, null);
 
 	        // Calculate the position of the Play button
-	        g2d.rotate(Math.toRadians(theta), rulesButtonX + rulesButton.getWidth() / 2.0, rulesButtonY + rulesButton.getHeight() / 2.0);
+	        g2d.rotate(Math.toRadians(theta),1340+rulesButton.getWidth()/2 , 550+rulesButton.getHeight()/2 );
 	        g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, null);
 		  }
 	  }
