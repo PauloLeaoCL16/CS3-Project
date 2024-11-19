@@ -1,3 +1,4 @@
+package ACM;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -16,8 +17,8 @@ public class RulesPanel extends JPanel implements MouseListener
 	public RulesPanel() {
 	    try {
 	        // Load the background and back button images
-	        background = ImageIO.read(RulesPanel.class.getResource("/splendorImages/splendorbackground.jpg"));
-	        backButton = ImageIO.read(RulesPanel.class.getResource("/splendorImages/backButton.JPG"));
+	        background = ImageIO.read(RulesPanel.class.getResource("/splendorImages/Splendor Rules.png"));
+	        backButton = ImageIO.read(RulesPanel.class.getResource("/splendorImages/backButton.png"));
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
@@ -31,21 +32,8 @@ public class RulesPanel extends JPanel implements MouseListener
 	    // Draw the background image (splendorbackground.jpg)
 	    g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
-	    // Set up font and color for rules text
-	    g.setColor(Color.WHITE);
-	    g.setFont(new Font("Arial", Font.BOLD, 30));
-
-	    // Draw the Skyjo rules
-	    g.drawString("Skyjo Rules:", 50, 100);
-	    g.drawString("1. The objective is to have the fewest points at the end of the game.", 50, 150);
-	    g.drawString("2. Players take turns drawing from the deck or discard pile.", 50, 200);
-	    g.drawString("3. The game ends when a player reveals all cards.", 50, 250);
-
-	    // New Y position for the back button (shifted up even more)
-	    int backButtonY = getHeight() - 200; // Further adjusted Y position
-
 	    // Draw the back button at the new position
-	    g.drawImage(backButton, getWidth() / 2 - backButton.getWidth() / 2, backButtonY, null);
+	    g.drawImage(backButton, 1575, 7 , 300, 150, null);
 	}
 
 	@Override
@@ -57,9 +45,7 @@ public class RulesPanel extends JPanel implements MouseListener
 	    int backButtonY = getHeight() - 200; // Same as in paintComponent
 
 	    // Check if the back button is clicked
-	    if (mouseX >= getWidth() / 2 - backButton.getWidth() / 2 &&
-	        mouseX <= getWidth() / 2 + backButton.getWidth() / 2 &&
-	        mouseY >= backButtonY && mouseY <= backButtonY + backButton.getHeight()) {
+	    if (mouseX >= 1575 && mouseX <= 1875 && mouseY >= 7 && mouseY <= 157) {
 	        // Back button clicked, go back to MainMenuPanel
 	        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
 	        topFrame.getContentPane().removeAll();
