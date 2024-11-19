@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -5,9 +6,10 @@ import javax.imageio.ImageIO;
 import java.io.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.*;
 import java.lang.System.*;
-public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
+public class MainMenuPanel extends JPanel implements Runnable, MouseListener, MouseMotionListener {
 	private String word;
 	private float transparency;
 	private int xloc,yloc,fontSize;
@@ -16,7 +18,14 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
     private BufferedImage playButton;   // Play button
     private BufferedImage rulesButton;  // Rules button
     private int phase;
-	public MainMenuPanel(boolean bool) {
+    private int theta =0;
+    private int playButtonX;
+    private int playButtonY;
+    private int rulesButtonX;
+    private int rulesButtonY;
+    private boolean animate =false;
+    private Thread animationThread;
+    	public MainMenuPanel(boolean bool) {
 		phase=0;
 		transparency=0.01f;
 		word="PAULOLDS PRESENTS";
@@ -31,7 +40,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
 	            e.printStackTrace();
 	        } // Add mouse listener so the panel responds to mouse events
 	        addMouseListener(this);
-
+	        addMouseMotionListener(this);
 	        // Set this panel to be focusable to ensure mouse events work
 	        setFocusable(true);
 		if(bool) {
@@ -92,14 +101,37 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
 
 	  }
 
-	  public void mouseEntered(MouseEvent e)
-	  {
-	
-	  }
+	  public void mouseEntered(MouseEvent e) {
+		   
+		}
+
+	  public void mouseMoved(MouseEvent e) {
+		    // Continuously check if the mouse is over the rulesButton
+		    int mouseX = e.getX();
+		    int mouseY = e.getY();
+
+		    // Stop the animation if the mouse is no longer over the rulesButton
+		    boolean isOverRulesButton = (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButton.getWidth() &&
+                    mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButton.getHeight());
+
+			if (isOverRulesButton && !animate) {
+				animate = true;
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+		            	animateRules();
+		            }
+					}).start(); 
+			} else if (!isOverRulesButton && animate) {
+				animate = false;
+				 theta = 0;
+			     repaint();
+			}
+		}
 
 	  public void mouseExited(MouseEvent e)
 	  {
-
+		  
 	  }
 	  public void animateStart() {
 		   while(transparency<0.99) {
@@ -126,31 +158,43 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener {
 		  yloc=540;
 		  fontSize=200;
 	  }
+	 public void animateRules() {
+		 while (animate) {
+             theta = (theta + 2) % 360;
+             repaint();
+             try {
+                 Thread.sleep(10);
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+         }
+
+		}
 	  public void paint(Graphics g) {
+		  Graphics2D g2d = (Graphics2D)g;
+		  AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
 		  if(phase==0) {
-			  Graphics2D g2d = (Graphics2D)g;
-			  AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
 			  g2d.setColor(Color.darkGray);
 			  g2d.fillRect(0, 0, 1920, 1080);
 			  g2d.setColor(Color.WHITE);
 			  g2d.setComposite(alphaComposite);
 			  g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
 			  g2d.drawString(word,xloc,yloc);
-		
+			  
 		  }else if(phase==1){
 			  g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 	        // Draw the splendorImage (weeedwd.jpg) on the left side (half the width)
+			playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
+			playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
+			    // Calculate the position of the Rules button, directly below the Play button
+		    rulesButtonX = getWidth() * 3 / 4 - rulesButton.getWidth() / 2;
+			rulesButtonY = playButtonY + playButton.getHeight() + 20;  // Rules button is placed directly below Play button, 20px gap
 	        g.drawImage(splendorImage, 0, 0, getWidth() / 2, getHeight(), null);
-
-	        // Calculate the position of the Play button
-	        int playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
-	        int playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
 	        g.drawImage(playButton, playButtonX, playButtonY, null);
 
-	        // Calculate the position of the Rules button, directly below the Play button
-	        int rulesButtonX = getWidth() * 3 / 4 - rulesButton.getWidth() / 2;
-	        int rulesButtonY = playButtonY + playButton.getHeight() + 20;  // Rules button is placed directly below Play button, 20px gap
-	        g.drawImage(rulesButton, rulesButtonX, rulesButtonY, null);
+	        // Calculate the position of the Play button
+	        g2d.rotate(Math.toRadians(theta), rulesButtonX + rulesButton.getWidth() / 2.0, rulesButtonY + rulesButton.getHeight() / 2.0);
+	        g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, null);
 		  }
 	  }
 }
