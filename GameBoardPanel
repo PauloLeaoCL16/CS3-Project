@@ -1,3 +1,4 @@
+package ACM;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -38,7 +39,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
             whiteGem = ImageIO.read(getClass().getResource("/splendorImages/WhiteGem.png"));
             reserveGem = ImageIO.read(getClass().getResource("/splendorImages/ReserveGem.png"));
 
-            tempCard = ImageIO.read(getClass().getResource("/splendorImages/tempCard.JPG"));
+            tempCard = ImageIO.read(getClass().getResource("/splendorImages/creamylol.JPG"));
             
             // Deck levels
 
@@ -94,8 +95,8 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         int middleTopSpace = 100;
 
         // Draw the patreons above the grid
-        int patronWidth = 80;
-        int patronHeight = 120;
+        int patronWidth = 115;
+        int patronHeight = 140;
         int patronSpacing = 10;
         int patronX = sectionWidth + (sectionWidth - (5 * patronWidth + 4 * patronSpacing)) / 2;
         int patronY = middleTopSpace;
@@ -106,8 +107,8 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         }
 
         // Draw the 4x3 grid of cards in the middle section
-        int cardWidth = 80;
-        int cardHeight = 120;
+        int cardWidth = 115;
+        int cardHeight = 140;
         int cardSpacing = 10;
         int gridX = sectionWidth + (sectionWidth - (3 * cardWidth + 2 * cardSpacing)) / 2;
         int gridY = patronY + patronHeight + 10;
@@ -136,8 +137,8 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         g2d.drawLine(sectionWidth, greenLineY, 2 * sectionWidth, greenLineY);
 
         // Draw gems below the green line in the middle section
-        int gemSize = 50;
-        int gemSpacing = 30;
+        int gemSize = 95;
+        int gemSpacing = 10;
         int gemY = greenLineY + 10;
         int gemX = sectionWidth + (sectionWidth - (6 * gemSize + 5 * gemSpacing)) / 2;
         g2d.drawImage(blackGem, gemX, gemY, gemSize, gemSize, this);
@@ -172,7 +173,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         g2d.drawRect(gemBoxX, gemBoxY, gemBoxWidth, gemBoxHeight);
 
         // Draw player gems inside the gem boxes
-        int gemSize = 30; // Bigger gems
+        int gemSize = 50; // Bigger gems
         int gemSpacing = 40; // More space between each gem
         int playerGemX = gemBoxX + 10;
         int playerGemY = gemBoxY + (gemBoxHeight - gemSize) / 2;
