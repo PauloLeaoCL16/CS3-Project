@@ -23,7 +23,8 @@ public class GameBoardPanel extends JPanel implements MouseListener {
     private ArrayList<Card> Level1Cards = new ArrayList<Card>();
     private ArrayList<Card> Level2Cards = new ArrayList<Card>();
     private ArrayList<Card> Level3Cards = new ArrayList<Card>();
-    private BufferedImage[] patreons = new BufferedImage[10];
+    private BufferedImage[] PatronImages = new BufferedImage[10];
+    private ArrayList<Patron> PatronCards = new ArrayList<Patron>();
 
     public GameBoardPanel() {
         loadImages();
@@ -570,10 +571,58 @@ public class GameBoardPanel extends JPanel implements MouseListener {
     		map.put("black", 3);
     		Level3Cards.add(new Card(3, "white", Level3Images.get(19), map));
 
-            // Patreons
+            // PatronImages
             for (int i = 1; i <= 10; i++) {
-                patreons[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/Patreon" + i + ".png"));
+                PatronImages[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/Patreon" + i + ".png"));
             }
+            // assigning the patreon images to a Patron class obj
+            //
+            map = new TreeMap<String, Integer>();
+    		map.put("blue", 4);
+    		map.put("green", 4);
+    		PatronCards.add(new Patron(3, PatronImages[0], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 4);
+    		map.put("red", 4);
+    		PatronCards.add(new Patron(3, PatronImages[1], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 3);
+    		map.put("blue", 3);
+    		map.put("red", 3);
+    		PatronCards.add(new Patron(3, PatronImages[2], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 3);
+    		map.put("red", 3);
+    		map.put("white", 3);
+    		PatronCards.add(new Patron(3, PatronImages[3], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 3);
+    		map.put("red", 3);
+    		map.put("green", 3);
+    		PatronCards.add(new Patron(3, PatronImages[4], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 4);
+    		map.put("white", 4);
+    		PatronCards.add(new Patron(3, PatronImages[5], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("red", 4);
+    		map.put("green", 4);
+    		PatronCards.add(new Patron(3, PatronImages[6], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 3);
+    		map.put("blue", 3);
+    		map.put("white", 3);
+    		PatronCards.add(new Patron(3, PatronImages[7], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 3);
+    		map.put("blue", 3);
+    		map.put("white", 3);
+    		PatronCards.add(new Patron(3, PatronImages[8], map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 4);
+    		map.put("white", 4);
+    		PatronCards.add(new Patron(3, PatronImages[9], map));
+            
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error loading images");
@@ -609,7 +658,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         // Leave space at the top of the middle section
         int middleTopSpace = 100;
 
-        // Draw the patreons above the grid
+        // Draw the PatronImages above the grid
         int patronWidth = 115;
         int patronHeight = 140;
         int patronSpacing = 10;
@@ -617,7 +666,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         int patronY = middleTopSpace;
 
         for (int i = 0; i < 5; i++) {
-            BufferedImage patron = patreons[i];
+            BufferedImage patron = PatronImages[i];
             g2d.drawImage(patron, patronX + i * (patronWidth + patronSpacing), patronY, patronWidth, patronHeight, this);
         }
 
@@ -692,7 +741,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
 
         // Draw the green line below all elements in the middle section
         int greenLineY = 800;
-        g2d.setColor(Color.GREEN);
+        g2d.setColor(Color.BLACK);
         g2d.drawLine(sectionWidth, greenLineY, 2 * sectionWidth, greenLineY);
 
         // Draw gems below the green line in the middle section
