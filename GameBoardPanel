@@ -25,6 +25,8 @@ public class GameBoardPanel extends JPanel implements MouseListener {
     private ArrayList<Card> Level3Cards = new ArrayList<Card>();
     private BufferedImage[] PatronImages = new BufferedImage[10];
     private ArrayList<Patron> PatronCards = new ArrayList<Patron>();
+    private Boolean[] PatronUsed = new Boolean[10];
+    private Random rnd = new Random();
 
     public GameBoardPanel() {
         loadImages();
@@ -37,6 +39,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         	Arrays.fill(Level1ImagesUsed, false);
         	Arrays.fill(Level2ImagesUsed, false);
         	Arrays.fill(Level3ImagesUsed, false);
+        	Arrays.fill(PatronUsed, false);
         	
 
             // Background
@@ -665,9 +668,19 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         int patronX = sectionWidth + (sectionWidth - (5 * patronWidth + 4 * patronSpacing)) / 2;
         int patronY = middleTopSpace;
 
-        for (int i = 0; i < 5; i++) {
-            BufferedImage patron = PatronImages[i];
-            g2d.drawImage(patron, patronX + i * (patronWidth + patronSpacing), patronY, patronWidth, patronHeight, this);
+        for (int i = 0; i < 5; i++) 
+        {
+        	int rng = rnd.nextInt(10);
+        	if( PatronUsed[rng] == false )
+        	{
+	            BufferedImage patron = PatronImages[rng];
+	            g2d.drawImage(patron, patronX + i * (patronWidth + patronSpacing), patronY, patronWidth, patronHeight, this);
+	            PatronUsed[rng] = false ;
+        	}
+        	else
+        	{
+        		i--;
+        	}
         }
 
         // Draw the 4x3 grid of cards in the middle section
@@ -676,7 +689,6 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         int cardSpacing = 10;
         int gridX = sectionWidth + (sectionWidth - (3 * cardWidth + 2 * cardSpacing)) / 2;
         int gridY = patronY + patronHeight + 10;
-        Random rnd = new Random();
         
         
         for (int row = 0; row < 3; row++) {
