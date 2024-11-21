@@ -623,7 +623,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
 
         // Draw the 4x3 grid of cards in the middle section
         int cardWidth = 115;
-        int cardHeight = 140;
+        int cardHeight = 165;
         int cardSpacing = 10;
         int gridX = sectionWidth + (sectionWidth - (3 * cardWidth + 2 * cardSpacing)) / 2;
         int gridY = patronY + patronHeight + 10;
@@ -667,7 +667,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
                 	{
 	            	BufferedImage card = Level1Images.get(rng);
 	            	g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
-	            	Level2ImagesUsed[rng] = true;
+	            	Level1ImagesUsed[rng] = true;
                 	}
                 	else
                 	{
