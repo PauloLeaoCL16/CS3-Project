@@ -7,17 +7,22 @@ import java.io.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.util.*;
+import java.util.Arrays; 
 import java.lang.System.*;
 
 public class GameBoardPanel extends JPanel implements MouseListener {
 
     private BufferedImage background, blackGem, blueGem, redGem, greenGem, whiteGem, reserveGem;
     private BufferedImage tempCard, level1Card, level2Card, level3Card;
-    private BufferedImage[] blackCards = new BufferedImage[18];
-    private BufferedImage[] blueCards = new BufferedImage[18];
-    private BufferedImage[] redCards = new BufferedImage[18];
-    private BufferedImage[] greenCards = new BufferedImage[18];
-    private BufferedImage[] whiteCards = new BufferedImage[18];
+    private ArrayList<BufferedImage> Level1Images = new ArrayList<BufferedImage>();
+    private ArrayList<BufferedImage> Level2Images = new ArrayList<BufferedImage>();
+    private ArrayList<BufferedImage> Level3Images = new ArrayList<BufferedImage>();
+    private Boolean[] Level1ImagesUsed = new Boolean[40];
+    private Boolean[] Level2ImagesUsed = new Boolean[30];
+    private Boolean[] Level3ImagesUsed = new Boolean[20];
+    private ArrayList<Card> Level1Cards = new ArrayList<Card>();
+    private ArrayList<Card> Level2Cards = new ArrayList<Card>();
+    private ArrayList<Card> Level3Cards = new ArrayList<Card>();
     private BufferedImage[] patreons = new BufferedImage[10];
 
     public GameBoardPanel() {
@@ -27,6 +32,11 @@ public class GameBoardPanel extends JPanel implements MouseListener {
     private void loadImages() {
 
         try {
+        	//filling array of images with false( meaning its not used)
+        	Arrays.fill(Level1ImagesUsed, false);
+        	Arrays.fill(Level2ImagesUsed, false);
+        	Arrays.fill(Level3ImagesUsed, false);
+        	
 
             // Background
             background = ImageIO.read(getClass().getResource("/splendorImages/creamylol.jpg"));
@@ -48,13 +58,518 @@ public class GameBoardPanel extends JPanel implements MouseListener {
             level3Card = ImageIO.read(getClass().getResource("/splendorImages/Level3Card.png"));
 
             // Cards by color
-            for (int i = 1; i <= 18; i++) {
-                blackCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/BlackCard" + i + ".png"));
-                blueCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + ".png"));
-                redCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + ".png"));
-                greenCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + ".png"));
-                whiteCards[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + ".png"));
+            // level 1
+            for(int k = 0; k<5 ; k++)
+            {
+	            for(int i = 1; i<=8 ; i++)
+	            {
+	            	if(k==0)
+	            	{
+	            		Level1Images.add(ImageIO.read(getClass().getResource("/splendorImages/BlackCard"+i+"Level1.png")));
+	            	}
+	            	else if(k==1)
+	            	{
+	            		Level1Images.add(ImageIO.read(getClass().getResource("/splendorImages/BlueCard"+i+"Level1.png")));
+	            	}
+	            	else if(k==2)
+	            	{
+	            		Level1Images.add(ImageIO.read(getClass().getResource("/splendorImages/RedCard"+i+"Level1.png")));
+	            	}
+	            	else if(k==3)
+	            	{
+	            		Level1Images.add(ImageIO.read(getClass().getResource("/splendorImages/GreenCard"+i+"Level1.png")));
+	            	}
+	            	else if(k==4)
+	            	{
+	            		Level1Images.add(ImageIO.read(getClass().getResource("/splendorImages/WhiteCard"+i+"Level1.png")));
+	            	}
+	           
+	            }
             }
+            // adding card class objects into list
+            // adding black
+            TreeMap<String, Integer> map = new TreeMap<String, Integer>();
+            map.put("blue", 4);
+    		Level1Cards.add(new Card(1, "black", Level1Images.get(0), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 3);
+    		Level1Cards.add(new Card(0, "black", Level1Images.get(1), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 2);
+    		map.put("red", 1);
+    		Level1Cards.add(new Card(0, "black", Level1Images.get(2), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("green", 2);
+    		Level1Cards.add(new Card(0, "black", Level1Images.get(3), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("blue", 2);
+    		map.put("red", 1);
+    		Level1Cards.add(new Card(0, "black", Level1Images.get(4), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 1);
+    		map.put("red", 3);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "black", Level1Images.get(5), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("blue", 1);
+    		map.put("green", 1);
+    		map.put("red", 1);
+    		Level1Cards.add(new Card(0, "black", Level1Images.get(6), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("blue", 2);
+    		map.put("green", 1);
+    		map.put("red", 1);
+    		Level1Cards.add(new Card(0, "black", Level1Images.get(7), map));
+    		//Adding blue cards now
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("green", 1);
+    		map.put("red", 1);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "blue", Level1Images.get(8), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("green", 1);
+    		map.put("red", 2);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "blue", Level1Images.get(9), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("red", 4);
+    		Level1Cards.add(new Card(1, "blue", Level1Images.get(10), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 1);
+    		map.put("green", 3);
+    		map.put("red", 1);
+    		Level1Cards.add(new Card(0, "blue", Level1Images.get(11), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 3);
+    		Level1Cards.add(new Card(0, "blue", Level1Images.get(12), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("black", 2);
+    		Level1Cards.add(new Card(0, "blue", Level1Images.get(13), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 2);
+    		map.put("black", 2);
+    		Level1Cards.add(new Card(0, "blue", Level1Images.get(14), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("green", 2);
+    		map.put("red", 2);
+    		Level1Cards.add(new Card(0, "blue", Level1Images.get(15), map));
+    		// adding green
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 4);
+    		Level1Cards.add(new Card(1, "green", Level1Images.get(16), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("red", 3);
+    		Level1Cards.add(new Card(0, "green", Level1Images.get(17), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("blue", 1);
+    		Level1Cards.add(new Card(0, "green", Level1Images.get(18), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("blue", 3);
+    		map.put("green", 1);
+    		Level1Cards.add(new Card(0, "green", Level1Images.get(19), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 1);
+    		map.put("red", 2);
+    		map.put("black", 2);
+    		Level1Cards.add(new Card(0, "green", Level1Images.get(20), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 2);
+    		map.put("red", 2);
+    		Level1Cards.add(new Card(0, "green", Level1Images.get(21), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("blue", 1);
+    		map.put("red", 1);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "green", Level1Images.get(22), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("blue", 1);
+    		map.put("red", 1);
+    		map.put("black", 2);
+    		Level1Cards.add(new Card(0, "green", Level1Images.get(23), map));
+    		// adding red
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("green", 1);
+    		map.put("black", 2);
+    		Level1Cards.add(new Card(0, "red", Level1Images.get(24), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		Level1Cards.add(new Card(0, "red", Level1Images.get(25), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("red", 1);
+    		map.put("black", 3);
+    		Level1Cards.add(new Card(0, "red", Level1Images.get(26), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 2);
+    		map.put("green", 1);
+    		Level1Cards.add(new Card(0, "red", Level1Images.get(27), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("red", 2);
+    		Level1Cards.add(new Card(0, "red", Level1Images.get(28), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("red", 1);
+    		map.put("black", 3);
+    		Level1Cards.add(new Card(0, "red", Level1Images.get(29), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("blue", 1);
+    		map.put("green", 1);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "red", Level1Images.get(30), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("blue", 1);
+    		map.put("green", 1);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "red", Level1Images.get(31), map));
+    		// adding white
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 4);
+    		Level1Cards.add(new Card(1, "white", Level1Images.get(32), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 2);
+    		map.put("black", 2);
+    		Level1Cards.add(new Card(0, "white", Level1Images.get(33), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("red", 2);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "white", Level1Images.get(34), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 3);
+    		Level1Cards.add(new Card(0, "white", Level1Images.get(35), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 1);
+    		map.put("green", 1);
+    		map.put("red", 1);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "white", Level1Images.get(36), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 1);
+    		map.put("green", 2);
+    		map.put("red", 1);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "white", Level1Images.get(37), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 2);
+    		map.put("green", 2);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "white", Level1Images.get(38), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("blue", 1);
+    		map.put("black", 1);
+    		Level1Cards.add(new Card(0, "white", Level1Images.get(39), map));
+    		
+    		
+    		
+            // level 2
+            for(int k = 0; k<5 ; k++)
+            {
+	            for(int i = 1; i<=6 ; i++)
+	            {
+	            	if(k==0)
+	            	{
+	            		Level2Images.add(ImageIO.read(getClass().getResource("/splendorImages/BlackCard"+i+"Level2.png")));
+	            	}
+	            	else if(k==1)
+	            	{
+	            		Level2Images.add(ImageIO.read(getClass().getResource("/splendorImages/BlueCard"+i+"Level2.png")));
+	            	}
+	            	else if(k==2)
+	            	{
+	            		Level2Images.add(ImageIO.read(getClass().getResource("/splendorImages/RedCard"+i+"Level2.png")));
+	            	}
+	            	else if(k==3)
+	            	{
+	            		Level2Images.add(ImageIO.read(getClass().getResource("/splendorImages/GreenCard"+i+"Level2.png")));
+	            	}
+	            	else if(k==4)
+	            	{
+	            		Level2Images.add(ImageIO.read(getClass().getResource("/splendorImages/WhiteCard"+i+"Level2.png")));
+	            	}
+	           
+	            }
+            }
+            // adding Level2 cards
+            //adding black cards
+            map = new TreeMap<String, Integer>();
+            map.put("black", 6);
+    		Level2Cards.add(new Card(3, "black", Level2Images.get(0), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 5);
+    		Level2Cards.add(new Card(2, "black", Level2Images.get(1), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 5);
+    		map.put("red", 3);
+    		Level2Cards.add(new Card(2, "black", Level2Images.get(2), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 1);
+    		map.put("green", 4);
+    		map.put("red", 2);
+    		Level2Cards.add(new Card(2, "black", Level2Images.get(3), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("green", 3);
+    		map.put("black", 2);
+    		Level2Cards.add(new Card(1, "black", Level2Images.get(4), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("blue", 2);
+    		map.put("green", 2);
+    		Level2Cards.add(new Card(1, "black", Level2Images.get(5), map));
+    		//
+    		//Adding blue cards now
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 6);
+    		Level2Cards.add(new Card(3, "blue", Level2Images.get(6), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 5);
+    		Level2Cards.add(new Card(2, "blue", Level2Images.get(7), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("red", 1);
+    		map.put("black", 4);
+    		Level2Cards.add(new Card(2, "blue", Level2Images.get(8), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 5);
+    		map.put("blue", 3);
+    		Level2Cards.add(new Card(2, "blue", Level2Images.get(9), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 2);
+    		map.put("green", 3);
+    		map.put("black", 3);
+    		Level2Cards.add(new Card(1, "blue", Level2Images.get(10), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 2);
+    		map.put("green", 2);
+    		map.put("red", 3);
+    		Level2Cards.add(new Card(1, "blue", Level2Images.get(11), map));
+    		//
+    		// adding green
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 6);
+    		Level2Cards.add(new Card(3, "green", Level2Images.get(12), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 5);
+    		map.put("green", 3);
+    		Level2Cards.add(new Card(2, "green", Level2Images.get(13), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 5);
+    		Level2Cards.add(new Card(2, "green", Level2Images.get(14), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 4);
+    		map.put("blue", 2);
+    		map.put("black", 1);
+    		Level2Cards.add(new Card(2, "green", Level2Images.get(15), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("green", 2);
+    		map.put("red", 3);
+    		Level2Cards.add(new Card(1, "green", Level2Images.get(16), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("blue", 3);
+    		map.put("black", 2);
+    		Level2Cards.add(new Card(1, "green", Level2Images.get(17), map));
+    		//
+    		// adding red
+    		map = new TreeMap<String, Integer>();
+    		map.put("red", 6);
+    		Level2Cards.add(new Card(3, "red", Level2Images.get(18), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 5);
+    		Level2Cards.add(new Card(2, "red", Level2Images.get(19), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("black", 5);
+    		Level2Cards.add(new Card(2, "red", Level2Images.get(20), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 1);
+    		map.put("blue", 4);
+    		map.put("green", 2);
+    		Level2Cards.add(new Card(2, "red", Level2Images.get(21), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 3);
+    		map.put("red", 2);
+    		map.put("black", 3);
+    		Level2Cards.add(new Card(1, "red", Level2Images.get(22), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("red", 2);
+    		map.put("black", 3);
+    		Level2Cards.add(new Card(1, "red", Level2Images.get(23), map));
+    		//
+    		// adding white
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 6);
+    		Level2Cards.add(new Card(3, "white", Level2Images.get(24), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("red", 5);
+    		map.put("black", 3);
+    		Level2Cards.add(new Card(2, "white", Level2Images.get(25), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("red", 5);
+    		Level2Cards.add(new Card(2, "white", Level2Images.get(26), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 1);
+    		map.put("red", 4);
+    		map.put("black", 2);
+    		Level2Cards.add(new Card(2, "white", Level2Images.get(27), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 2);
+    		map.put("blue", 3);
+    		map.put("red", 3);
+    		Level2Cards.add(new Card(1, "white", Level2Images.get(28), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 3);
+    		map.put("red", 2);
+    		map.put("black", 2);
+    		Level2Cards.add(new Card(1, "white", Level2Images.get(29), map));
+    		//
+            // level 3
+            for(int k = 0; k<5 ; k++)
+            {
+	            for(int i = 1; i<=4 ; i++)
+	            {
+	            	if(k==0)
+	            	{
+	            		Level3Images.add(ImageIO.read(getClass().getResource("/splendorImages/BlackCard"+i+"Level3.png")));
+	            	}
+	            	else if(k==1)
+	            	{
+	            		Level3Images.add(ImageIO.read(getClass().getResource("/splendorImages/BlueCard"+i+"Level3.png")));
+	            	}
+	            	else if(k==2)
+	            	{
+	            		Level3Images.add(ImageIO.read(getClass().getResource("/splendorImages/RedCard"+i+"Level3.png")));
+	            	}
+	            	else if(k==3)
+	            	{
+	            		Level3Images.add(ImageIO.read(getClass().getResource("/splendorImages/GreenCard"+i+"Level3.png")));
+	            	}
+	            	else if(k==4)
+	            	{
+	            		Level3Images.add(ImageIO.read(getClass().getResource("/splendorImages/WhiteCard"+i+"Level3.png")));
+	            	}
+	           
+	            }
+            }
+            // adding Level3 cards
+            //adding black cards
+            map = new TreeMap<String, Integer>();
+            map.put("red", 7);
+            map.put("black", 3);
+    		Level3Cards.add(new Card(5, "black", Level3Images.get(0), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("red", 7);
+    		Level3Cards.add(new Card(4, "black", Level3Images.get(1), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 3);
+    		map.put("red", 6);
+    		map.put("black", 3);
+    		Level3Cards.add(new Card(4, "black", Level3Images.get(2), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("blue", 3);
+    		map.put("green", 5);
+    		map.put("red", 3);
+    		Level3Cards.add(new Card(3, "black", Level3Images.get(3), map));
+    		//
+    		//Adding blue cards now
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 7);
+    		map.put("blue", 3);
+    		Level3Cards.add(new Card(5, "blue", Level3Images.get(4), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 6);
+    		map.put("blue", 3);
+    		map.put("black", 3);
+    		Level3Cards.add(new Card(4, "blue", Level3Images.get(5), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 7);
+    		Level3Cards.add(new Card(4, "blue", Level3Images.get(6), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("green", 3);
+    		map.put("red", 3);
+    		map.put("black", 5);
+    		Level3Cards.add(new Card(3, "blue", Level3Images.get(7), map));
+    		//
+    		// adding green
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 7);
+    		map.put("green", 3);
+    		Level3Cards.add(new Card(5, "green", Level3Images.get(8), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("blue", 6);
+    		map.put("green", 3);
+    		Level3Cards.add(new Card(4, "green", Level3Images.get(9), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 7);
+    		Level3Cards.add(new Card(4, "green", Level3Images.get(10), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 5);
+    		map.put("blue", 3);
+    		map.put("red", 3);
+    		map.put("black", 3);
+    		Level3Cards.add(new Card(3, "green", Level3Images.get(11), map));
+    		//
+    		// adding red
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 7);
+    		map.put("red", 3);
+    		Level3Cards.add(new Card(5, "red", Level3Images.get(12), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 3);
+    		map.put("green", 6);
+    		map.put("red", 3);
+    		Level3Cards.add(new Card(4, "red", Level3Images.get(13), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("green", 7);
+    		Level3Cards.add(new Card(4, "red", Level3Images.get(14), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("blue", 5);
+    		map.put("green", 3);
+    		map.put("black", 3);
+    		Level3Cards.add(new Card(3, "red", Level3Images.get(15), map));
+    		//
+    		// adding white
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("black", 7);
+    		Level3Cards.add(new Card(5, "white", Level3Images.get(16), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("black", 7);
+    		Level3Cards.add(new Card(4, "white", Level3Images.get(17), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("white", 3);
+    		map.put("red", 3);
+    		map.put("black", 6);
+    		Level3Cards.add(new Card(4, "white", Level3Images.get(18), map));
+    		map = new TreeMap<String, Integer>();
+    		map.put("blue", 3);
+    		map.put("green", 3);
+    		map.put("red", 5);
+    		map.put("black", 3);
+    		Level3Cards.add(new Card(3, "white", Level3Images.get(19), map));
+
             // Patreons
             for (int i = 1; i <= 10; i++) {
                 patreons[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/Patreon" + i + ".png"));
@@ -112,13 +627,57 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         int cardSpacing = 10;
         int gridX = sectionWidth + (sectionWidth - (3 * cardWidth + 2 * cardSpacing)) / 2;
         int gridY = patronY + patronHeight + 10;
-
+        Random rnd = new Random();
+        
+        
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 4; col++) {
-                BufferedImage card = blackCards[(row * 4 + col) % blackCards.length];
-                g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
+            	if(row==0)
+            	{
+                	int rng = rnd.nextInt(20);
+                	if( Level3ImagesUsed[rng] == false )
+                	{
+                		BufferedImage card = Level3Images.get(rng);
+	            		g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
+	            		Level3ImagesUsed[rng] = true;
+                	}
+                	else
+                	{
+                		col--;
+                	}
+            	}
+            	else if(row==1)
+            	{
+                	int rng = rnd.nextInt(30);
+                	if( Level2ImagesUsed[rng] == false )
+                	{
+	            	BufferedImage card = Level2Images.get(rng);
+	            	g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
+	            	Level2ImagesUsed[rng] = true;
+                	}
+                	else
+                	{
+                		col--;
+                	}
+            	}
+            	else if(row==2)
+            	{
+                	int rng = rnd.nextInt(40);
+                	if( Level1ImagesUsed[rng] == false )
+                	{
+	            	BufferedImage card = Level1Images.get(rng);
+	            	g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
+	            	Level2ImagesUsed[rng] = true;
+                	}
+                	else
+                	{
+                		col--;
+                	}
+            	}
+            	
             }
         }
+        
 
         // Draw the larger decks to the left of the grid
         int deckWidth = cardWidth;
@@ -191,7 +750,8 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         int tempCardY = gemBoxY + gemBoxHeight + 10;
         g2d.drawImage(tempCard, tempCardX, tempCardY, tempCardWidth, tempCardHeight, this);
     }
-
+    
+    
 
     @Override
     public void mouseClicked(MouseEvent e) {}
