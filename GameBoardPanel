@@ -675,7 +675,7 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         	{
 	            BufferedImage patron = PatronImages[rng];
 	            g2d.drawImage(patron, patronX + i * (patronWidth + patronSpacing), patronY, patronWidth, patronHeight, this);
-	            PatronUsed[rng] = false ;
+	            PatronUsed[rng] = true ;
         	}
         	else
         	{
