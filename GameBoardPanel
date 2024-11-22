@@ -27,9 +27,12 @@ public class GameBoardPanel extends JPanel implements MouseListener {
     private ArrayList<Patron> PatronCards = new ArrayList<Patron>();
     private Boolean[] PatronUsed = new Boolean[10];
     private Random rnd = new Random();
+    private PlayerPanel p1, p2, p3, p4 = new PlayerPanel();
+    private int gemx, gemy, cardX, cardY;
 
     public GameBoardPanel() {
         loadImages();
+        addMouseListener(this);
     }
 
     private void loadImages() {
@@ -688,8 +691,9 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         int cardHeight = 165;
         int cardSpacing = 10;
         int gridX = sectionWidth + (sectionWidth - (3 * cardWidth + 2 * cardSpacing)) / 2;
+        cardX = gridX;
         int gridY = patronY + patronHeight + 10;
-        
+        cardY = gridY;
         
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 4; col++) {
@@ -762,6 +766,8 @@ public class GameBoardPanel extends JPanel implements MouseListener {
         int gemY = greenLineY + 10;
         int gemX = sectionWidth + (sectionWidth - (6 * gemSize + 5 * gemSpacing)) / 2;
         g2d.drawImage(blackGem, gemX, gemY, gemSize, gemSize, this);
+        gemx = gemX;
+        gemy = gemY;
         g2d.drawImage(blueGem, gemX + (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
         g2d.drawImage(redGem, gemX + 2 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
         g2d.drawImage(greenGem, gemX + 3 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
@@ -815,7 +821,88 @@ public class GameBoardPanel extends JPanel implements MouseListener {
     
 
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    	int mouseX = e.getX();
+    	int mouseY = e.getY();
+  	  	System.out.println(mouseX + ", " + mouseY);
+  	  	
+  	  	//CHIPS
+  	  	if(mouseX >= gemx && mouseY >= gemy && mouseX <= gemx + 95 && mouseY <= gemy + 95)
+  	  	{
+  	  		System.out.println("black");
+  	  	}
+  	  		
+  	  	if(mouseX >= gemx + 105 && mouseY >= gemy && mouseX <= gemx + 95 + 105 && mouseY <= gemy + 95)
+  	  	{
+  	  		System.out.println("blue");
+  	  	}
+  	  	if(mouseX >= gemx + (105*2) && mouseY >= gemy && mouseX <= gemx + 95 + (105*2) && mouseY <= gemy + 95)
+	  	{
+	  		System.out.println("red");
+	  	}
+  	  if(mouseX >= gemx + (105*3) && mouseY >= gemy && mouseX <= gemx + 95 + (105*3) && mouseY <= gemy + 95)
+	  	{
+	  		System.out.println("green");
+	  	}
+  	  if(mouseX >= gemx + (105*4) && mouseY >= gemy && mouseX <= gemx + 95 + (105*4) && mouseY <= gemy + 95)
+  	  	{
+  		  System.out.println("white");
+  	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+  	  	{
+  		  System.out.println("wild");
+  	  	}
+  	  
+  	  //MARKET
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("card1");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemx + (105*5) && mouseY >= gemy && mouseX <= gemx + 95 + (105*5) && mouseY <= gemy + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+    }
     public void mouseReleased(MouseEvent e) {}
     public void mousePressed(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
