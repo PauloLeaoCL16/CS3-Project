@@ -1,4 +1,5 @@
 
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -25,9 +26,11 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
     private boolean animate =false;
     private Thread animationThread;
     private boolean forward = true;
-    
+    private GameBoardPanel gameBoardPanel;
     	public MainMenuPanel(boolean bool) {
 		phase=0;
+		gameBoardPanel = new GameBoardPanel();
+		new Thread(() ->gameBoardPanel.loadImages()).start();
 		transparency=0.01f;
 		word="PAULOLDS PRESENTS";
 		xloc=450; yloc=550; fontSize=100;
@@ -72,7 +75,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 		            // Play button clicked, go to the game board panel
 		            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
 		            topFrame.getContentPane().removeAll();
-		            topFrame.add(new GameBoardPanel()); // Transition to the GameBoardPanel
+		            topFrame.add(gameBoardPanel); // Transition to the GameBoardPanel
 		            topFrame.revalidate();
 		            topFrame.repaint();
 		        }
