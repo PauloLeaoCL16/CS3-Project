@@ -33,12 +33,14 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
     private Patron[] PatronStart = new Patron[5];
     private int cardX[] = new int[12];
     private int cardY[] = new int[12];
-    private int cardWidth,cardHeight;
+    private int gemSize,gemSpacing,gemY,gemX,sectionWidth;
+    private int cardWidth,cardHeight,patronWidth,patronHeight,patronSpacing,patronX, cardSpacing,patronY,gridX,gridY;
     private int highlightX,highlightY;
     private boolean showHighlight = false;
     public GameBoardPanel() {
         loadImages();
         addMouseMotionListener(this);
+        addMouseListener(this);
     }
 
     private void loadImages() {
@@ -69,6 +71,23 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
             level2Card = ImageIO.read(getClass().getResource("/splendorImages/Level2Card.png"));
             level3Card = ImageIO.read(getClass().getResource("/splendorImages/Level3Card.png"));
             
+            sectionWidth = 640;
+            patronWidth = 115;
+        	patronHeight = 140;
+        	patronSpacing = 10;
+        	patronX = sectionWidth + (sectionWidth - (5 * patronWidth + 4 * patronSpacing)) / 2;
+        	patronY = 100;
+            gemSize = 95;
+            gemSpacing = 10;
+            gemY = 810;
+            gemX = sectionWidth + (sectionWidth - (6 * gemSize + 5 * gemSpacing)) / 2;
+            cardWidth = 115;
+        	cardHeight = 165;
+        	cardSpacing = 10;
+        	gridX = sectionWidth + (sectionWidth - (3 * cardWidth + 2 * cardSpacing)) / 2;
+        	gridY = patronY + patronHeight + 10;   	
+        	
+            
             assignImages();
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,7 +104,7 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
         g2d.drawImage(background, 0, 0, getWidth(), getHeight(), this);
 
         // Draw the vertical black lines separating the sections
-        int sectionWidth = getWidth() / 3;
+        
         g2d.setColor(Color.BLACK);
         g2d.drawLine(sectionWidth, 0, sectionWidth, getHeight());
         g2d.drawLine(2 * sectionWidth, 0, 2 * sectionWidth, getHeight());
@@ -102,16 +121,8 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
             drawPlayerArea(g2d, playerXRight, playerY + i * (playerBoxHeight + 20), playerBoxWidth, playerBoxHeight, i + 3);
         }
         
-        // Leave space at the top of the middle section
-        int middleTopSpace = 100;
         
         // Draw the PatronImages above the grid
-        int patronWidth = 115;
-        int patronHeight = 140;
-        int patronSpacing = 10;
-        int patronX = sectionWidth + (sectionWidth - (5 * patronWidth + 4 * patronSpacing)) / 2;
-        int patronY = middleTopSpace;
-
         for (int i = 0; i < 5; i++) 
         {
 	           BufferedImage patron = PatronStart[i].getImage();
@@ -123,11 +134,6 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
         	g2d.fillRect(highlightX, highlightY, cardWidth+10, cardHeight+10);
         }
         // Draw the 4x3 grid of cards in the middle section
-        	cardWidth = 115;
-        	cardHeight = 165;
-        int cardSpacing = 10;
-        int gridX = sectionWidth + (sectionWidth - (3 * cardWidth + 2 * cardSpacing)) / 2;
-        int gridY = patronY + patronHeight + 10;   
         for (int row = 0; row < 3; row++) 
         {
             for (int col = 0; col < 4; col++) 
@@ -151,15 +157,12 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
         }
 	
         // Draw the larger decks to the left of the grid
-        int deckWidth = cardWidth;
-        int deckHeight = cardHeight;
         int deckSpacing = 10;
-        int deckX = gridX - deckWidth - deckSpacing;
-        int deckY = gridY;
+        int deckX = gridX - cardWidth - deckSpacing;
 
-        g2d.drawImage(level3Card, deckX, deckY, deckWidth, deckHeight, this);
-        g2d.drawImage(level2Card, deckX, deckY + deckHeight + deckSpacing, deckWidth, deckHeight, this);
-        g2d.drawImage(level1Card, deckX, deckY + 2 * (deckHeight + deckSpacing), deckWidth, deckHeight, this);
+        g2d.drawImage(level3Card, deckX, gridY, cardWidth, cardHeight, this);
+        g2d.drawImage(level2Card, deckX, gridY + cardHeight + deckSpacing, cardWidth, cardHeight, this);
+        g2d.drawImage(level1Card, deckX, gridY + 2 * (cardHeight + deckSpacing), cardWidth, cardHeight, this);
         for(int row = 0 ;row<3;row++) {
         	for(int col = 0;col<4;col++) {
         		cardX[row*4+col] = gridX + col * (cardWidth + cardSpacing);
@@ -167,15 +170,10 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
         	}
         }
         // Draw the green line below all elements in the middle section
-        int greenLineY = 800;
         g2d.setColor(Color.BLACK);
        
         
         // Draw gems below the green line in the middle section
-        int gemSize = 95;
-        int gemSpacing = 10;
-        int gemY = greenLineY + 10;
-        int gemX = sectionWidth + (sectionWidth - (6 * gemSize + 5 * gemSpacing)) / 2;
         g2d.drawImage(blackGem, gemX, gemY, gemSize, gemSize, this);
         g2d.drawImage(blueGem, gemX + (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
         g2d.drawImage(redGem, gemX + 2 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
@@ -209,16 +207,16 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
         g2d.drawRect(gemBoxX, gemBoxY, gemBoxWidth, gemBoxHeight);
 
         // Draw player gems inside the gem boxes
-        int gemSize = 50; // Bigger gems
+        int PlayerGemSize = 50; // Bigger gems
         int gemSpacing = 40; // More space between each gem
-        int playerGemX = gemBoxX + 10;
-        int playerGemY = gemBoxY + (gemBoxHeight - gemSize) / 2;
-        g2d.drawImage(blackGem, playerGemX, playerGemY, gemSize, gemSize, this);
-        g2d.drawImage(blueGem, playerGemX + (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
-        g2d.drawImage(redGem, playerGemX + 2 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
-        g2d.drawImage(greenGem, playerGemX + 3 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
-        g2d.drawImage(whiteGem, playerGemX + 4 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
-        g2d.drawImage(reserveGem, playerGemX + 5 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+        int playergemX = gemBoxX + 10;
+        int playergemY = gemBoxY + (gemBoxHeight - PlayerGemSize) / 2;
+        g2d.drawImage(blackGem, playergemX, playergemY, PlayerGemSize, PlayerGemSize, this);
+        g2d.drawImage(blueGem, playergemX + (PlayerGemSize + gemSpacing), playergemY, PlayerGemSize, PlayerGemSize, this);
+        g2d.drawImage(redGem, playergemX + 2 * (PlayerGemSize + gemSpacing), playergemY, PlayerGemSize, PlayerGemSize, this);
+        g2d.drawImage(greenGem, playergemX + 3 * (PlayerGemSize + gemSpacing), playergemY, PlayerGemSize, PlayerGemSize, this);
+        g2d.drawImage(whiteGem, playergemX + 4 * (PlayerGemSize + gemSpacing), playergemY, PlayerGemSize, PlayerGemSize, this);
+        g2d.drawImage(reserveGem, playergemX + 5 * (PlayerGemSize + gemSpacing), playergemY, PlayerGemSize, PlayerGemSize, this);
 
         // Draw single, smaller tempCard image inside player box, aligned to the left
         int tempCardWidth = 60; // Same size as a standard card
@@ -231,7 +229,88 @@ public class GameBoardPanel extends JPanel implements MouseListener,MouseMotionL
     
 
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    	int mouseX = e.getX();
+    	int mouseY = e.getY();
+  	  	System.out.println(mouseX + ", " + mouseY);
+  	  	
+  	  	//CHIPS
+  	  	if(mouseX >= gemX && mouseY >= gemY && mouseX <= gemX + 95 && mouseY <= gemY + 95)
+  	  	{
+  	  		System.out.println("black");
+  	  	}
+  	  		
+  	  	if(mouseX >= gemX + 105 && mouseY >= gemY && mouseX <= gemX + 95 + 105 && mouseY <= gemY + 95)
+  	  	{
+  	  		System.out.println("blue");
+  	  	}
+  	  	if(mouseX >= gemX + (105*2) && mouseY >= gemY && mouseX <= gemX + 95 + (105*2) && mouseY <= gemY + 95)
+	  	{
+	  		System.out.println("red");
+	  	}
+  	  if(mouseX >= gemX + (105*3) && mouseY >= gemY && mouseX <= gemX + 95 + (105*3) && mouseY <= gemY + 95)
+	  	{
+	  		System.out.println("green");
+	  	}
+  	  if(mouseX >= gemX + (105*4) && mouseY >= gemY && mouseX <= gemX + 95 + (105*4) && mouseY <= gemY + 95)
+  	  	{
+  		  System.out.println("white");
+  	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+  	  	{
+  		  System.out.println("wild");
+  	  	}
+  	  
+  	  //MARKET
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("card1");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+  	  if(mouseX >= gemX + (105*5) && mouseY >= gemY && mouseX <= gemX + 95 + (105*5) && mouseY <= gemY + 95)
+	  	{
+		  System.out.println("wild");
+	  	}
+    }
     public void mouseReleased(MouseEvent e) {}
     public void mousePressed(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
