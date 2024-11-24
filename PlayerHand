@@ -14,7 +14,7 @@ class PlayerHand
 
   public int getTotalChips()
   {
-    return tumChips;
+    return ttoalChips;
   }
 
   public TreeMap<String, Integer> getChips()
