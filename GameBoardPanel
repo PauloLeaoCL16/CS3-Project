@@ -37,9 +37,17 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private int cardHighlightX, cardHighlightY, gemHighlightX,gemHighlightY;
 	private boolean showCardHighlight = false;
 	private boolean showGemHighlight = false;
+	private boolean[] turns = {true, false, false, false};
+	private int numBlack = 7;
+	private int numBlue = 7;
+	private int numRed = 7;
+	private int numGreen = 7;
+	private int numWhite = 7;
+	private int numWild = 5;
 
 	public GameBoardPanel() {
 		addMouseMotionListener(this);
+		addMouseListener(this);
 	}
 
 	public void loadImages() {
@@ -233,6 +241,60 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		int mouseX = e.getX();
+	    int mouseY = e.getY();
+	    System.out.println("loc is (" + mouseX + "," + mouseY + ")");
+	    
+	    if (e.getButton() == MouseEvent.BUTTON1) {
+	    	for (int i = 0; i < 12; i++) {
+	    		if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i] && mouseY < cardY[i] + cardHeight) {
+	    			
+	    			System.out.println("card " + i);
+	    			
+	    			break;
+	    		} 
+			}
+			int[][] gemPositions = {
+		        {698, 853}, // Brown
+		        {803, 853}, // Blue
+		        {908, 853}, // Red
+		        {1013,853}, // Green
+		        {1118, 853}, // White
+		        {1223, 853}  // Yellow
+		        };
+		    int gemRadius = 40;
+		    for (int[] gem : gemPositions) {
+		        int gemX = gem[0];
+		        int gemY = gem[1];
+		        int distanceSquared = (mouseX - gemX) * (mouseX - gemX) + (mouseY - gemY) * (mouseY - gemY);
+		        
+		        if (distanceSquared <= gemRadius * gemRadius) {
+		        	if(gemX == 698) {
+		        		System.out.println("black");
+		        	}
+		        	if(gemX == 803) {
+			        	System.out.println("blue");
+			        }
+		        	if(gemX == 908) {
+			        	System.out.println("red");
+			        }
+		        	if(gemX == 1013) {
+			        	System.out.println("green");
+			        }
+		        	if(gemX == 1118) {
+			        	System.out.println("white");
+			        }
+		        	if(gemX == 1223) {
+			        	System.out.println("wild");
+			        }
+		        	
+		            break;
+		        }
+		        
+		    }
+		    
+	    }
+	    repaint();
 	}
 
 	public void mouseReleased(MouseEvent e) {
