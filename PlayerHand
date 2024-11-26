@@ -4,22 +4,62 @@ import static java.lang.System.*;
 class PlayerHand
 {
   private int totalChips;
-  private TreeMap<String, Integer> Chips;
+  private TreeMap<String, Integer> chips;
+  private int numBlack = 0;
+  private int numBlue = 0;
+  private int numRed = 0;
+  private int numGreen = 0;
+  private int numWhite = 0;
 
-  public PlayerHand(int num, TreeMap<String, Integer> c)
+  public PlayerHand()
   {
-    totalChips = num;
-    Chips = c;
+    totalChips = 0;
+    chips = new TreeMap<String, Integer>();
+    chips.put("black", 0);
+    chips.put("blue", 0);
+    chips.put("red", 0);
+    chips.put("green", 0);
+    chips.put("white", 0);
+    chips.put("yellow", 0);
   }
 
   public int getTotalChips()
   {
-    return ttoalChips;
+    return totalChips;
   }
-
-  public TreeMap<String, Integer> getChips()
+  
+  public void addCard(String color)
   {
-    return Chips;
+	  if(color.equals("red"))
+		  numRed++;
+	  else if(color.equals("black"))
+		  numBlack++;
+	  else if(color.equals("blue"))
+		  numBlue++;
+	  else if(color.equals("green"))
+		  numGreen++;
+	  else if(color.equals("white"))
+		  numWhite++;
+  }
+  
+  public int getNumCard(String color)
+  {
+	  if(color.equals("red"))
+		  return numRed;
+	  else if(color.equals("black"))
+		  return numBlack;
+	  else if(color.equals("blue"))
+		  return numBlue;
+	  else if(color.equals("green"))
+		  return numGreen;
+	  else if(color.equals("white"))
+		  return numWhite;
+	  return -1;
+  }
+  
+  public void addChip(String color)
+  {
+	  chips.put(color, chips.get(color) + 1);
   }
 
 }
