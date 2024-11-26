@@ -61,5 +61,10 @@ class PlayerHand
   {
 	  chips.put(color, chips.get(color) + 1);
   }
+  
+  public int getChip(String color)
+  {
+	  return chips.get(color);
+  }
 
 }
