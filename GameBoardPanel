@@ -182,18 +182,23 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        Polygon hexagon = createHexagon(gemHighlightX, gemHighlightY, 40); // Radius = 40
 	        g2d.fillPolygon(hexagon);
 	    }
-		// Draw gems below the green line in the middle section
-		int gemSize = 95;
-		int gemSpacing = 10;
-		int gemY = greenLineY + 10;
-		int ini = sectionWidth + (sectionWidth - (6 * gemSize + 5 * gemSpacing)) / 2;
-		g2d.drawImage(blackGem, ini, gemY, gemSize, gemSize-10, this);
-		g2d.drawImage(blueGem, ini + (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this);
-		g2d.drawImage(redGem, ini + 2 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this);
-		g2d.drawImage(greenGem, ini + 3 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this);
-		g2d.drawImage(whiteGem, ini + 4 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this);
-		g2d.drawImage(reserveGem, ini + 5 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this);
-		
+		// Draw gems below the green line in the middle section 
+		int gemSize = 40; int gemSpacing = 20; 
+		int gemY = greenLineY + 10; 
+		int ini = sectionWidth + (sectionWidth - (6 * gemSize + 5 * gemSpacing)) / 2; 
+		g2d.drawImage(blackGem, ini, gemY, gemSize, gemSize, this); 
+		g2d.drawString("0", ini + gemSize + 5, gemY + gemSize / 2); 
+		g2d.drawImage(blueGem, ini + (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+		g2d.drawString("0", ini + (gemSize + gemSpacing) + gemSize + 5, gemY + gemSize / 2); 
+		g2d.drawImage(redGem, ini + 2 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+		g2d.drawString("0", ini + 2 * (gemSize + gemSpacing) + gemSize + 5, gemY + gemSize / 2); 
+		g2d.drawImage(greenGem, ini + 3 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+		g2d.drawString("0", ini + 3 * (gemSize + gemSpacing) + gemSize + 5, gemY + gemSize / 2); 
+		g2d.drawImage(whiteGem, ini + 4 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+		g2d.drawString("0", ini + 4 * (gemSize + gemSpacing) + gemSize + 5, gemY + gemSize / 2); 
+		g2d.drawImage(reserveGem, ini + 5 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+		g2d.drawString("0", ini + 5 * (gemSize + gemSpacing) + gemSize + 5, gemY + gemSize / 2);
+
 	}
 
 	private void drawPlayerArea(Graphics2D g2d, int x, int y, int width, int height, int playerNum) {
@@ -225,11 +230,23 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		int playerGemX = gemBoxX + 10;
 		int playerGemY = gemBoxY + (gemBoxHeight - gemSize) / 2;
 		g2d.drawImage(blackGem, playerGemX, playerGemY, gemSize, gemSize, this);
-		g2d.drawImage(blueGem, playerGemX + (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
-		g2d.drawImage(redGem, playerGemX + 2 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
-		g2d.drawImage(greenGem, playerGemX + 3 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
-		g2d.drawImage(whiteGem, playerGemX + 4 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
-		g2d.drawImage(reserveGem, playerGemX + 5 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    		g2d.drawString("0", playerGemX + gemSize + 5, playerGemY + gemSize / 2);
+
+    		g2d.drawImage(blueGem, playerGemX + (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    		g2d.drawString("0", playerGemX + (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+    		g2d.drawImage(redGem, playerGemX + 2 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    		g2d.drawString("0", playerGemX + 2 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+    		g2d.drawImage(greenGem, playerGemX + 3 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    		g2d.drawString("0", playerGemX + 3 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+    		g2d.drawImage(whiteGem, playerGemX + 4 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    		g2d.drawString("0", playerGemX + 4 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+    		g2d.drawImage(reserveGem, playerGemX + 5 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    		g2d.drawString("0", playerGemX + 5 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
 
 		// Draw single, smaller tempCard image inside player box, aligned to the left
 		int tempCardWidth = 60; // Same size as a standard card
