@@ -46,11 +46,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private int numWhite = 7;
 	private int numWild = 5;
 	private int actions = 3;
-	private int clicks = 0;
-	private PlayerHand p1 = new PlayerHand();
-	private PlayerHand p2 = new PlayerHand();
-	private PlayerHand p3 = new PlayerHand();
-	private PlayerHand p4 = new PlayerHand();
+	private PlayerHand[] players = {new PlayerHand(), new PlayerHand(), new PlayerHand(), new PlayerHand()};
 	private String currentTurn = "Player 1 turn";
 	private boolean canDrawBlack = true;
 	private boolean canDrawBlue = true;
@@ -400,24 +396,139 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        if (distanceSquared <= gemRadius * gemRadius) {
 		        	if (gemX == 698 && numBlack > 0) {
 		        	    System.out.println("black");
-		        	    numBlack--;
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawBlack && actions > 0)
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawBlack = false;
+		        	    			numBlack--;
+		        	    			players[i].addChip("black");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numBlack >= 4 && actions == 3)
+		        	    		{
+		        	    			actions = 0;
+		        	    			numBlack = numBlack - 2;
+		        	    			players[i].addChip("black");
+		        	    			players[i].addChip("black");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
 		        	}
 
 		        	if (gemX == 803 && numBlue > 0) {
 		        	    System.out.println("blue");
-		        	    numBlue--;
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawBlue && actions > 0)
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawBlue = false;
+		        	    			numBlue--;
+		        	    			players[i].addChip("blue");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numBlue >= 4 && actions == 3)
+		        	    		{
+		        	    			actions = 0;
+		        	    			numBlue = numBlue - 2;
+		        	    			players[i].addChip("blue");
+		        	    			players[i].addChip("blue");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
 		        	}
 		        	if (gemX == 908 && numRed > 0) {
 		        	    System.out.println("red");
-		        	    numRed--;
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawRed && actions > 0)
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawRed = false;
+		        	    			numRed--;
+		        	    			players[i].addChip("red");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numRed >= 4 && actions == 3)
+		        	    		{
+		        	    			actions = 0;
+		        	    			numRed = numRed - 2;
+		        	    			players[i].addChip("red");
+		        	    			players[i].addChip("red");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
 		        	}
 		        	if (gemX == 1013 && numGreen > 0) {
 		        	    System.out.println("green");
-		        	    numGreen--;
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawGreen && actions > 0)
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawGreen = false;
+		        	    			numGreen--;
+		        	    			players[i].addChip("green");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numGreen >= 4 && actions == 3)
+		        	    		{
+		        	    			actions = 0;
+		        	    			numGreen = numGreen - 2;
+		        	    			players[i].addChip("green");
+		        	    			players[i].addChip("green");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
 		        	}
 		        	if (gemX == 1118 && numWhite > 0) {
 		        	    System.out.println("white");
-		        	    numWhite--;
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawWhite && actions > 0)
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawWhite = false;
+		        	    			numWhite--;
+		        	    			players[i].addChip("white");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numWhite >= 4 && actions == 3)
+		        	    		{
+		        	    			actions = 0;
+		        	    			numWhite = numWhite - 2;
+		        	    			players[i].addChip("white");
+		        	    			players[i].addChip("white");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
 		        	}
 		            break;
 		        }
