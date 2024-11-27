@@ -303,8 +303,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		g2d.fillRect(700, 925, 200, 50);
 		g2d.fillRect(1000, 925, 200, 50);
 		g2d.setColor(Color.BLACK);
-		g2d.drawString("Draw 1 mode", 745, 955);
-		g2d.drawString("Draw 2 mode", 1045, 955);
+		g2d.drawString("Draw 3 different", 730, 955);
+		g2d.drawString("Draw 2 same", 1045, 955);
 		
 	}
 	
