@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -149,7 +150,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        }
 	        
 	        if (showCardHighlight) {
-				g2d.setColor(Color.BLACK);
+				g2d.setColor(Color.YELLOW);
 				g2d.fillRoundRect(cardHighlightX, cardHighlightY, cardWidth + 10, cardHeight + 10, 15, 15);    
 			}
 	        // Draw the 4x3 grid of cards in the middle section
@@ -189,35 +190,30 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	}
 	        }
 	        // Draw the green line below all elements in the middle section
-	        g2d.setColor(Color.BLACK);
+	        
 			if (showGemHighlight) {
-		        g2d.setColor(Color.BLACK); 
+		        g2d.setColor(Color.YELLOW); 
 		        Polygon hexagon = createHexagon(gemHighlightX, gemHighlightY, 30); // Radius = 40
 		        g2d.fillPolygon(hexagon);
 			}
 	       
 	        
 	        // Draw gems below the green line in the middle section
-	        g2d.drawImage(blackGem, gemX, gemY, gemSize, gemSize, this);
-	        g2d.drawImage(blueGem, gemX + (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
-	        g2d.drawImage(redGem, gemX + 2 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
-	        g2d.drawImage(greenGem, gemX + 3 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
-	        g2d.drawImage(whiteGem, gemX + 4 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
-	        g2d.drawImage(reserveGem, gemX + 5 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this);
 	        //
 	        //
+			g2d.setColor(Color.BLACK);
 			g2d.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 40));;
-			g2d.drawImage(blackGem, gemX, gemY, gemSize, gemSize, this); 
+			g2d.drawImage(blackGem, gemX, gemY, gemSize, gemSize-10, this); 
 			g2d.drawString(Integer.toString(numBlack), gemX + gemSize + 3, gemY+50); 
-			g2d.drawImage(blueGem, gemX + (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+			g2d.drawImage(blueGem, gemX + (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
 			g2d.drawString(Integer.toString(numBlue), gemX + (gemSize + gemSpacing) + gemSize + 3, gemY+50); 
-			g2d.drawImage(redGem, gemX + 2 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+			g2d.drawImage(redGem, gemX + 2 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
 			g2d.drawString(Integer.toString(numRed), gemX + 2 * (gemSize + gemSpacing) + gemSize + 3, gemY+50); 
-			g2d.drawImage(greenGem, gemX + 3 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+			g2d.drawImage(greenGem, gemX + 3 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
 			g2d.drawString(Integer.toString(numGreen), gemX + 3 * (gemSize + gemSpacing) + gemSize + 3, gemY+50); 
-			g2d.drawImage(whiteGem, gemX + 4 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+			g2d.drawImage(whiteGem, gemX + 4 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
 			g2d.drawString(Integer.toString(numWhite), gemX + 4 * (gemSize + gemSpacing) + gemSize + 3, gemY+50); 
-			g2d.drawImage(reserveGem, gemX + 5 * (gemSize + gemSpacing), gemY, gemSize, gemSize, this); 
+			g2d.drawImage(reserveGem, gemX + 5 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
 			g2d.drawString(Integer.toString(numWild), gemX + 5 * (gemSize + gemSpacing) + gemSize + 3, gemY+50);
 	        
 	    }
@@ -250,22 +246,22 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		int gemSpacing = 40; // More space between each gem
 		int playerGemX = gemBoxX + 10;
 		int playerGemY = gemBoxY + (gemBoxHeight - gemSize) / 2;
-		g2d.drawImage(blackGem, playerGemX, playerGemY, gemSize, gemSize, this);
+		g2d.drawImage(blackGem, playerGemX, playerGemY, gemSize, gemSize-5, this);
     	g2d.drawString("0", playerGemX + gemSize + 5, playerGemY + gemSize / 2);
 
-    	g2d.drawImage(blueGem, playerGemX + (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    	g2d.drawImage(blueGem, playerGemX + (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
     	g2d.drawString("0", playerGemX + (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
 
-    	g2d.drawImage(redGem, playerGemX + 2 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    	g2d.drawImage(redGem, playerGemX + 2 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
     	g2d.drawString("0", playerGemX + 2 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
 
-    	g2d.drawImage(greenGem, playerGemX + 3 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    	g2d.drawImage(greenGem, playerGemX + 3 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
     	g2d.drawString("0", playerGemX + 3 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
 
-    	g2d.drawImage(whiteGem, playerGemX + 4 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    	g2d.drawImage(whiteGem, playerGemX + 4 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
     	g2d.drawString("0", playerGemX + 4 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
 
-    	g2d.drawImage(reserveGem, playerGemX + 5 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize, this);
+    	g2d.drawImage(reserveGem, playerGemX + 5 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
     	g2d.drawString("0", playerGemX + 5 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
 
 
@@ -380,12 +376,12 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    		} 
 			}
 			int[][] gemPositions = {
-		        {698, 853}, // Brown
-		        {803, 853}, // Blue
-		        {908, 853}, // Red
-		        {1013,853}, // Green
-		        {1118, 853}, // White
-		        {1223, 853}  // Yellow
+		        {685, 845}, // Brown
+			    {790, 845}, // Blue
+			    {895, 845}, // Red
+			    {1000,845}, // Green
+			    {1105, 845}, // White
+		        {1210, 845}  // Yellow
 		        };
 		    int gemRadius = 40;
 		    for (int[] gem : gemPositions) {
@@ -564,12 +560,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			}
 		}
 		int[][] gemPositions = {
-		        {698, 853}, // Brown
-		        {803, 853}, // Blue
-		        {908, 853}, // Red
-		        {1013,853}, // Green
-		        {1118, 853}, // White
-		        {1223, 853}  // Yellow
+		        {685, 845}, // Brown
+		        {790, 845}, // Blue
+		        {895, 845}, // Red
+		        {1000,845}, // Green
+		        {1105, 845}, // White
 		    };
 		    int gemRadius = 40;
 		    for (int[] gem : gemPositions) {
