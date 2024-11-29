@@ -371,6 +371,23 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    		if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i] && mouseY < cardY[i] + cardHeight) {
 	    			
 	    			System.out.println("card " + i);
+	    			for(int j = 0; j < 4; j++)
+	        	    {
+	        	    	if(turns[j] && actions == 3)
+	        	    	{
+	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
+	        	    		{
+	        	    			if(Level1CardsStart[i-8].canAfford(players[j]))
+	        	    			{
+	        	    				players[j].buyCard(Level1CardsStart[i-8]);
+	        	    				//RIGHT HERE
+	        	    				//Level1CardsStart[i-8] = 
+	        	    				cycleTurn();
+	        	    			}
+	        	    		}
+	        	    		break;
+	        	    	}
+	        	    }
 	    			
 	    			break;
 	    		} 
