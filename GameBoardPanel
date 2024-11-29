@@ -373,6 +373,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    			System.out.println("card " + i);
 	    			for(int j = 0; j < 4; j++)
 	        	    {
+	    				int rng;
 	        	    	if(turns[j] && actions == 3)
 	        	    	{
 	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
@@ -380,6 +381,21 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]))
 	        	    			{
 	        	    				players[j].buyCard(Level1CardsStart[i-8]);
+	        	    				for( int k = 0;k<1;k++ )
+	        	    				{
+	        	    					rng = rnd.nextInt(40);
+	        	    					if( !Level1ImagesUsed[rng])
+	        	    					{
+	        	    						Level1CardsStart[i-8] = Level1Cards.get(rng);
+	        	    						Level1ImagesUsed[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						k--;
+	        	    					}
+	        	    						
+	        	    				}
+
 	        	    				//RIGHT HERE
 	        	    				//Level1CardsStart[i-8] = 
 	        	    				cycleTurn();
@@ -408,6 +424,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        
 		        if (distanceSquared <= gemRadius * gemRadius) {
 		        	if (gemX == 685 && numBlack > 0) {
+		        	    System.out.println("black");
 		        	    for(int i = 0; i < 4; i++)
 		        	    {
 		        	    	if(turns[i])
@@ -427,6 +444,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    			numBlack = numBlack - 2;
 		        	    			players[i].addChip("black");
 		        	    			players[i].addChip("black");
+		        	    			out.println(numBlack);
 		        	    			cycleTurn();
 		        	    		}	
 		        	    		break;
@@ -435,6 +453,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	}
 
 		        	if (gemX == 790 && numBlue > 0) {
+		        	    System.out.println("blue");
 		        	    for(int i = 0; i < 4; i++)
 		        	    {
 		        	    	if(turns[i])
@@ -461,6 +480,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    }
 		        	}
 		        	if (gemX == 895 && numRed > 0) {
+		        	    System.out.println("red");
 		        	    for(int i = 0; i < 4; i++)
 		        	    {
 		        	    	if(turns[i])
@@ -487,6 +507,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    }
 		        	}
 		        	if (gemX == 1000 && numGreen > 0) {
+		        	    System.out.println("green");
 		        	    for(int i = 0; i < 4; i++)
 		        	    {
 		        	    	if(turns[i])
@@ -513,6 +534,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    }
 		        	}
 		        	if (gemX == 1105 && numWhite > 0) {
+		        	    System.out.println("white");
 		        	    for(int i = 0; i < 4; i++)
 		        	    {
 		        	    	if(turns[i])
@@ -542,6 +564,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        }
 		    }
 	    }
+	    out.println("black = "+	numBlack);
 	    repaint();
 	}
 
