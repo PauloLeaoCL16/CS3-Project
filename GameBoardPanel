@@ -395,9 +395,50 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					}
 	        	    						
 	        	    				}
-
-	        	    				//RIGHT HERE
-	        	    				//Level1CardsStart[i-8] = 
+	        	    				cycleTurn();
+	        	    			}
+	        	    		}
+	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
+	        	    		{
+	        	    			if(Level2CardsStart[i-4].canAfford(players[j]))
+	        	    			{
+	        	    				players[j].buyCard(Level2CardsStart[i-4]);
+	        	    				for( int k = 0;k<1;k++ )
+	        	    				{
+	        	    					rng = rnd.nextInt(40);
+	        	    					if( !Level2ImagesUsed[rng])
+	        	    					{
+	        	    						Level2CardsStart[i-4] = Level2Cards.get(rng);
+	        	    						Level2ImagesUsed[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						k--;
+	        	    					}
+	        	    						
+	        	    				}
+	        	    				cycleTurn();
+	        	    			}
+	        	    		}
+	        	    		if(i == 0 || i == 1 || i == 1 || i == 3)
+	        	    		{
+	        	    			if(Level3CardsStart[i].canAfford(players[j]))
+	        	    			{
+	        	    				players[j].buyCard(Level3CardsStart[i]);
+	        	    				for( int k = 0;k<1;k++ )
+	        	    				{
+	        	    					rng = rnd.nextInt(40);
+	        	    					if( !Level3ImagesUsed[rng])
+	        	    					{
+	        	    						Level3CardsStart[i] = Level3Cards.get(rng);
+	        	    						Level3ImagesUsed[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						k--;
+	        	    					}
+	        	    						
+	        	    				}
 	        	    				cycleTurn();
 	        	    			}
 	        	    		}
