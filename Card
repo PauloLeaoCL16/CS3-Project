@@ -33,7 +33,62 @@ public class Card
   {
     return cost;
   }
+  public int getNumChips(String color)
+  {
+	  return cost.get(color);
+  }
   public BufferedImage getImage() {
 	  return face;
+  }
+  public boolean canAfford(PlayerHand player)
+  {
+	  boolean black = false;
+	  boolean blue = false;
+	  boolean red = false;
+	  boolean green = false;
+	  boolean white = false;
+	  int totalCost = 0;
+	  int totalChips = 0;
+	  if(cost.containsKey("black"))
+	  {
+		  totalCost += cost.get("black");
+		  totalChips += player.getChip("black") + player.getNumCard("black");
+	  }
+	  if(cost.containsKey("blue"))
+	  {
+		  totalCost += cost.get("blue");
+		  totalChips += player.getChip("blue") + player.getNumCard("blue");
+	  }
+	  if(cost.containsKey("red"))
+	  {
+		  totalCost += cost.get("red");
+		  totalChips += player.getChip("red") + player.getNumCard("red");
+	  }
+	  if(cost.containsKey("green"))
+	  {
+		  totalCost += cost.get("green");
+		  totalChips += player.getChip("green") + player.getNumCard("green");
+	  }
+	  if(cost.containsKey("white"))
+	  {
+		  totalCost += cost.get("white");
+		  totalChips += player.getChip("white") + player.getNumCard("white");
+	  }
+	  if(cost.get("black") == null || cost.get("black") <= player.getChip("black") + player.getNumCard("black"))
+		  black = true;
+	  if(cost.get("blue") == null || cost.get("blue") <= player.getChip("blue") + player.getNumCard("blue"))
+		  blue = true;
+	  if(cost.get("red") == null || cost.get("red") <= player.getChip("red") + player.getNumCard("red"))
+		  red = true;
+	  if(cost.get("green") == null || cost.get("green") <= player.getChip("green") + player.getNumCard("green"))
+		  green = true;
+	  if(cost.get("white") == null || cost.get("white") <= player.getChip("white") + player.getNumCard("white"))
+		  white = true;
+	  if(black && blue && red && green && white)
+		  return true;
+	  else if(totalCost <= totalChips + player.getChip("wild"))
+		  return true;
+	  else
+		  return false;
   }
 }
