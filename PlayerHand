@@ -79,53 +79,53 @@ class PlayerHand
   {
 	  if(card.getCost().containsKey("black"))
 	  {
-		  if(chips.get("black") - card.getCost().get("black") < 0)
+		  if((chips.get("black") + numBlack)- card.getCost().get("black") < 0)
 		  {
 			  chips.put("black", 0);
 			  chips.put("wild", card.getCost().get("black") - chips.get("black"));
 		  }
 		  else
-			  chips.put("black", chips.get("black") - card.getCost().get("black"));
+			  chips.put("black", chips.get("black") - (card.getCost().get("black") - numBlack));
 	  }
 	  if(card.getCost().containsKey("blue"))
 	  {
-		  if(chips.get("blue") - card.getCost().get("blue") < 0)
+		  if((chips.get("blue") + numBlue) - card.getCost().get("blue") < 0)
 		  {
 			  chips.put("blue", 0);
 			  chips.put("wild", card.getCost().get("blue") - chips.get("blue"));
 		  }
 		  else
-			  chips.put("blue", chips.get("blue") - card.getCost().get("blue"));
+			  chips.put("blue", chips.get("blue") - (card.getCost().get("blue") - numBlue));
 	  }
 	  if(card.getCost().containsKey("red"))
 	  {
-		  if(chips.get("red") - card.getCost().get("red") < 0)
+		  if((chips.get("red") + numRed) - card.getCost().get("red") < 0)
 		  {
 			  chips.put("red", 0);
 			  chips.put("wild", card.getCost().get("red") - chips.get("red"));
 		  }
 		  else
-			  chips.put("red", chips.get("red") - card.getCost().get("red"));
+			  chips.put("red", chips.get("red") - (card.getCost().get("red") - numRed));
 	  }
 	  if(card.getCost().containsKey("green"))
 	  {
-		  if(chips.get("green") - card.getCost().get("green") < 0)
+		  if((chips.get("green") + numGreen) - card.getCost().get("green") < 0)
 		  {
 			  chips.put("green", 0);
 			  chips.put("wild", card.getCost().get("green") - chips.get("green"));
 		  }
 		  else
-			  chips.put("green", chips.get("green") - card.getCost().get("green"));
+			  chips.put("green", chips.get("green") - (card.getCost().get("green") - numWhite));
 	  }
 	  if(card.getCost().containsKey("white"))
 	  {
-		  if(chips.get("white") - card.getCost().get("white") < 0)
+		  if((chips.get("white") + numWhite) - card.getCost().get("white") < 0)
 		  {
 			  chips.put("white", 0);
 			  chips.put("wild", card.getCost().get("white") - chips.get("white"));
 		  }
 		  else
-			  chips.put("white", chips.get("white") - card.getCost().get("white"));
+			  chips.put("white", chips.get("white") - (card.getCost().get("white") - numWhite));
 	  }
 	  addCard(card.getType());
 	  points += card.getValue();
