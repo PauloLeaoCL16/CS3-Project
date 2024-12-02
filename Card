@@ -86,7 +86,7 @@ public class Card
 		  white = true;
 	  if(black && blue && red && green && white)
 		  return true;
-	  else if(totalCost <= totalChips + player.getChip("wild"))
+	  else if(totalCost <= totalChips + player.getChip("yellow"))
 		  return true;
 	  else
 		  return false;
