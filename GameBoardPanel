@@ -383,28 +383,28 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    			{
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("black"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black") >= 0)
-	        	    					numBlack += Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black");
+	        	    					if(Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black") >= 0)
+	        	    						numBlack += Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black");
 	        	    				}
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("blue"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-8].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
-	        	    					numBlack += Level1CardsStart[i-8].getCost().get("blue") - players[j].getNumCard("blue");
+	        	    					if(Level1CardsStart[i-8].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
+	        	    						numBlue += Level1CardsStart[i-8].getCost().get("blue") - players[j].getNumCard("blue");
 	        	    				}
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("red"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-8].getCost().get("red") - players[j].getNumCard("red") >= 0)
-	        	    					numBlack += Level1CardsStart[i-8].getCost().get("red") - players[j].getNumCard("red");
+	        	    					if(Level1CardsStart[i-8].getCost().get("red") - players[j].getNumCard("red") >= 0)
+	        	    						numRed += Level1CardsStart[i-8].getCost().get("red") - players[j].getNumCard("red");
 	        	    				}
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("green"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-8].getCost().get("green") - players[j].getNumCard("green") >= 0)
-	        	    					numBlack += Level1CardsStart[i-8].getCost().get("green") - players[j].getNumCard("green");
+	        	    					if(Level1CardsStart[i-8].getCost().get("green") - players[j].getNumCard("green") >= 0)
+	        	    						numGreen += Level1CardsStart[i-8].getCost().get("green") - players[j].getNumCard("green");
 	        	    				}
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("white"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white") >= 0)
-	        	    					numBlack += Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white");
+	        	    					if(Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white") >= 0)
+	        	    						numWhite += Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level1CardsStart[i-8]);
 	        	    				for( int k = 0;k<1;k++ )
@@ -432,28 +432,28 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    			{
 	        	    				if(Level1CardsStart[i-4].getCost().containsKey("black"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-4].getCost().get("black") - players[j].getNumCard("black") >= 0)
-	        	    					numBlack += Level1CardsStart[i-4].getCost().get("black") - players[j].getNumCard("black");
+	        	    					if(Level1CardsStart[i-4].getCost().get("black") - players[j].getNumCard("black") >= 0)
+	        	    						numBlack += Level1CardsStart[i-4].getCost().get("black") - players[j].getNumCard("black");
 	        	    				}
 	        	    				if(Level1CardsStart[i-4].getCost().containsKey("blue"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-4].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
-	        	    					numBlack += Level1CardsStart[i-4].getCost().get("blue") - players[j].getNumCard("blue");
+	        	    					if(Level1CardsStart[i-4].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
+	        	    						numBlue += Level1CardsStart[i-4].getCost().get("blue") - players[j].getNumCard("blue");
 	        	    				}
 	        	    				if(Level1CardsStart[i-4].getCost().containsKey("red"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-4].getCost().get("red") - players[j].getNumCard("red") >= 0)
-	        	    					numBlack += Level1CardsStart[i-4].getCost().get("red") - players[j].getNumCard("red");
+	        	    					if(Level1CardsStart[i-4].getCost().get("red") - players[j].getNumCard("red") >= 0)
+	        	    						numRed += Level1CardsStart[i-4].getCost().get("red") - players[j].getNumCard("red");
 	        	    				}
 	        	    				if(Level1CardsStart[i-4].getCost().containsKey("green"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-4].getCost().get("green") - players[j].getNumCard("green") >= 0)
-	        	    					numBlack += Level1CardsStart[i-4].getCost().get("green") - players[j].getNumCard("green");
+	        	    					if(Level1CardsStart[i-4].getCost().get("green") - players[j].getNumCard("green") >= 0)
+	        	    						numGreen += Level1CardsStart[i-4].getCost().get("green") - players[j].getNumCard("green");
 	        	    				}
 	        	    				if(Level1CardsStart[i-4].getCost().containsKey("white"))
 	        	    				{
-	        	    				if(Level1CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white") >= 0)
-	        	    					numBlack += Level1CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white");
+	        	    					if(Level1CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white") >= 0)
+	        	    						numWhite += Level1CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level2CardsStart[i-4]);
 	        	    				for( int k = 0;k<1;k++ )
@@ -480,28 +480,28 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    			{
 	        	    				if(Level1CardsStart[i].getCost().containsKey("black"))
 	        	    				{
-	        	    				if(Level1CardsStart[i].getCost().get("black") - players[j].getNumCard("black") >= 0)
-	        	    					numBlack += Level1CardsStart[i].getCost().get("black") - players[j].getNumCard("black");
+	        	    					if(Level1CardsStart[i].getCost().get("black") - players[j].getNumCard("black") >= 0)
+	        	    						numBlack += Level1CardsStart[i].getCost().get("black") - players[j].getNumCard("black");
 	        	    				}
 	        	    				if(Level1CardsStart[i].getCost().containsKey("blue"))
 	        	    				{
-	        	    				if(Level1CardsStart[i].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
-	        	    					numBlack += Level1CardsStart[i].getCost().get("blue") - players[j].getNumCard("blue");
+	        	    					if(Level1CardsStart[i].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
+	        	    						numBlue += Level1CardsStart[i].getCost().get("blue") - players[j].getNumCard("blue");
 	        	    				}
 	        	    				if(Level1CardsStart[i].getCost().containsKey("red"))
 	        	    				{
-	        	    				if(Level1CardsStart[i].getCost().get("red") - players[j].getNumCard("red") >= 0)
-	        	    					numBlack += Level1CardsStart[i].getCost().get("red") - players[j].getNumCard("red");
+	        	    					if(Level1CardsStart[i].getCost().get("red") - players[j].getNumCard("red") >= 0)
+	        	    						numRed += Level1CardsStart[i].getCost().get("red") - players[j].getNumCard("red");
 	        	    				}
 	        	    				if(Level1CardsStart[i].getCost().containsKey("green"))
 	        	    				{
-	        	    				if(Level1CardsStart[i].getCost().get("green") - players[j].getNumCard("green") >= 0)
-	        	    					numBlack += Level1CardsStart[i].getCost().get("green") - players[j].getNumCard("green");
+	        	    					if(Level1CardsStart[i].getCost().get("green") - players[j].getNumCard("green") >= 0)
+	        	    						numGreen += Level1CardsStart[i].getCost().get("green") - players[j].getNumCard("green");
 	        	    				}
 	        	    				if(Level1CardsStart[i].getCost().containsKey("white"))
 	        	    				{
-	        	    				if(Level1CardsStart[i].getCost().get("white") - players[j].getNumCard("white") >= 0)
-	        	    					numBlack += Level1CardsStart[i].getCost().get("white") - players[j].getNumCard("white");
+	        	    					if(Level1CardsStart[i].getCost().get("white") - players[j].getNumCard("white") >= 0)
+	        	    						numWhite += Level1CardsStart[i].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level3CardsStart[i]);
 	        	    				for( int k = 0;k<1;k++ )
