@@ -1,10 +1,12 @@
 import java.util.*;
 import static java.lang.System.*;
+import java.awt.image.BufferedImage;
 
 class PlayerHand
 {
   private int totalChips;
   private TreeMap<String, Integer> chips;
+  private TreeMap<String, ArrayList<BufferedImage>> cards;
   private int numBlack = 0;
   private int numBlue = 0;
   private int numRed = 0;
@@ -16,6 +18,7 @@ class PlayerHand
   {
     totalChips = 0;
     chips = new TreeMap<String, Integer>();
+    cards = new TreeMap<String, ArrayList<BufferedImage>>();
     chips.put("black", 0);
     chips.put("blue", 0);
     chips.put("red", 0);
@@ -29,18 +32,83 @@ class PlayerHand
     return totalChips;
   }
   
-  public void addCard(String color)
+  public TreeMap<String, ArrayList<BufferedImage>> getCards(){
+	  return cards;
+  }
+  
+  public void addCard(String color,BufferedImage image)
   {
-	  if(color.equals("red"))
+	  ArrayList<BufferedImage> temp = new ArrayList<>();
+	  temp.add(image);
+	 
+	  if(color.equals("red")) {
+		  if( cards.get("red") == null )
+		  {
+			  cards.put("red", temp);
+		  }
+		  else
+		  {
+			  ArrayList<BufferedImage> arr = cards.get("red");
+			  arr.add(image);
+			  cards.put(color,arr);
+		  }
+
 		  numRed++;
-	  else if(color.equals("black"))
+
+	  }
+	  else if(color.equals("black")) {
+		  if( cards.get("black") == null )
+		  {
+			  cards.put("black", temp);
+		  }
+		  else
+		  {
+			  ArrayList<BufferedImage> arr = cards.get("black");
+			  arr.add(image);
+			  cards.put(color,arr);
+		  }
 		  numBlack++;
-	  else if(color.equals("blue"))
+  	  }
+	  else if(color.equals("blue")){
+		  if( cards.get("blue") == null )
+		  {
+			  cards.put("blue", temp);
+		  }
+		  else
+		  {
+			  ArrayList<BufferedImage> arr = cards.get("blue");
+			  arr.add(image);
+			  cards.put(color,arr);
+		  }
 		  numBlue++;
-	  else if(color.equals("green"))
+  	  }
+	  else if(color.equals("green")) {
+		  if( cards.get("green") == null )
+		  {
+			  cards.put("green", temp);
+		  }
+		  else
+		  {
+			  ArrayList<BufferedImage> arr = cards.get("green");
+			  arr.add(image);
+			  cards.put(color,arr);
+		  }
 		  numGreen++;
-	  else if(color.equals("white"))
-		  numWhite++;
+	  }
+	  else if(color.equals("white")) {
+		  if( cards.get("white") == null )
+		  {
+			  
+			  cards.put("white", temp);
+		  }
+		  else
+		  {
+			  ArrayList<BufferedImage> arr = cards.get("white");
+			  arr.add(image);
+			  cards.put(color,arr);
+		  }
+			  numWhite++;
+		  }
   }
   
   public int getNumCard(String color)
@@ -127,7 +195,11 @@ class PlayerHand
 		  else
 			  chips.put("white", chips.get("white") - (card.getCost().get("white") - numWhite));
 	  }
-	  addCard(card.getType());
+	  addCard(card.getType(), card.getImage());
+	  out.println("IT BOUGHT THE CARD");
+	  out.println("IT BOUGHT THE CARD");
+	  out.println("IT BOUGHT THE CARD");
+	  
 	  points += card.getValue();
   }
 
