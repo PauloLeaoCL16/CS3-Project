@@ -229,7 +229,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		g2d.setFont(new Font("Arial", Font.BOLD, 18));
 		FontMetrics fm = g2d.getFontMetrics();
 		int titleWidth = fm.stringWidth("Player " + playerNum);
-		g2d.drawString("Player " + playerNum, x + (width - titleWidth) / 2, y + 20);
+		g2d.drawString("Player " + playerNum, x + (width - titleWidth) / 2 - 150, y + 25);
+		g2d.drawString("Points: " + player.getPoints(), x + (width - titleWidth) / 2 + 100, y+25);
 
 		// Draw smaller gem boxes inside the player area
 		int gemBoxWidth = width - 20;
@@ -275,23 +276,23 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		{
 			if( player.getCards().get("black") != null) {
 				for(int i =0;i<player.getCards().get("black").size();i++) 
-					g2d.drawImage(player.getCards().get("black").get(i), tempCardX, tempCardY+i*20, tempCardWidth, tempCardHeight, this);
+					g2d.drawImage(player.getCards().get("black").get(i), tempCardX, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
 			}
 			if(player.getCards().get("blue")!=null) {
 				for(int i =0;i<player.getCards().get("blue").size();i++) 
-					g2d.drawImage(player.getCards().get("blue").get(i), tempCardX+20, tempCardY+i*20, tempCardWidth, tempCardHeight, this);
+					g2d.drawImage(player.getCards().get("blue").get(i), tempCardX+tempCardWidth*i, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
 			}
 			if(player.getCards().get("red")!=null) {
 				for(int i =0;i<player.getCards().get("red").size();i++) 
-					g2d.drawImage(player.getCards().get("red").get(i), tempCardX+40, tempCardY+i*20, tempCardWidth, tempCardHeight, this);
+					g2d.drawImage(player.getCards().get("red").get(i), tempCardX+tempCardWidth*i, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
 			}
 			if(player.getCards().get("green")!=null) {
-				for(int i =0;i<player.getCards().get("white").size();i++) 
-					g2d.drawImage(player.getCards().get("white").get(i), tempCardX+60, tempCardY+i*20, tempCardWidth, tempCardHeight, this);
+				for(int i =0;i<player.getCards().get("green").size();i++) 
+					g2d.drawImage(player.getCards().get("green").get(i), tempCardX+tempCardWidth*i, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
 			}
 			if(player.getCards().get("white")!=null) {
 				for(int i =0;i<player.getCards().get("white").size();i++) 
-					g2d.drawImage(player.getCards().get("white").get(i), tempCardX+80, tempCardY+i*20, tempCardWidth, tempCardHeight, this);
+					g2d.drawImage(player.getCards().get("white").get(i), tempCardX+tempCardWidth*i, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
 			}
 		}
 		
@@ -401,9 +402,9 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    	{
 	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
 	        	    		{
-	        	    			
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]))
 	        	    			{
+	        	    				out.println("YOU CAN AFFORD");
 							cardBought = true;
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("black"))
 	        	    				{
@@ -573,7 +574,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawBlack && actions > 0)
+		        	    		if(draw1 && canDrawBlack && actions > 0 )
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawBlack = false;
@@ -582,7 +583,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    			if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numBlack >= 4 && actions == 3)
+		        	    		else if(draw1 == false && numBlack >= 4 && actions == 3  )
 		        	    		{
 		        	    			actions = 0;
 		        	    			numBlack = numBlack - 2;
@@ -602,7 +603,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawBlue && actions > 0)
+		        	    		if(draw1 && canDrawBlue && actions > 0 )
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawBlue = false;
@@ -611,7 +612,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    			if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numBlue >= 4 && actions == 3)
+		        	    		else if(draw1 == false && numBlue >= 4 && actions == 3 )
 		        	    		{
 		        	    			actions = 0;
 		        	    			numBlue = numBlue - 2;
@@ -629,7 +630,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawRed && actions > 0)
+		        	    		if(draw1 && canDrawRed && actions > 0 )
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawRed = false;
@@ -638,7 +639,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    			if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numRed >= 4 && actions == 3)
+		        	    		else if(draw1 == false && numRed >= 4 && actions == 3 )
 		        	    		{
 		        	    			actions = 0;
 		        	    			numRed = numRed - 2;
@@ -656,7 +657,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawGreen && actions > 0)
+		        	    		if(draw1 && canDrawGreen && actions > 0 )
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawGreen = false;
@@ -665,7 +666,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    			if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numGreen >= 4 && actions == 3)
+		        	    		else if(draw1 == false && numGreen >= 4 && actions == 3 )
 		        	    		{
 		        	    			actions = 0;
 		        	    			numGreen = numGreen - 2;
@@ -683,7 +684,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawWhite && actions > 0)
+		        	    		if(draw1 && canDrawWhite && actions > 0 )
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawWhite = false;
@@ -692,7 +693,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    			if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numWhite >= 4 && actions == 3)
+		        	    		else if(draw1 == false && numWhite >= 4 && actions == 3 )
 		        	    		{
 		        	    			actions = 0;
 		        	    			numWhite = numWhite - 2;
@@ -708,7 +709,6 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        }
 		    }
 	    }
-	    out.println("black = "+	numBlack);
 	    repaint();
 	}
 
@@ -782,10 +782,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level1.png")));
 					} else if (k == 2) {
 						Level1Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level1.png")));
+								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level1.png")));
 					} else if (k == 3) {
 						Level1Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level1.png")));
+								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level1.png")));
 					} else if (k == 4) {
 						Level1Images.add(
 								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level1.png")));
@@ -993,10 +993,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level2.png")));
 					} else if (k == 2) {
 						Level2Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level2.png")));
+								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level2.png")));
 					} else if (k == 3) {
 						Level2Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level2.png")));
+								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level2.png")));
 					} else if (k == 4) {
 						Level2Images.add(
 								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level2.png")));
@@ -1151,10 +1151,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level3.png")));
 					} else if (k == 2) {
 						Level3Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level3.png")));
+								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level3.png")));
 					} else if (k == 3) {
 						Level3Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level3.png")));
+								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level3.png")));
 					} else if (k == 4) {
 						Level3Images.add(
 								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level3.png")));
