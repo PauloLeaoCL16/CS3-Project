@@ -7,6 +7,7 @@ class PlayerHand
   private int totalChips;
   private TreeMap<String, Integer> chips;
   private TreeMap<String, ArrayList<BufferedImage>> cards;
+  private ArrayList<Card> reserved = new ArrayList<Card>();
   private int numBlack = 0;
   private int numBlue = 0;
   private int numRed = 0;
@@ -34,6 +35,41 @@ class PlayerHand
   
   public TreeMap<String, ArrayList<BufferedImage>> getCards(){
 	  return cards;
+  }
+  
+  public void addReserve(Card card)
+  {
+	  reserved.add(card);
+  }
+  
+  public boolean canAffordPatron(Patron patron)
+  {
+	  boolean black = false;
+	  boolean blue = false;
+	  boolean red = false;
+	  boolean green = false;
+	  boolean white = false;
+	  TreeMap<String, Integer> cost = patron.getCost();
+	  if((cost.containsKey("red") && numRed >= cost.get("red")) || !cost.containsKey("red"))
+		  red = true;
+	  if((cost.containsKey("black") && numBlack >= cost.get("black")) || !cost.containsKey("black"))
+		  black = true;
+	  if((cost.containsKey("blue") && numBlue >= cost.get("blue")) || !cost.containsKey("blue"))
+		  blue = true;
+	  if((cost.containsKey("green") && numGreen >= cost.get("green")) || !cost.containsKey("green"))
+		  green = true;
+	  if((cost.containsKey("white") && numWhite >= cost.get("white")) || !cost.containsKey("white"))
+		  white = true;
+	  if(red && blue && black && green && white)
+		  return true;
+	  else
+		  return false;
+	  
+  }
+  
+  public void removeReserve(Card card)
+  {
+	  reserved.remove(card);
   }
   
   public void addCard(String color,BufferedImage image)
