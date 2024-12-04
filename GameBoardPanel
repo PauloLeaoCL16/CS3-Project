@@ -273,21 +273,21 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		int tempCardX = gemBoxX + 10;
 		int tempCardY = gemBoxY + gemBoxHeight + 10;
 		for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
-		        if (player.getCards().get(color) != null) {
-		            for (int i = 0; i < player.getCards().get(color).size(); i++) {
-		                BufferedImage card = player.getCards().get(color).get(i);
-		                if(color.equals("black"))
-		                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		                else if(color.equals("blue"))
-		                	g2d.drawImage(card, tempCardX+110, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		                else if(color.equals("red"))
-		                	g2d.drawImage(card, tempCardX+220, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		                else if(color.equals("green"))
-		                	g2d.drawImage(card, tempCardX+330, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		                else if(color.equals("white"))
-		                	g2d.drawImage(card, tempCardX+440, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		            }
-		        }
+	        if (player.getCards().get(color) != null) {
+	            for (int i = 0; i < player.getCards().get(color).size(); i++) {
+	                BufferedImage card = player.getCards().get(color).get(i);
+	                if(color.equals("black"))
+	                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	                else if(color.equals("blue"))
+	                	g2d.drawImage(card, tempCardX+110, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	                else if(color.equals("red"))
+	                	g2d.drawImage(card, tempCardX+220, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	                else if(color.equals("green"))
+	                	g2d.drawImage(card, tempCardX+330, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	                else if(color.equals("white"))
+	                	g2d.drawImage(card, tempCardX+440, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	            }
+	        }
 		}
 		
 		// draw string that shows whos turn it is
@@ -435,6 +435,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    						numWhite += Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level1CardsStart[i-8]);
+	        	    				for(int x = 0; x < 4; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
+	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    				}
 	        	    				for( int k = 0;k<1;k++ )
 	        	    				{
 	        	    					rng = rnd.nextInt(40);
@@ -484,6 +489,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    						numWhite += Level1CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level2CardsStart[i-4]);
+	        	    				for(int x = 0; x < 4; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
+	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    				}
 	        	    				for( int k = 0;k<1;k++ )
 	        	    				{
 	        	    					rng = rnd.nextInt(40);
@@ -532,6 +542,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    						numWhite += Level1CardsStart[i].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level3CardsStart[i]);
+	        	    				for(int x = 0; x < 4; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
+	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    				}
 	        	    				for( int k = 0;k<1;k++ )
 	        	    				{
 	        	    					rng = rnd.nextInt(40);
