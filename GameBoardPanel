@@ -305,27 +305,34 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		if(draw1)
 		{
 			g2d.setColor(Color.RED);
-			g2d.fillRect(692, 917, 215, 65);
+			g2d.fillRect(692, 893, 215, 65);
 			g2d.setColor(Color.BLACK);
 		}
 		else if(draw1 == false)
 		{
 			g2d.setColor(Color.RED);
-			g2d.fillRect(992, 917, 215, 65);
+			g2d.fillRect(992, 893, 215, 65);
 			g2d.setColor(Color.BLACK);
 		}
 		
 		//draw buttons for draw1/2 modes
 		g2d.setColor(Color.BLACK);
-		g2d.fillRect(697, 922, 206, 56);
-		g2d.fillRect(997, 922, 206, 56);
+		g2d.fillRect(697, 897, 206, 56);
+		g2d.fillRect(997, 897, 206, 56);
 		g2d.setColor(Color.WHITE);
-		g2d.fillRect(700, 925, 200, 50);
-		g2d.fillRect(1000, 925, 200, 50);
+		g2d.fillRect(700, 900, 200, 50);
+		g2d.fillRect(1000, 900, 200, 50);
 		g2d.setColor(Color.BLACK);
-		g2d.drawString("Draw 3 different", 730, 955);
-		g2d.drawString("Draw 2 same", 1045, 955);
+		g2d.drawString("Draw 3 different", 730, 930);
+		g2d.drawString("Draw 2 same", 1045, 930);
 		
+		//draw end turn button
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(847, 957, 206, 56);
+		g2d.setColor(Color.WHITE);
+		g2d.fillRect(850, 960, 200, 50);
+		g2d.setColor(Color.BLACK);
+		g2d.drawString("End Turn", 910, 990);
 	}
 	
 	public void cycleTurn()
@@ -387,9 +394,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    System.out.println("loc is (" + mouseX + "," + mouseY + ")");
 	    
 	    if (e.getButton() == MouseEvent.BUTTON1) {
-	    	if(mouseX >= 700 && mouseX <= 900 && mouseY >= 925 && mouseY <= 975)
+	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010)
+	    		cycleTurn();
+	    	if(mouseX >= 700 && mouseX <= 900 && mouseY >= 900 && mouseY <= 950)
 	    		draw1 = true;
-	    	if(mouseX >= 1000 && mouseX <= 1200 && mouseY >= 925 && mouseY <= 975)
+	    	if(mouseX >= 1000 && mouseX <= 1200 && mouseY >= 900 && mouseY <= 950)
 	    		draw1 = false;
 	    	for (int i = 0; i < 12; i++) {
 	    		if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i] && mouseY < cardY[i] + cardHeight) {
@@ -405,7 +414,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]))
 	        	    			{
 	        	    				out.println("YOU CAN AFFORD");
-							cardBought = true;
+	        	    				cardBought = true;
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("black"))
 	        	    				{
 	        	    					if(Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black") >= 0)
@@ -452,7 +461,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
 	        	    		{
-						cardBought = true;
+	        	    			cardBought = true;
 	        	    			if(Level2CardsStart[i-4].canAfford(players[j]))
 	        	    			{
 	        	    				if(Level1CardsStart[i-4].getCost().containsKey("black"))
@@ -500,7 +509,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
 	        	    		{
-						cardBought = true;
+	        	    			cardBought = true;
 	        	    			if(Level3CardsStart[i].canAfford(players[j]))
 	        	    			{
 	        	    				if(Level1CardsStart[i].getCost().containsKey("black"))
