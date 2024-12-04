@@ -290,6 +290,15 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	            }
 	        }
 		}
+
+		g2d.drawImage(PatronStart[0].getImage(), 390, 135, patronWidth+10, patronHeight+10, this);
+		
+		for( int i =0; i<player.getPatrons().size(); i++)
+		{
+			Patron p = player.getPatrons().get(i);
+			g2d.drawImage(p.getImage(), tempCardX, tempCardY+i*40, patronWidth+10, patronHeight+10, this);
+		}
+		
 		
 		// draw string that shows whos turn it is
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
