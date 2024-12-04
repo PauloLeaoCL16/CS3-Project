@@ -272,28 +272,22 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		int tempCardHeight = 100;
 		int tempCardX = gemBoxX + 10;
 		int tempCardY = gemBoxY + gemBoxHeight + 10;
-		if( cardBought )
-		{
-			if( player.getCards().get("black") != null) {
-				for(int i =0;i<player.getCards().get("black").size();i++) 
-					g2d.drawImage(player.getCards().get("black").get(i), tempCardX, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
-			}
-			if(player.getCards().get("blue")!=null) {
-				for(int i =0;i<player.getCards().get("blue").size();i++) 
-					g2d.drawImage(player.getCards().get("blue").get(i), tempCardX+tempCardWidth*i, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
-			}
-			if(player.getCards().get("red")!=null) {
-				for(int i =0;i<player.getCards().get("red").size();i++) 
-					g2d.drawImage(player.getCards().get("red").get(i), tempCardX+tempCardWidth*i, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
-			}
-			if(player.getCards().get("green")!=null) {
-				for(int i =0;i<player.getCards().get("green").size();i++) 
-					g2d.drawImage(player.getCards().get("green").get(i), tempCardX+tempCardWidth*i, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
-			}
-			if(player.getCards().get("white")!=null) {
-				for(int i =0;i<player.getCards().get("white").size();i++) 
-					g2d.drawImage(player.getCards().get("white").get(i), tempCardX+tempCardWidth*i, tempCardY+i*50, tempCardWidth+20, tempCardHeight+20, this);
-			}
+		for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
+		        if (player.getCards().get(color) != null) {
+		            for (int i = 0; i < player.getCards().get(color).size(); i++) {
+		                BufferedImage card = player.getCards().get(color).get(i);
+		                if(color.equals("black"))
+		                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                else if(color.equals("blue"))
+		                	g2d.drawImage(card, tempCardX+60, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                else if(color.equals("red"))
+		                	g2d.drawImage(card, tempCardX+120, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                else if(color.equals("green"))
+		                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                else if(color.equals("white"))
+		                	g2d.drawImage(card, tempCardX+240, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		            }
+		        }
 		}
 		
 		// draw string that shows whos turn it is
