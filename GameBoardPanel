@@ -277,15 +277,15 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		            for (int i = 0; i < player.getCards().get(color).size(); i++) {
 		                BufferedImage card = player.getCards().get(color).get(i);
 		                if(color.equals("black"))
-		                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
 		                else if(color.equals("blue"))
-		                	g2d.drawImage(card, tempCardX+60, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                	g2d.drawImage(card, tempCardX+110, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
 		                else if(color.equals("red"))
-		                	g2d.drawImage(card, tempCardX+120, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                	g2d.drawImage(card, tempCardX+220, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
 		                else if(color.equals("green"))
-		                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                	g2d.drawImage(card, tempCardX+330, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
 		                else if(color.equals("white"))
-		                	g2d.drawImage(card, tempCardX+240, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
+		                	g2d.drawImage(card, tempCardX+440, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
 		            }
 		        }
 		}
