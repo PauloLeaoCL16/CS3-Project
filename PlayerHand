@@ -34,6 +34,11 @@ class PlayerHand
     return totalChips;
   }
   
+  public ArrayList<Patron> getPatrons()
+  {
+	  return patrons;
+  }
+  
   public TreeMap<String, ArrayList<BufferedImage>> getCards(){
 	  return cards;
   }
