@@ -57,7 +57,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private boolean canDrawGreen = true;
 	private boolean canDrawWhite = true;
 	private boolean draw1 = true;
-        private boolean cardBought =false;
+    private boolean cardBought =false;
 	
 
 	public GameBoardPanel() {
@@ -427,6 +427,50 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		int mouseX = e.getX();
 	    int mouseY = e.getY();
 	    
+	    if (e.getButton() == MouseEvent.BUTTON3) {
+	    	System.out.println("right click");
+	    	for (int i = 0; i < 12; i++) {
+	    		if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i] && mouseY < cardY[i] + cardHeight) {
+	    			System.out.println("card " + i);
+	    			for(int j = 0; j < 4; j++)
+	        	    {
+	        	    	if(turns[j] && actions == 3)
+	        	    	{
+	        	    		int rng = 0;
+	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
+	        	    		{
+	        	    			players[j].addReserve(Level1CardsStart[i-8]);
+	        	    			for( int k = 0;k<1;k++ )
+        	    				{
+        	    					rng = rnd.nextInt(40);
+        	    					if( !Level1ImagesUsed[rng])
+        	    					{
+        	    						Level1CardsStart[i-8] = Level1Cards.get(rng);
+        	    						Level1ImagesUsed[rng] = true;
+        	    					}
+        	    					else
+        	    					{
+        	    						k--;
+        	    					}
+        	    						
+        	    				}
+	        	    		}
+	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
+	        	    		{
+	        	    			players[j].addReserve(Level2CardsStart[i-4]);
+	        	    		}
+	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
+	        	    		{
+	        	    			players[j].addReserve(Level3CardsStart[i]);
+	        	    		}
+	        	    		break;
+	        	    	}
+	        	    }
+	    			
+	    			break;
+	    		} 
+			}
+	    }
 	    if (e.getButton() == MouseEvent.BUTTON1) {
 	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010)
 	    		cycleTurn();
@@ -436,7 +480,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    		draw1 = false;
 	    	for (int i = 0; i < 12; i++) {
 	    		if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i] && mouseY < cardY[i] + cardHeight) {
-	    			
+	    			System.out.println("card " + i);
 	    			for(int j = 0; j < 4; j++)
 	        	    {
 	    				int rng;
