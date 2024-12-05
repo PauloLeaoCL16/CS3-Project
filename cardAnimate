@@ -230,7 +230,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		g2d.fillRect(x, y, width, height);
 		g2d.setColor(Color.BLACK);
 		g2d.drawRect(x, y, width, height);
-		out.println("player "+playerNum+" "+x+" "+y);
+		
 
 		// Center player title
 		g2d.setFont(new Font("Arial", Font.BOLD, 18));
@@ -281,7 +281,6 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		int tempCardHeight = 100;
 		int tempCardX = gemBoxX + 10;
 		int tempCardY = gemBoxY + gemBoxHeight + 10;
-		out.println("y= "+tempCardY);
 		for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
 	        if (player.getCards().get(color) != null) {
 	            for (int i = 0; i < player.getCards().get(color).size(); i++) {
@@ -451,15 +450,15 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
     	    				if(j==0) {
     	    					targetX=30;
     	    					targetY=128;
-    	    				}else if(j==1) {
+    	    				}else if(j==2) {
     	    					targetX=1310;
     	    					targetY=128;
-    	    				}else if(j==2) {
+    	    				}else if(j==1) {
     	    					targetX=30;
     	    					targetY=692;
     	    				}else {
     	    					targetX=1310;
-    	    					targetY=6922;
+    	    					targetY=692;
     	    				}
 	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
 	        	    		{
