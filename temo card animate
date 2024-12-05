@@ -1,4 +1,5 @@
 
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -28,6 +29,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private ArrayList<Patron> PatronCards = new ArrayList<Patron>();
 	private Boolean[] PatronUsed = new Boolean[10];
 	private Random rnd = new Random();
+	boolean gameEnd = false;
 	private Card[] Level1CardsStart = new Card[4];
 	private Card[] Level2CardsStart = new Card[4];
 	private Card[] Level3CardsStart = new Card[4];
@@ -55,10 +57,12 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private boolean canDrawGreen = true;
 	private boolean canDrawWhite = true;
 	private boolean draw1 = true;
-    private boolean cardBought =false;
-    private BufferedImage animatingCard;
-    private int animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight;
-    private boolean cardAnimating = false;
+	private int targetX,targetY;
+        private boolean cardBought =false;
+        private BufferedImage animatingCard;
+        private int animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight;
+        private boolean cardAnimating = false;
+
 
 	public GameBoardPanel() {
 		addMouseMotionListener(this);
@@ -226,6 +230,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		g2d.fillRect(x, y, width, height);
 		g2d.setColor(Color.BLACK);
 		g2d.drawRect(x, y, width, height);
+		out.println("player "+playerNum+" "+x+" "+y);
 
 		// Center player title
 		g2d.setFont(new Font("Arial", Font.BOLD, 18));
@@ -268,68 +273,100 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
     	g2d.drawImage(reserveGem, playerGemX + 5 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
     	g2d.drawString(player.getChip("yellow")+"", playerGemX + 5 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
 
-
+    	if(cardAnimating) {
+    		g2d.drawImage(animatingCard,animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,this);
+    	}
 		// Draw single, smaller tempCard image inside player box, aligned to the left
 		int tempCardWidth = 60; // Same size as a standard card
 		int tempCardHeight = 100;
 		int tempCardX = gemBoxX + 10;
 		int tempCardY = gemBoxY + gemBoxHeight + 10;
-		if(cardAnimating) {
-			g2d.drawImage(animatingCard,animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,this);
-		}
+		out.println("y= "+tempCardY);
 		for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
-		        if (player.getCards().get(color) != null) {
-		            for (int i = 0; i < player.getCards().get(color).size(); i++) {
-		                BufferedImage card = player.getCards().get(color).get(i);
-		                if(color.equals("black"))
-		                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
-		                else if(color.equals("blue"))
-		                	g2d.drawImage(card, tempCardX+60, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
-		                else if(color.equals("red"))
-		                	g2d.drawImage(card, tempCardX+120, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
-		                else if(color.equals("green"))
-		                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
-		                else if(color.equals("white"))
-		                	g2d.drawImage(card, tempCardX+240, tempCardY+i*40, tempCardWidth+20, tempCardHeight+20, this);
-		            }
-		        }
+	        if (player.getCards().get(color) != null) {
+	            for (int i = 0; i < player.getCards().get(color).size(); i++) {
+	                BufferedImage card = player.getCards().get(color).get(i);
+	                if(color.equals("black"))
+	                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	                else if(color.equals("blue"))
+	                	g2d.drawImage(card, tempCardX+90, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	                else if(color.equals("red"))
+	                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	                else if(color.equals("green"))
+	                	g2d.drawImage(card, tempCardX+270, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	                else if(color.equals("white"))
+	                	g2d.drawImage(card, tempCardX+360, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+	            }
+	        }
 		}
+
+		g2d.drawImage(PatronStart[0].getImage(), 490, 135, patronWidth-10, patronHeight-10, this);
+		
+		for( int i =0; i<player.getPatrons().size(); i++)
+		{
+			Patron p = player.getPatrons().get(i);
+			g2d.drawImage(p.getImage(), tempCardX, tempCardY+i*40, patronWidth+10, patronHeight+10, this);
+		}
+		
 		
 		// draw string that shows whos turn it is
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
-		g2d.drawString(currentTurn, 875, 65);	
+		g2d.drawString(currentTurn, 875, 65);
 		g2d.setFont(new Font("Arial", Font.BOLD, 18));
 		
 		//draw indicator for which mode
 		if(draw1)
 		{
 			g2d.setColor(Color.RED);
-			g2d.fillRect(692, 917, 215, 65);
+			g2d.fillRect(692, 893, 215, 65);
 			g2d.setColor(Color.BLACK);
 		}
 		else if(draw1 == false)
 		{
 			g2d.setColor(Color.RED);
-			g2d.fillRect(992, 917, 215, 65);
+			g2d.fillRect(992, 893, 215, 65);
 			g2d.setColor(Color.BLACK);
 		}
 		
 		//draw buttons for draw1/2 modes
 		g2d.setColor(Color.BLACK);
-		g2d.fillRect(697, 922, 206, 56);
-		g2d.fillRect(997, 922, 206, 56);
+		g2d.fillRect(697, 897, 206, 56);
+		g2d.fillRect(997, 897, 206, 56);
 		g2d.setColor(Color.WHITE);
-		g2d.fillRect(700, 925, 200, 50);
-		g2d.fillRect(1000, 925, 200, 50);
+		g2d.fillRect(700, 900, 200, 50);
+		g2d.fillRect(1000, 900, 200, 50);
 		g2d.setColor(Color.BLACK);
-		g2d.drawString("Draw 3 different", 730, 955);
-		g2d.drawString("Draw 2 same", 1045, 955);
+		g2d.drawString("Draw 3 different", 730, 930);
+		g2d.drawString("Draw 2 same", 1045, 930);
 		
+		//draw end turn button
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(847, 957, 206, 56);
+		g2d.setColor(Color.WHITE);
+		g2d.fillRect(850, 960, 200, 50);
+		g2d.setColor(Color.BLACK);
+		g2d.drawString("End Turn", 910, 990);
 	}
 	
-	public void cycleTurn()
+	public int cycleTurn()
 	{
-		if(turns[0] == true)
+		int totalTurns = 4;
+		boolean gameHasEnded = false;
+		boolean end = false;
+		if(gameEnd == true && gameHasEnded == false)
+		{
+			if(turns[0])
+				totalTurns = 3;
+			else if(turns[1])
+				totalTurns = 2;
+			else if(turns[2])
+				totalTurns = 1;
+			else if(turns[3])
+				totalTurns = 0;
+			gameHasEnded = true;
+			end = true;
+		}
+		if(turns[0] == true && totalTurns > 0)
 		{
 			turns[0] = false;
 			turns[1] = true;
@@ -340,8 +377,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			canDrawRed = true;
 			canDrawGreen = true;
 			canDrawWhite = true;
+			if(end)
+				totalTurns--;
 		}
-		else if(turns[1] == true)
+		else if(turns[1] == true && totalTurns > 0)
 		{
 			turns[1] = false;
 			turns[2] = true;
@@ -352,8 +391,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			canDrawRed = true;
 			canDrawGreen = true;
 			canDrawWhite = true;
+			if(end)
+				totalTurns--;
 		}
-		else if(turns[2] == true)
+		else if(turns[2] == true && totalTurns > 0)
 		{
 			turns[2] = false;
 			turns[3] = true;
@@ -364,8 +405,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			canDrawRed = true;
 			canDrawGreen = true;
 			canDrawWhite = true;
+			if(end)
+				totalTurns--;
 		}
-		else if(turns[3] == true)
+		else if(turns[3] == true && totalTurns > 0)
 		{
 			turns[3] = false;
 			turns[0] = true;
@@ -376,7 +419,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			canDrawRed = true;
 			canDrawGreen = true;
 			canDrawWhite = true;
+			if(end)
+				totalTurns--;
 		}
+		return totalTurns;
 	}
 
 	@Override
@@ -386,25 +432,66 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    System.out.println("loc is (" + mouseX + "," + mouseY + ")");
 	    
 	    if (e.getButton() == MouseEvent.BUTTON1) {
-	    	if(mouseX >= 700 && mouseX <= 900 && mouseY >= 925 && mouseY <= 975)
+	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010)
+	    		cycleTurn();
+	    	if(mouseX >= 700 && mouseX <= 900 && mouseY >= 900 && mouseY <= 950)
 	    		draw1 = true;
-	    	if(mouseX >= 1000 && mouseX <= 1200 && mouseY >= 925 && mouseY <= 975)
+	    	if(mouseX >= 1000 && mouseX <= 1200 && mouseY >= 900 && mouseY <= 950)
 	    		draw1 = false;
 	    	for (int i = 0; i < 12; i++) {
 	    		if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i] && mouseY < cardY[i] + cardHeight) {
 	    			
 	    			System.out.println("card " + i);
+	    			
 	    			for(int j = 0; j < 4; j++)
 	        	    {
 	    				int rng;
 	        	    	if(turns[j] && actions == 3)
 	        	    	{
+    	    				if(j==0) {
+    	    					targetX=30;
+    	    					targetY=128;
+    	    				}else if(j==1) {
+    	    					targetX=1310;
+    	    					targetY=128;
+    	    				}else if(j==2) {
+    	    					targetX=30;
+    	    					targetY=692;
+    	    				}else {
+    	    					targetX=1310;
+    	    					targetY=6922;
+    	    				}
 	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
 	        	    		{
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]))
 	        	    			{
+	        	    				String color = Level1CardsStart[i-8].getType();
+	        	    				if(players[j].getCards().get(color)!=null) {
+	        	    					targetY+=players[j].getCards().get(color).size()*40;
+	        	    				}
+	     
+	        		                else if(color.equals("blue")) {
+	        		                	targetX+=90;
+	        		                }
+	        		                else if(color.equals("red")) {
+	        		                	targetX+=180;
+	        		                }
+	        		                else if(color.equals("green")) {
+	        		                	targetX+=270;
+	        		                }
+	        		                else if(color.equals("white")) {
+	        		                	targetX+=360;
+	        		                }
+	        	    				final BufferedImage img = Level1CardsStart[i-8].getImage();
+	        	    				int index = i-8;
+	        	    				new Thread(new Runnable() {
+		                                @Override
+		                                public void run() {
+		                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
+		                                }
+		                            }).start();
 	        	    				out.println("YOU CAN AFFORD");
-							cardBought = true;
+	        	    				cardBought = true;
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("black"))
 	        	    				{
 	        	    					if(Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black") >= 0)
@@ -430,41 +517,14 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					if(Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white") >= 0)
 	        	    						numWhite += Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
-	        	    				String color = Level1CardsStart[i-8].getType();
-	        	    				int targetX=30;
-	        	    				if(j==2||j==3) {
-	        	    					targetX=2 * sectionWidth + 30;;
-	        	    				}
-	        	    				int playerBoxHeight = (getHeight() - 40) / 2;
-	        	    				int targetY=(getHeight() - 40) / 16+60;
-	        	    				if(j==1||j==3) {
-	        	    					targetY+=(playerBoxHeight + 20);
-	        	    				}
-	        	    				if(color.equals("black"))
-	        	    					if (players[j].getCards().get(color) != null) 
-	        	    						targetY+=players[j].getCards().get(color).size()*40;
-	        		                else if(color.equals("blue")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("red")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("green")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("white")) {
-	        		                	targetX+=240;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        	    				startCardAnimation(Level1CardsStart[i-8].getImage(),cardX[i],cardY[i],targetX,targetY,80,120);
 	        	    				players[j].buyCard(Level1CardsStart[i-8]);
+	        	    				for(int x = 0; x < 4; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
+	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    				}
+	        	    				if(players[j].getPoints() >= 15)
+	        	    					gameEnd = true;
 	        	    				for( int k = 0;k<1;k++ )
 	        	    				{
 	        	    					rng = rnd.nextInt(40);
@@ -485,9 +545,18 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
 	        	    		{
-						cardBought = true;
+	        	    			
+	        	    			cardBought = true;
 	        	    			if(Level2CardsStart[i-4].canAfford(players[j]))
 	        	    			{
+	        	    				final BufferedImage img = Level2CardsStart[i-4].getImage();
+	        	    				final int index = i-4;
+	        	    				new Thread(new Runnable() {
+		                                @Override
+		                                public void run() {
+		                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
+		                                }
+		                            }).start();
 	        	    				if(Level1CardsStart[i-4].getCost().containsKey("black"))
 	        	    				{
 	        	    					if(Level1CardsStart[i-4].getCost().get("black") - players[j].getNumCard("black") >= 0)
@@ -513,41 +582,14 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					if(Level1CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white") >= 0)
 	        	    						numWhite += Level1CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
-	        	    				String color = Level2CardsStart[i-4].getType();
-	        	    				int targetX=30;
-	        	    				if(j==2||j==3) {
-	        	    					targetX=2 * sectionWidth + 30;;
-	        	    				}
-	        	    				int playerBoxHeight = (getHeight() - 40) / 2;
-	        	    				int targetY=(getHeight() - 40) / 16+60;
-	        	    				if(j==1||j==3) {
-	        	    					targetY+=(playerBoxHeight + 20);
-	        	    				}
-	        	    				if(color.equals("black"))
-	        	    					if (players[j].getCards().get(color) != null) 
-	        	    						targetY+=players[j].getCards().get(color).size()*40;
-	        		                else if(color.equals("blue")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("red")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("green")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("white")) {
-	        		                	targetX+=240;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        	    				startCardAnimation(Level2CardsStart[i-4].getImage(),cardX[i],cardY[i],targetX,targetY,80,120);
 	        	    				players[j].buyCard(Level2CardsStart[i-4]);
+	        	    				for(int x = 0; x < 4; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
+	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    				}
+	        	    				if(players[j].getPoints() >= 15)
+	        	    					gameEnd = true;
 	        	    				for( int k = 0;k<1;k++ )
 	        	    				{
 	        	    					rng = rnd.nextInt(40);
@@ -567,9 +609,18 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
 	        	    		{
-						cardBought = true;
+	        	    			
+	        	    			cardBought = true;
 	        	    			if(Level3CardsStart[i].canAfford(players[j]))
 	        	    			{
+	        	    				final BufferedImage img = Level3CardsStart[i].getImage();
+	        	    				final int index = i;
+	        	    				new Thread(new Runnable() {
+		                                @Override
+		                                public void run() {
+		                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
+		                                }
+		                            }).start();
 	        	    				if(Level1CardsStart[i].getCost().containsKey("black"))
 	        	    				{
 	        	    					if(Level1CardsStart[i].getCost().get("black") - players[j].getNumCard("black") >= 0)
@@ -595,41 +646,14 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					if(Level1CardsStart[i].getCost().get("white") - players[j].getNumCard("white") >= 0)
 	        	    						numWhite += Level1CardsStart[i].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
-	        	    				String color = Level3CardsStart[i].getType();
-	        	    				int targetX=30;
-	        	    				if(j==2||j==3) {
-	        	    					targetX=2 * sectionWidth + 30;;
-	        	    				}
-	        	    				int playerBoxHeight = (getHeight() - 40) / 2;
-	        	    				int targetY=(getHeight() - 40) / 16+60;
-	        	    				if(j==1||j==3) {
-	        	    					targetY+=(playerBoxHeight + 20);
-	        	    				}
-	        	    				if(color.equals("black"))
-	        	    					if (players[j].getCards().get(color) != null) 
-	        	    						targetY+=players[j].getCards().get(color).size()*40;
-	        		                else if(color.equals("blue")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("red")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("green")) {
-	        		                	targetX+=180;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        		                else if(color.equals("white")) {
-	        		                	targetX+=240;
-	        		                	if (players[j].getCards().get(color) != null) 
-	        		                		targetY+=players[j].getCards().get(color).size()*40;
-	        		                }
-	        	    				startCardAnimation(Level3CardsStart[i].getImage(),cardX[i],cardY[i],targetX,targetY,80,120);
 	        	    				players[j].buyCard(Level3CardsStart[i]);
+	        	    				for(int x = 0; x < 4; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
+	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    				}
+	        	    				if(players[j].getPoints() >= 15)
+	        	    					gameEnd = true;
 	        	    				for( int k = 0;k<1;k++ )
 	        	    				{
 	        	    					rng = rnd.nextInt(40);
@@ -1473,18 +1497,17 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    animCurrentWidth = 115;  // Initial width
 	    animCurrentHeight = 165; // Initial height
 	    cardAnimating = true;
-	    int duration = 2;
+	    targetWidth+=15;
+	    targetHeight+=15;
+	    int duration = 3000;
 	    // Create a new thread to handle the animation
-	    new Thread(new Runnable() {
-	        @Override
-	        public void run() {
 	            long startTime = System.currentTimeMillis();
 
 	            while (cardAnimating) {
 	                long currentTime = System.currentTimeMillis();
 	                double elapsed = (double) (currentTime - startTime) / duration;
 
-	                if (elapsed >= 1.0) {
+	                if (elapsed >= 4.0) {
 	                    // End animation and set final state
 	                    animCurrentX = targetX;
 	                    animCurrentY = targetY;
@@ -1510,7 +1533,6 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	                    e.printStackTrace();
 	                }
 	            }
-	        }
-	    }).start();
 	}
+
 }
