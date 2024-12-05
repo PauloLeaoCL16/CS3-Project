@@ -57,7 +57,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private boolean canDrawGreen = true;
 	private boolean canDrawWhite = true;
 	private boolean draw1 = true;
-    private boolean cardBought =false;
+    
 	
 
 	public GameBoardPanel() {
@@ -450,18 +450,79 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					}
         	    					else
         	    					{
-        	    						k--;
+        	    						boolean AllImagesUsed = true;
+        	    						for( boolean b:Level1ImagesUsed )
+        	    						{
+        	    							if( !b )
+        	    								AllImagesUsed = false;
+        	    						}
+        	    						if( !AllImagesUsed )
+        	    							k--;
+        	    						else
+        	    						{
+        	    							Level1CardsStart[i-8] = new Card(background);
+        	    						}
+        	    							
         	    					}
-        	    						
         	    				}
 	        	    		}
 	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
 	        	    		{
 	        	    			players[j].addReserve(Level2CardsStart[i-4]);
+	        	    			for( int k = 0;k<1;k++ )
+        	    				{
+        	    					rng = rnd.nextInt(30);
+        	    					if( !Level2ImagesUsed[rng])
+        	    					{
+        	    						Level2CardsStart[i-4] = Level2Cards.get(rng);
+        	    						Level2ImagesUsed[rng] = true;
+        	    					}
+        	    					else
+        	    					{
+        	    						boolean AllImagesUsed = true;
+        	    						for( boolean b:Level2ImagesUsed )
+        	    						{
+        	    							if( !b )
+        	    								AllImagesUsed = false;
+        	    						}
+        	    						if( !AllImagesUsed )
+        	    							k--;
+        	    						else
+        	    						{
+        	    							Level2CardsStart[i-4] = new Card(background);
+        	    						}
+        	    							
+        	    					}
+        	    				}
 	        	    		}
 	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
 	        	    		{
 	        	    			players[j].addReserve(Level3CardsStart[i]);
+	        	    			for( int k = 0;k<1;k++ )
+        	    				{
+        	    					rng = rnd.nextInt(20);
+        	    					if( !Level3ImagesUsed[rng])
+        	    					{
+        	    						Level3CardsStart[i] = Level3Cards.get(rng);
+        	    						Level3ImagesUsed[rng] = true;
+        	    					}
+        	    					else
+        	    					{
+        	    						boolean AllImagesUsed = true;
+        	    						for( boolean b:Level3ImagesUsed )
+        	    						{
+        	    							if( !b )
+        	    								AllImagesUsed = false;
+        	    						}
+        	    						if( !AllImagesUsed )
+        	    							k--;
+        	    						else
+        	    						{
+        	    							Level3CardsStart[i] = new Card(background);
+        	    						}
+        	    							
+        	    					}
+        	    				}
 	        	    		}
 	        	    		break;
 	        	    	}
@@ -488,9 +549,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    	{
 	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
 	        	    		{
-	        	    			if(Level1CardsStart[i-8].canAfford(players[j]))
+	        	    			if(Level1CardsStart[i-8].canAfford(players[j]) && Level1CardsStart[i-8].getImage() != background)
 	        	    			{
-	        	    				cardBought = true;
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("black"))
 	        	    				{
 	        	    					if(Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black") >= 0)
@@ -556,8 +616,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
 	        	    		{
-	        	    			cardBought = true;
-	        	    			if(Level2CardsStart[i-4].canAfford(players[j]))
+	        	    			if(Level2CardsStart[i-4].canAfford(players[j])&& Level2CardsStart[i-4].getImage() != background)
 	        	    			{
 	        	    				if(Level2CardsStart[i-4].getCost().containsKey("black"))
 	        	    				{
@@ -623,8 +682,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
 	        	    		{
-	        	    			cardBought = true;
-	        	    			if(Level3CardsStart[i].canAfford(players[j]))
+	        	    			if(Level3CardsStart[i].canAfford(players[j]) && Level3CardsStart[i].getImage() != background)
 	        	    			{
 	        	    				if(Level3CardsStart[i].getCost().containsKey("black"))
 	        	    				{
