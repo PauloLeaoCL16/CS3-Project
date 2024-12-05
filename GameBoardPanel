@@ -57,6 +57,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private boolean canDrawGreen = true;
 	private boolean canDrawWhite = true;
 	private boolean draw1 = true;
+
     
 	
 
@@ -227,13 +228,20 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		g2d.fillRect(x, y, width, height);
 		g2d.setColor(Color.BLACK);
 		g2d.drawRect(x, y, width, height);
+		
 
 		// Center player title
+		g2d.setColor(Color.BLACK);
 		g2d.setFont(new Font("Arial", Font.BOLD, 18));
 		FontMetrics fm = g2d.getFontMetrics();
 		int titleWidth = fm.stringWidth("Player " + playerNum);
-		g2d.drawString("Player " + playerNum, x + (width - titleWidth) / 2 - 150, y + 25);
-		g2d.drawString("Points: " + player.getPoints(), x + (width - titleWidth) / 2 + 100, y+25);
+		g2d.drawString("Player " + playerNum, x + (width - titleWidth) / 2 - 200, y + 25);
+		g2d.drawString("Points: " + player.getPoints(), x + (width - titleWidth) / 2 , y+25);
+		g2d.fillRect( x + (width - titleWidth) / 2 +163, y+1, 620-446, 50-11 );
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font("Arial", Font.BOLD, 30));
+		g2d.drawString("Reserves", x + (width - titleWidth) / 2 +180, y+30);
+		
 
 		// Draw smaller gem boxes inside the player area
 		int gemBoxWidth = width - 20;
@@ -270,41 +278,50 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
     	g2d.drawString(player.getChip("yellow")+"", playerGemX + 5 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
 
 
-		// Draw single, smaller tempCard image inside player box, aligned to the left
-		int tempCardWidth = 60; // Same size as a standard card
-		int tempCardHeight = 100;
-		int tempCardX = gemBoxX + 10;
-		int tempCardY = gemBoxY + gemBoxHeight + 10;
-		for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
-	        if (player.getCards().get(color) != null) {
-	            for (int i = 0; i < player.getCards().get(color).size(); i++) {
-	                BufferedImage card = player.getCards().get(color).get(i);
-	                if(color.equals("black"))
-	                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-	                else if(color.equals("blue"))
-	                	g2d.drawImage(card, tempCardX+90, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-	                else if(color.equals("red"))
-	                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-	                else if(color.equals("green"))
-	                	g2d.drawImage(card, tempCardX+270, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-	                else if(color.equals("white"))
-	                	g2d.drawImage(card, tempCardX+360, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-	            }
-	        }
-		}
-		
-
-		
-		// X-location = 490
-		// Y-location = 135
-		// Width = 100
-		// Height = 100
-		for( int i =0; i<player.getPatrons().size(); i++)
+			// Draw single, smaller tempCard image inside player box, aligned to the left
+			int tempCardWidth = 60; // Same size as a standard card
+			int tempCardHeight = 100;
+			int tempCardX = gemBoxX + 10;
+			int tempCardY = gemBoxY + gemBoxHeight + 10;
+		if(player.getShowDeck())
 		{
-			Patron p = player.getPatrons().get(i);
-			g2d.drawImage(p.getImage(), 490 , tempCardY+i*60, 100, 100, this);
+			for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
+		        if (player.getCards().get(color) != null) {
+		            for (int i = 0; i < player.getCards().get(color).size(); i++) {
+		                BufferedImage card = player.getCards().get(color).get(i);
+		                if(color.equals("black"))
+		                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		                else if(color.equals("blue"))
+		                	g2d.drawImage(card, tempCardX+90, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		                else if(color.equals("red"))
+		                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		                else if(color.equals("green"))
+		                	g2d.drawImage(card, tempCardX+270, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		                else if(color.equals("white"))
+		                	g2d.drawImage(card, tempCardX+360, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		            }
+		        }
+			}
+	
+			
+			// X-location = 490
+			// Y-location = 135
+			// Width = 100
+			// Height = 100
+			for( int i =0; i<player.getPatrons().size(); i++)
+			{
+				Patron p = player.getPatrons().get(i);
+				g2d.drawImage(p.getImage(), 490 , tempCardY+i*60, 100, 100, this);
+			}
 		}
+		else
+		{
+			for(int i = 0; i<player.getReserves().size(); i++)
+			{
+				g2d.drawImage(player.getReserves().get(i).getImage(), tempCardX+200*(i), tempCardY+75, 150, 200, this);
+			}
 		
+		}
 		
 		// draw string that shows whos turn it is
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
@@ -426,6 +443,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	public void mouseClicked(MouseEvent e) {
 		int mouseX = e.getX();
 	    int mouseY = e.getY();
+	    out.println("X-Location: " + mouseX + "\n" + "Y-Location: " + mouseY);
 	    
 	    if (e.getButton() == MouseEvent.BUTTON3) {
 	    	System.out.println("right click");
@@ -437,7 +455,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    	if(turns[j] && actions == 3)
 	        	    	{
 	        	    		int rng = 0;
-	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
+	        	    		if((i == 8 || i == 9 || i == 10 || i == 11) && Level1CardsStart[i-8].getImage() != background)
 	        	    		{
 	        	    			players[j].addReserve(Level1CardsStart[i-8]);
 	        	    			for( int k = 0;k<1;k++ )
@@ -465,8 +483,9 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    							
         	    					}
         	    				}
+	        	    			cycleTurn();
 	        	    		}
-	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
+	        	    		if((i == 4 || i == 5 || i == 6 || i == 7 )&& Level2CardsStart[i-4].getImage() != background)
 	        	    		{
 	        	    			players[j].addReserve(Level2CardsStart[i-4]);
 	        	    			for( int k = 0;k<1;k++ )
@@ -493,9 +512,9 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    						}
         	    							
         	    					}
-        	    				}
+        	    				}cycleTurn();
 	        	    		}
-	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
+	        	    		if((i == 0 || i == 1 || i == 2 || i == 3) && Level3CardsStart[i].getImage() != background)
 	        	    		{
 	        	    			players[j].addReserve(Level3CardsStart[i]);
 	        	    			for( int k = 0;k<1;k++ )
@@ -523,7 +542,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    							
         	    					}
         	    				}
-	        	    		}
+	        	    		}cycleTurn();
 	        	    		break;
 	        	    	}
 	        	    }
@@ -533,6 +552,26 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			}
 	    }
 	    if (e.getButton() == MouseEvent.BUTTON1) {
+	    	if( mouseX >= 464 && mouseX <= (464+174) && mouseY >=10 && mouseY<= (10+39) )
+	    		if( players[0].getShowDeck() )
+	    			players[0].setShowDeck(false);
+	    		else
+	    			players[0].setShowDeck(true);
+	    	if( mouseX >= 464 && mouseX <= (464+174) && mouseY >=538 && mouseY<= (538+39) )
+	    		if( players[1].getShowDeck() )
+	    			players[1].setShowDeck(false);
+	    		else
+	    			players[1].setShowDeck(true);
+	    	if( mouseX >= 1744 && mouseX <= (1744+174) && mouseY >=10 && mouseY<= (10+39) )
+	    		if( players[2].getShowDeck() )
+	    			players[2].setShowDeck(false);
+	    		else
+	    			players[2].setShowDeck(true);
+	    	if( mouseX >= 1744 && mouseX <= (1744+174) && mouseY >=538 && mouseY<= (538+39) )
+	    		if( players[3].getShowDeck() )
+	    			players[3].setShowDeck(false);
+	    		else
+	    			players[3].setShowDeck(true);
 	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010)
 	    		cycleTurn();
 	    	if(mouseX >= 700 && mouseX <= 900 && mouseY >= 900 && mouseY <= 950)
