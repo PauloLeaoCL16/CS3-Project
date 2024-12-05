@@ -470,10 +470,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    						numWhite += Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level1CardsStart[i-8]);
-	        	    				for(int x = 0; x < 4; x++)
+	        	    				for(int x = 0; x < 5; x++)
 	        	    				{
-	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
-	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    					if(players[j].canAffordPatron(PatronStart[i]))
+	        	    						players[j].buyPatron(PatronStart[i]);
 	        	    				}
 	        	    				if(players[j].getPoints() >= 15)
 	        	    					gameEnd = true;
@@ -526,10 +526,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    						numWhite += Level1CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level2CardsStart[i-4]);
-	        	    				for(int x = 0; x < 4; x++)
+	        	    				for(int x = 0; x < 5; x++)
 	        	    				{
-	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
-	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    					if(players[j].canAffordPatron(PatronStart[i]))
+	        	    						players[j].buyPatron(PatronStart[i]);
 	        	    				}
 	        	    				if(players[j].getPoints() >= 15)
 	        	    					gameEnd = true;
@@ -581,10 +581,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    						numWhite += Level1CardsStart[i].getCost().get("white") - players[j].getNumCard("white");
 	        	    				}
 	        	    				players[j].buyCard(Level3CardsStart[i]);
-	        	    				for(int x = 0; x < 4; x++)
+	        	    				for(int x = 0; x < 5; x++)
 	        	    				{
-	        	    					if(players[j].canAffordPatron(PatronCards.get(i)))
-	        	    						players[j].buyPatron(PatronCards.get(i));
+	        	    					if(players[j].canAffordPatron(PatronStart[i]))
+	        	    						players[j].buyPatron(PatronStart[i]);
 	        	    				}
 	        	    				if(players[j].getPoints() >= 15)
 	        	    					gameEnd = true;
