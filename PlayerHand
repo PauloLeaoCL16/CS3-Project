@@ -9,6 +9,7 @@ class PlayerHand
   private TreeMap<String, ArrayList<BufferedImage>> cards;
   private ArrayList<Card> reserved = new ArrayList<Card>();
   private ArrayList<Patron> patrons = new ArrayList<Patron>();
+  private boolean showDeck = true;
   private int numBlack = 0;
   private int numBlue = 0;
   private int numRed = 0;
@@ -28,7 +29,22 @@ class PlayerHand
     chips.put("white", 0);
     chips.put("yellow", 0);
   }
+  
+  public ArrayList<Card> getReserves()
+  {
+	  return reserved;
+  }
 
+  public boolean getShowDeck()
+  {
+	  return showDeck;
+  }
+  
+  public void setShowDeck(boolean sd)
+  {
+	  showDeck = sd;
+  }
+  
   public int getTotalChips()
   {
     return totalChips;
