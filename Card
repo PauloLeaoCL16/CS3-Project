@@ -12,6 +12,14 @@ public class Card
   private String type;
   private BufferedImage face;
   private TreeMap<String, Integer> cost;
+  
+  public Card(BufferedImage background)
+  {
+	  value = 0;
+	  type = "";
+	  face = background;
+	  cost = new TreeMap<String, Integer>();
+  }
 
   public Card(int v, String t, BufferedImage f, TreeMap<String, Integer> c)
   {
