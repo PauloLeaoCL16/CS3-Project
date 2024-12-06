@@ -99,4 +99,80 @@ public class Card
 	  else
 		  return false;
   }
+  public boolean wildNeeded(PlayerHand player)
+  {
+	  boolean black = false;
+	  boolean blue = false;
+	  boolean red = false;
+	  boolean green = false;
+	  boolean white = false;
+	  int totalCost = 0;
+	  int totalChips = 0;
+	  if(cost.containsKey("black"))
+	  {
+		  totalCost += cost.get("black");
+		  totalChips += player.getChip("black") + player.getNumCard("black");
+	  }
+	  if(cost.containsKey("blue"))
+	  {
+		  totalCost += cost.get("blue");
+		  totalChips += player.getChip("blue") + player.getNumCard("blue");
+	  }
+	  if(cost.containsKey("red"))
+	  {
+		  totalCost += cost.get("red");
+		  totalChips += player.getChip("red") + player.getNumCard("red");
+	  }
+	  if(cost.containsKey("green"))
+	  {
+		  totalCost += cost.get("green");
+		  totalChips += player.getChip("green") + player.getNumCard("green");
+	  }
+	  if(cost.containsKey("white"))
+	  {
+		  totalCost += cost.get("white");
+		  totalChips += player.getChip("white") + player.getNumCard("white");
+	  }
+	  if(cost.get("black") == null || cost.get("black") <= player.getChip("black") + player.getNumCard("black"))
+		  black = true;
+	  if(cost.get("blue") == null || cost.get("blue") <= player.getChip("blue") + player.getNumCard("blue"))
+		  blue = true;
+	  if(cost.get("red") == null || cost.get("red") <= player.getChip("red") + player.getNumCard("red"))
+		  red = true;
+	  if(cost.get("green") == null || cost.get("green") <= player.getChip("green") + player.getNumCard("green"))
+		  green = true;
+	  if(cost.get("white") == null || cost.get("white") <= player.getChip("white") + player.getNumCard("white"))
+		  white = true;
+	  if(black && blue && red && green && white)
+		  return false;
+	  else if(totalCost <= totalChips + player.getChip("yellow"))
+		  return true;
+	  else
+		  return false;
+  }
+  public TreeMap<String, Integer> whichType(PlayerHand player)
+  {
+	  TreeMap<String, Integer> wilds = new TreeMap<String, Integer>();
+	  if(cost.containsKey("black") && player.getChip("black") + player.getNumCard("black") < cost.get("black"))
+	  {
+		  wilds.put("black", cost.get("black") - (player.getChip("black") + player.getNumCard("black")));
+	  }
+	  if(cost.containsKey("blue") && player.getChip("blue") + player.getNumCard("blue") < cost.get("blue"))
+	  {
+		  wilds.put("blue", cost.get("blue") - (player.getChip("blue") + player.getNumCard("blue")));
+	  }
+	  if(cost.containsKey("red") && player.getChip("red") + player.getNumCard("red") < cost.get("red"))
+	  {
+		  wilds.put("red", cost.get("red") - (player.getChip("red") + player.getNumCard("red")));
+	  }
+	  if(cost.containsKey("green") && player.getChip("green") + player.getNumCard("green") < cost.get("green"))
+	  {
+		  wilds.put("green", cost.get("green") - (player.getChip("green") + player.getNumCard("green")));
+	  }
+	  if(cost.containsKey("white") && player.getChip("white") + player.getNumCard("white") < cost.get("white"))
+	  {
+		  wilds.put("white", cost.get("white") - (player.getChip("white") + player.getNumCard("white")));
+	  }
+	  return wilds;
+  }
 }
