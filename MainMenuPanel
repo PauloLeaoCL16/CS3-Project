@@ -33,7 +33,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 
         try {
             // Load images with the correct package path
-            background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/MainMenuBackground.jpg"));
+	        background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/MainMenuBackground.png"));
             splendorImage = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
             rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.PNG"));
         } catch (IOException e) {
@@ -73,7 +73,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         });
 
         setLayout(null);
-        add(playButton);
+        
 
         if (bool) {
             new Thread(() -> {
@@ -197,8 +197,21 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        Graphics2D g2d = (Graphics2D) g;
+        AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
+		 if(phase==0) {
+			  g2d.setColor(Color.darkGray);
+			  g2d.fillRect(0, 0, 1920, 1080);
+			  g2d.setColor(Color.WHITE);
+			  g2d.setComposite(alphaComposite);
+			  g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
+			  g2d.drawString(word,xloc,yloc);
+		  }else if(phase==1){
+			  alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f);
+			  g2d.setComposite(alphaComposite);
+			  
+        g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        g2d = (Graphics2D) g;
         // Draw the splendorImage a bit above the middle
         int imageWidth = getWidth() / 3;
         int imageHeight = getHeight() / 3;
@@ -210,14 +223,16 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         int playButtonX = imageX + (imageWidth - playButton.getWidth()) / 2;
         int playButtonY = imageY + imageHeight + 50; // Positioned further down
         playButton.setLocation(playButtonX, playButtonY);
+        add(playButton);
 
         // Ensure the play button is visible and does not move with the rules button
         playButton.setVisible(true);
 
         // Draw the Rules button at the top-left position with its animations
-        Graphics2D g2d = (Graphics2D) g;
+        
         g2d.rotate(Math.toRadians(theta), rulesButtonX + rulesButton.getWidth() / 2, rulesButtonY + rulesButton.getHeight() / 2);
         g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, rulesButton.getWidth() + 100, rulesButton.getHeight() + 100, null); // Made the rulesButton larger
+		  }
     }
 
     @Override
