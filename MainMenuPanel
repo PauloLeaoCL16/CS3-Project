@@ -80,6 +80,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         } else {
             new Thread(() -> {
                 animateStart();
+                animateStart();
                 phase = 1;
                 setPlayButtonPosition();
                 SwingUtilities.invokeLater(() -> add(playButton));
