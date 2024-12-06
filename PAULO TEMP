@@ -1,0 +1,1630 @@
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import java.io.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
+import java.util.*;
+
+import static java.lang.System.*;
+
+public class GameBoardPanel extends JPanel implements MouseListener, MouseMotionListener {
+
+	private BufferedImage background, blackGem, blueGem, redGem, greenGem, whiteGem, reserveGem;
+	private BufferedImage tempCard, level1Card, level2Card, level3Card;
+	private ArrayList<BufferedImage> Level1Images = new ArrayList<BufferedImage>();
+	private ArrayList<BufferedImage> Level2Images = new ArrayList<BufferedImage>();
+	private ArrayList<BufferedImage> Level3Images = new ArrayList<BufferedImage>();
+	private Boolean[] Level1ImagesUsed = new Boolean[40];
+	private Boolean[] Level2ImagesUsed = new Boolean[30];
+	private Boolean[] Level3ImagesUsed = new Boolean[20];
+	private ArrayList<Card> Level1Cards = new ArrayList<Card>();
+	private ArrayList<Card> Level2Cards = new ArrayList<Card>();
+	private ArrayList<Card> Level3Cards = new ArrayList<Card>();
+	private BufferedImage[] PatronImages = new BufferedImage[10];
+	private ArrayList<Patron> PatronCards = new ArrayList<Patron>();
+	private Boolean[] PatronUsed = new Boolean[10];
+	private Random rnd = new Random();
+	boolean gameEnd = false;
+	private Card[] Level1CardsStart = new Card[4];
+	private Card[] Level2CardsStart = new Card[4];
+	private Card[] Level3CardsStart = new Card[4];
+	private Patron[] PatronStart = new Patron[5];
+	private boolean[] PatronBoughts = new boolean[5];
+	private int cardX[] = new int[12];
+	private int cardY[] = new int[12];
+	private int gemSize,gemSpacing,gemY,gemX,sectionWidth, greenLineY;
+	private int cardWidth,cardHeight,patronWidth,patronHeight,patronSpacing,patronX, cardSpacing,patronY,gridX,gridY;
+	private int cardHighlightX, cardHighlightY, gemHighlightX,gemHighlightY;
+	private boolean showCardHighlight = false;
+	private boolean showGemHighlight = false;
+	private boolean[] turns = {true, false, false, false};
+	private int numBlack = 7;
+	private int numBlue = 7;
+	private int numRed = 7;
+	private int numGreen = 7;
+	private int numWhite = 7;
+	private int numWild = 5;
+	private int actions = 3;
+	private PlayerHand[] players = {new PlayerHand(), new PlayerHand(), new PlayerHand(), new PlayerHand()};
+	private String currentTurn = "Player 1 turn";
+	private boolean canDrawBlack = true;
+	private boolean canDrawBlue = true;
+	private boolean canDrawRed = true;
+	private boolean canDrawGreen = true;
+	private boolean canDrawWhite = true;
+	private boolean draw1 = true;
+
+    
+	
+
+	public GameBoardPanel() {
+		addMouseMotionListener(this);
+		addMouseListener(this);
+	}
+
+	 public void loadImages() {
+
+	        try {
+	        	//filling array of images with false( meaning its not used)
+	        	Arrays.fill(Level1ImagesUsed, false);
+	        	Arrays.fill(Level2ImagesUsed, false);
+	        	Arrays.fill(Level3ImagesUsed, false);
+	        	Arrays.fill(PatronUsed, false);
+	        	Arrays.fill(PatronBoughts, false);
+	        	
+	            // Background
+	            background = ImageIO.read(getClass().getResource("/splendorImages/creamylol.jpg"));
+
+	            // Gems
+	            blackGem = ImageIO.read(getClass().getResource("/splendorImages/BlackGem.png"));
+	            blueGem = ImageIO.read(getClass().getResource("/splendorImages/BlueGem.png"));
+	            redGem = ImageIO.read(getClass().getResource("/splendorImages/RedGem.png"));
+	            greenGem = ImageIO.read(getClass().getResource("/splendorImages/GreenGem.png"));
+	            whiteGem = ImageIO.read(getClass().getResource("/splendorImages/WhiteGem.png"));
+	            reserveGem = ImageIO.read(getClass().getResource("/splendorImages/ReserveGem.png"));
+
+	            tempCard = ImageIO.read(getClass().getResource("/splendorImages/creamylol.JPG"));
+	            
+	            // Deck levels
+
+	            level1Card = ImageIO.read(getClass().getResource("/splendorImages/Level1Card.png"));
+	            level2Card = ImageIO.read(getClass().getResource("/splendorImages/Level2Card.png"));
+	            level3Card = ImageIO.read(getClass().getResource("/splendorImages/Level3Card.png"));
+	            
+	            sectionWidth = 640;
+	            patronWidth = 115;
+	        	patronHeight = 140;
+	        	patronSpacing = 10;
+	        	patronX = sectionWidth + (sectionWidth - (5 * patronWidth + 4 * patronSpacing)) / 2;
+	        	patronY = 100;
+	            gemSize = 80;
+	            gemSpacing = 25;
+	            gemY = 810;
+	            gemX = 645;
+	            cardWidth = 115;
+	        	cardHeight = 165;
+	        	cardSpacing = 10;
+	        	gridX = sectionWidth + (sectionWidth - (3 * cardWidth + 2 * cardSpacing)) / 2;
+	        	gridY = patronY + patronHeight + 10;   
+	        	greenLineY = 800;
+	        	
+	            
+	            assignImages();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            System.out.println("Error loading images");
+	        }
+	    }
+
+	 @Override
+	    protected void paintComponent(Graphics g) {
+	        super.paintComponent(g);
+	        Graphics2D g2d = (Graphics2D) g;
+	        
+
+	        for(  PlayerHand p:players)
+	        {
+	        	out.println("inside the loop");
+	        	if( p.getPoints() >= 15 && turns[0] )
+	        	{
+	        		out.println("GAME HAS ENDED");
+	        		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(GameBoardPanel.this);
+	                topFrame.getContentPane().removeAll();
+	                topFrame.add(new EndGamePanel()); // Transition to the GameBoardPanel
+	                topFrame.revalidate();
+	                topFrame.repaint();
+	        	}
+	        	else
+	        		out.println(p.getPoints() + "" + Arrays.toString(turns));
+	        }
+
+	        // Background
+	        g2d.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+
+	        // Draw the vertical black lines separating the sections
+	        
+	        g2d.setColor(Color.BLACK);
+	        g2d.drawLine(sectionWidth, 0, sectionWidth, getHeight());
+	        g2d.drawLine(2 * sectionWidth, 0, 2 * sectionWidth, getHeight());
+
+	        // Draw player areas in the left and right sections
+	        int playerBoxWidth = sectionWidth - 20;
+	        int playerBoxHeight = (getHeight() - 40) / 2;
+	        int playerXLeft = 10;
+	        int playerXRight = 2 * sectionWidth + 10;
+	        int playerY = 10;
+
+	        for (int i = 0; i < 2; i++) {
+	            drawPlayerArea(g2d, playerXLeft, playerY + i * (playerBoxHeight + 20), playerBoxWidth, playerBoxHeight, players[i],i+1);
+	            drawPlayerArea(g2d, playerXRight, playerY + i * (playerBoxHeight + 20), playerBoxWidth, playerBoxHeight, players[i+2],i+3);
+	        }
+	        
+	        
+	        // Draw the PatronImages above the grid
+	        for (int i = 0; i < 5; i++) 
+	        {
+		           BufferedImage patron = PatronStart[i].getImage();
+		           g2d.drawImage(patron, patronX + i * (patronWidth + patronSpacing), patronY, patronWidth, patronHeight, this);
+	        }
+	        
+	        if (showCardHighlight) {
+				g2d.setColor(Color.YELLOW);
+				g2d.fillRoundRect(cardHighlightX, cardHighlightY, cardWidth + 10, cardHeight + 10, 15, 15);    
+			}
+	        // Draw the 4x3 grid of cards in the middle section
+	        for (int row = 0; row < 3; row++) 
+	        {
+	            for (int col = 0; col < 4; col++) 
+	            {
+	            	if(row==0)
+	            	{	BufferedImage card = Level3CardsStart[col].getImage();
+		            	g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
+	                }
+	            	else if(row==1)
+	            	{
+	            		BufferedImage card = Level2CardsStart[col].getImage();
+		            	g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
+	            	}
+	            	else if(row==2)
+	            	{
+	            		BufferedImage card = Level1CardsStart[col].getImage();
+		            	g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
+	            	}
+	            	
+	            }
+	        }
+		
+	        // Draw the larger decks to the left of the grid
+	        int deckSpacing = 10;
+	        int deckX = gridX - cardWidth - deckSpacing;
+
+	        g2d.drawImage(level3Card, deckX, gridY, cardWidth, cardHeight, this);
+	        g2d.drawImage(level2Card, deckX, gridY + cardHeight + deckSpacing, cardWidth, cardHeight, this);
+	        g2d.drawImage(level1Card, deckX, gridY + 2 * (cardHeight + deckSpacing), cardWidth, cardHeight, this);
+	        for(int row = 0 ;row<3;row++) {
+	        	for(int col = 0;col<4;col++) {
+	        		cardX[row*4+col] = gridX + col * (cardWidth + cardSpacing);
+	        		cardY[row*4+col] = gridY + row * (cardHeight + cardSpacing); 
+	        	}
+	        }
+	        // Draw the green line below all elements in the middle section
+	        
+			if (showGemHighlight) {
+		        g2d.setColor(Color.YELLOW); 
+		        Polygon hexagon = createHexagon(gemHighlightX, gemHighlightY, 30); // Radius = 40
+		        g2d.fillPolygon(hexagon);
+			}
+	       
+	        
+	        // Draw gems below the green line in the middle section
+	        //
+	        //
+			g2d.setColor(Color.BLACK);
+			g2d.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 40));;
+			g2d.drawImage(blackGem, gemX, gemY, gemSize, gemSize-10, this); 
+			g2d.drawString(Integer.toString(numBlack), gemX + gemSize + 3, gemY+50); 
+			g2d.drawImage(blueGem, gemX + (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
+			g2d.drawString(Integer.toString(numBlue), gemX + (gemSize + gemSpacing) + gemSize + 3, gemY+50); 
+			g2d.drawImage(redGem, gemX + 2 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
+			g2d.drawString(Integer.toString(numRed), gemX + 2 * (gemSize + gemSpacing) + gemSize + 3, gemY+50); 
+			g2d.drawImage(greenGem, gemX + 3 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
+			g2d.drawString(Integer.toString(numGreen), gemX + 3 * (gemSize + gemSpacing) + gemSize + 3, gemY+50); 
+			g2d.drawImage(whiteGem, gemX + 4 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
+			g2d.drawString(Integer.toString(numWhite), gemX + 4 * (gemSize + gemSpacing) + gemSize + 3, gemY+50); 
+			g2d.drawImage(reserveGem, gemX + 5 * (gemSize + gemSpacing), gemY, gemSize, gemSize-10, this); 
+			g2d.drawString(Integer.toString(numWild), gemX + 5 * (gemSize + gemSpacing) + gemSize + 3, gemY+50);
+	        
+	    }
+
+	private void drawPlayerArea(Graphics2D g2d, int x, int y, int width, int height, PlayerHand player, int playerNum) {
+		g2d.setColor(Color.WHITE);
+		g2d.fillRect(x, y, width, height);
+		g2d.setColor(Color.BLACK);
+		g2d.drawRect(x, y, width, height);
+		
+
+		// Center player title
+		g2d.setColor(Color.BLACK);
+		g2d.setFont(new Font("Arial", Font.BOLD, 18));
+		FontMetrics fm = g2d.getFontMetrics();
+		int titleWidth = fm.stringWidth("Player " + playerNum);
+		g2d.drawString("Player " + playerNum, x + (width - titleWidth) / 2 - 200, y + 25);
+		g2d.drawString("Points: " + player.getPoints(), x + (width - titleWidth) / 2 , y+25);
+		g2d.fillRect( x + (width - titleWidth) / 2 +163, y+1, 620-446, 50-11 );
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font("Arial", Font.BOLD, 30));
+		g2d.drawString("Reserves", x + (width - titleWidth) / 2 +180, y+30);
+		
+
+		// Draw smaller gem boxes inside the player area
+		int gemBoxWidth = width - 20;
+		int gemBoxHeight = height / 8;
+		int gemBoxX = x + 10;
+		int gemBoxY = y + 40;
+
+		g2d.setColor(Color.WHITE);
+		g2d.fillRect(gemBoxX, gemBoxY, gemBoxWidth, gemBoxHeight);
+		g2d.setColor(Color.BLACK);
+		g2d.drawRect(gemBoxX, gemBoxY, gemBoxWidth, gemBoxHeight);
+
+		// Draw player gems inside the gem boxes
+		int gemSize = 50; // Bigger gems
+		int gemSpacing = 40; // More space between each gem
+		int playerGemX = gemBoxX + 10;
+		int playerGemY = gemBoxY + (gemBoxHeight - gemSize) / 2;
+		g2d.drawImage(blackGem, playerGemX, playerGemY, gemSize, gemSize-5, this);
+    	g2d.drawString(player.getChip("black")+"", playerGemX + gemSize + 5, playerGemY + gemSize / 2);
+
+    	g2d.drawImage(blueGem, playerGemX + (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
+    	g2d.drawString(player.getChip("blue")+"", playerGemX + (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+    	g2d.drawImage(redGem, playerGemX + 2 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
+    	g2d.drawString(player.getChip("red")+"", playerGemX + 2 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+    	g2d.drawImage(greenGem, playerGemX + 3 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
+    	g2d.drawString(player.getChip("green")+"", playerGemX + 3 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+    	g2d.drawImage(whiteGem, playerGemX + 4 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
+    	g2d.drawString(player.getChip("white")+"", playerGemX + 4 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+    	g2d.drawImage(reserveGem, playerGemX + 5 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
+    	g2d.drawString(player.getChip("yellow")+"", playerGemX + 5 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+
+
+			// Draw single, smaller tempCard image inside player box, aligned to the left
+			int tempCardWidth = 60; // Same size as a standard card
+			int tempCardHeight = 100;
+			int tempCardX = gemBoxX + 10;
+			int tempCardY = gemBoxY + gemBoxHeight + 10;
+		if(player.getShowDeck())
+		{
+			for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
+		        if (player.getCards().get(color) != null) {
+		            for (int i = 0; i < player.getCards().get(color).size(); i++) {
+		                BufferedImage card = player.getCards().get(color).get(i);
+		                if(color.equals("black"))
+		                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		                else if(color.equals("blue"))
+		                	g2d.drawImage(card, tempCardX+90, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		                else if(color.equals("red"))
+		                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		                else if(color.equals("green"))
+		                	g2d.drawImage(card, tempCardX+270, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		                else if(color.equals("white"))
+		                	g2d.drawImage(card, tempCardX+360, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+		            }
+		        }
+			}
+	
+			
+			// X-location = 490
+			// Y-location = 135
+			// Width = 100
+			// Height = 100
+			for( int i =0; i<player.getPatrons().size(); i++)
+			{
+				Patron p = player.getPatrons().get(i);
+				g2d.drawImage(p.getImage(), 490 , tempCardY+i*60, 100, 100, this);
+			}
+		}
+		else
+		{
+			for(int i = 0; i<player.getReserves().size(); i++)
+			{
+				g2d.drawImage(player.getReserves().get(i).getImage(), tempCardX+200*(i), tempCardY+75, 150, 200, this);
+			}
+		
+		}
+		
+		// draw string that shows whos turn it is
+		g2d.setFont(new Font("Arial", Font.BOLD, 30));
+		g2d.drawString(currentTurn, 875, 65);
+		g2d.setFont(new Font("Arial", Font.BOLD, 18));
+		
+		//draw indicator for which mode
+		if(draw1)
+		{
+			g2d.setColor(Color.RED);
+			g2d.fillRect(692, 893, 215, 65);
+			g2d.setColor(Color.BLACK);
+		}
+		else if(draw1 == false)
+		{
+			g2d.setColor(Color.RED);
+			g2d.fillRect(992, 893, 215, 65);
+			g2d.setColor(Color.BLACK);
+		}
+		
+		//draw buttons for draw1/2 modes
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(697, 897, 206, 56);
+		g2d.fillRect(997, 897, 206, 56);
+		g2d.setColor(Color.WHITE);
+		g2d.fillRect(700, 900, 200, 50);
+		g2d.fillRect(1000, 900, 200, 50);
+		g2d.setColor(Color.BLACK);
+		g2d.drawString("Draw 3 different", 730, 930);
+		g2d.drawString("Draw 2 same", 1045, 930);
+		
+		//draw end turn button
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(847, 957, 206, 56);
+		g2d.setColor(Color.WHITE);
+		g2d.fillRect(850, 960, 200, 50);
+		g2d.setColor(Color.BLACK);
+		g2d.drawString("End Turn", 910, 990);
+	}
+	
+	public int cycleTurn()
+	{
+		int totalTurns = 4;
+		boolean gameHasEnded = false;
+		boolean end = false;
+		if(gameEnd == true && gameHasEnded == false)
+		{
+			if(turns[0])
+				totalTurns = 3;
+			else if(turns[1])
+				totalTurns = 2;
+			else if(turns[2])
+				totalTurns = 1;
+			else if(turns[3])
+				totalTurns = 0;
+			gameHasEnded = true;
+			end = true;
+		}
+		if(turns[0] == true && totalTurns > 0)
+		{
+			turns[0] = false;
+			turns[1] = true;
+			currentTurn = "Player 2 turn";
+			actions = 3;
+			canDrawBlack = true;
+			canDrawBlue = true;
+			canDrawRed = true;
+			canDrawGreen = true;
+			canDrawWhite = true;
+			if(end)
+				totalTurns--;
+		}
+		else if(turns[1] == true && totalTurns > 0)
+		{
+			turns[1] = false;
+			turns[2] = true;
+			currentTurn = "Player 3 turn";
+			actions = 3;
+			canDrawBlack = true;
+			canDrawBlue = true;
+			canDrawRed = true;
+			canDrawGreen = true;
+			canDrawWhite = true;
+			if(end)
+				totalTurns--;
+		}
+		else if(turns[2] == true && totalTurns > 0)
+		{
+			turns[2] = false;
+			turns[3] = true;
+			currentTurn = "Player 4 turn";
+			actions = 3;
+			canDrawBlack = true;
+			canDrawBlue = true;
+			canDrawRed = true;
+			canDrawGreen = true;
+			canDrawWhite = true;
+			if(end)
+				totalTurns--;
+		}
+		else if(turns[3] == true && totalTurns > 0)
+		{
+			turns[3] = false;
+			turns[0] = true;
+			currentTurn = "Player 1 turn";
+			actions = 3;
+			canDrawBlack = true;
+			canDrawBlue = true;
+			canDrawRed = true;
+			canDrawGreen = true;
+			canDrawWhite = true;
+			if(end)
+				totalTurns--;
+		}
+		else
+		{
+			turns[0] = true;
+			turns[3] = false;
+		}
+		
+		return totalTurns;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int mouseX = e.getX();
+	    int mouseY = e.getY();
+	    out.println("X-Location: " + mouseX + "\n" + "Y-Location: " + mouseY);
+	    
+	    if (e.getButton() == MouseEvent.BUTTON3) {
+	    	System.out.println("right click");
+	    	for (int i = 0; i < 12; i++) {
+	    		if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i] && mouseY < cardY[i] + cardHeight) {
+	    			System.out.println("card " + i);
+	    			for(int j = 0; j < 4; j++)
+	        	    {
+	        	    	if(turns[j] && actions == 3)
+	        	    	{
+	        	    		int rng = 0;
+	        	    		if((i == 8 || i == 9 || i == 10 || i == 11) && Level1CardsStart[i-8].getImage() != background)
+	        	    		{
+	        	    			players[j].addReserve(Level1CardsStart[i-8]);
+	        	    			for( int k = 0;k<1;k++ )
+        	    				{
+        	    					rng = rnd.nextInt(40);
+        	    					if( !Level1ImagesUsed[rng])
+        	    					{
+        	    						Level1CardsStart[i-8] = Level1Cards.get(rng);
+        	    						Level1ImagesUsed[rng] = true;
+        	    					}
+        	    					else
+        	    					{
+        	    						boolean AllImagesUsed = true;
+        	    						for( boolean b:Level1ImagesUsed )
+        	    						{
+        	    							if( !b )
+        	    								AllImagesUsed = false;
+        	    						}
+        	    						if( !AllImagesUsed )
+        	    							k--;
+        	    						else
+        	    						{
+        	    							Level1CardsStart[i-8] = new Card(background);
+        	    						}
+        	    							
+        	    					}
+        	    				}
+	        	    			cycleTurn();
+	        	    		}
+	        	    		if((i == 4 || i == 5 || i == 6 || i == 7 )&& Level2CardsStart[i-4].getImage() != background)
+	        	    		{
+	        	    			players[j].addReserve(Level2CardsStart[i-4]);
+	        	    			for( int k = 0;k<1;k++ )
+        	    				{
+        	    					rng = rnd.nextInt(30);
+        	    					if( !Level2ImagesUsed[rng])
+        	    					{
+        	    						Level2CardsStart[i-4] = Level2Cards.get(rng);
+        	    						Level2ImagesUsed[rng] = true;
+        	    					}
+        	    					else
+        	    					{
+        	    						boolean AllImagesUsed = true;
+        	    						for( boolean b:Level2ImagesUsed )
+        	    						{
+        	    							if( !b )
+        	    								AllImagesUsed = false;
+        	    						}
+        	    						if( !AllImagesUsed )
+        	    							k--;
+        	    						else
+        	    						{
+        	    							Level2CardsStart[i-4] = new Card(background);
+        	    						}
+        	    							
+        	    					}
+        	    				}cycleTurn();
+	        	    		}
+	        	    		if((i == 0 || i == 1 || i == 2 || i == 3) && Level3CardsStart[i].getImage() != background)
+	        	    		{
+	        	    			players[j].addReserve(Level3CardsStart[i]);
+	        	    			for( int k = 0;k<1;k++ )
+        	    				{
+        	    					rng = rnd.nextInt(20);
+        	    					if( !Level3ImagesUsed[rng])
+        	    					{
+        	    						Level3CardsStart[i] = Level3Cards.get(rng);
+        	    						Level3ImagesUsed[rng] = true;
+        	    					}
+        	    					else
+        	    					{
+        	    						boolean AllImagesUsed = true;
+        	    						for( boolean b:Level3ImagesUsed )
+        	    						{
+        	    							if( !b )
+        	    								AllImagesUsed = false;
+        	    						}
+        	    						if( !AllImagesUsed )
+        	    							k--;
+        	    						else
+        	    						{
+        	    							Level3CardsStart[i] = new Card(background);
+        	    						}
+        	    							
+        	    					}
+        	    				}
+	        	    		}cycleTurn();
+	        	    		break;
+	        	    	}
+	        	    }
+	    			
+	    			break;
+	    		} 
+			}
+	    }
+	    if (e.getButton() == MouseEvent.BUTTON1) {
+	    	if( mouseX >= 464 && mouseX <= (464+174) && mouseY >=10 && mouseY<= (10+39) )
+	    		if( players[0].getShowDeck() )
+	    			players[0].setShowDeck(false);
+	    		else
+	    			players[0].setShowDeck(true);
+	    	if( mouseX >= 464 && mouseX <= (464+174) && mouseY >=538 && mouseY<= (538+39) )
+	    		if( players[1].getShowDeck() )
+	    			players[1].setShowDeck(false);
+	    		else
+	    			players[1].setShowDeck(true);
+	    	if( mouseX >= 1744 && mouseX <= (1744+174) && mouseY >=10 && mouseY<= (10+39) )
+	    		if( players[2].getShowDeck() )
+	    			players[2].setShowDeck(false);
+	    		else
+	    			players[2].setShowDeck(true);
+	    	if( mouseX >= 1744 && mouseX <= (1744+174) && mouseY >=538 && mouseY<= (538+39) )
+	    		if( players[3].getShowDeck() )
+	    			players[3].setShowDeck(false);
+	    		else
+	    			players[3].setShowDeck(true);
+	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010)
+	    		cycleTurn();
+	    	if(mouseX >= 700 && mouseX <= 900 && mouseY >= 900 && mouseY <= 950)
+	    		draw1 = true;
+	    	if(mouseX >= 1000 && mouseX <= 1200 && mouseY >= 900 && mouseY <= 950)
+	    		draw1 = false;
+	    	for (int i = 0; i < 12; i++) {
+	    		if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i] && mouseY < cardY[i] + cardHeight) {
+	    			System.out.println("card " + i);
+	    			for(int j = 0; j < 4; j++)
+	        	    {
+	    				int rng;
+	        	    	if(turns[j] && actions == 3)
+	        	    	{
+	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
+	        	    		{
+	        	    			if(Level1CardsStart[i-8].canAfford(players[j]) && Level1CardsStart[i-8].getImage() != background)
+	        	    			{
+	        	    				if(Level1CardsStart[i-8].getCost().containsKey("black"))
+	        	    				{
+	        	    					if(Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black") >= 0)
+	        	    						numBlack += Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black");
+	        	    				}
+	        	    				if(Level1CardsStart[i-8].getCost().containsKey("blue"))
+	        	    				{
+	        	    					if(Level1CardsStart[i-8].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
+	        	    						numBlue += Level1CardsStart[i-8].getCost().get("blue") - players[j].getNumCard("blue");
+	        	    				}
+	        	    				if(Level1CardsStart[i-8].getCost().containsKey("red"))
+	        	    				{
+	        	    					if(Level1CardsStart[i-8].getCost().get("red") - players[j].getNumCard("red") >= 0)
+	        	    						numRed += Level1CardsStart[i-8].getCost().get("red") - players[j].getNumCard("red");
+	        	    				}
+	        	    				if(Level1CardsStart[i-8].getCost().containsKey("green"))
+	        	    				{
+	        	    					if(Level1CardsStart[i-8].getCost().get("green") - players[j].getNumCard("green") >= 0)
+	        	    						numGreen += Level1CardsStart[i-8].getCost().get("green") - players[j].getNumCard("green");
+	        	    				}
+	        	    				if(Level1CardsStart[i-8].getCost().containsKey("white"))
+	        	    				{
+	        	    					if(Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white") >= 0)
+	        	    						numWhite += Level1CardsStart[i-8].getCost().get("white") - players[j].getNumCard("white");
+	        	    				}
+	        	    				players[j].buyCard(Level1CardsStart[i-8]);
+        	    					rng = 0;
+	        	    				for(int x = 0; x < 5; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
+	        	    					{
+	        	    						players[j].buyPatron(PatronStart[rng]);
+	        	    						PatronStart[rng].setImage(background);
+	        	    						PatronBoughts[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						if( rng<5 )
+	        	    						{
+	        	    							rng++;
+	        	    						}
+	        	    					}
+	        	    				}
+	        	    				if(players[j].getPoints() >= 15)
+	        	    					gameEnd = true;
+	        	    				for( int k = 0;k<1;k++ )
+	        	    				{
+	        	    					rng = rnd.nextInt(40);
+	        	    					if( !Level1ImagesUsed[rng])
+	        	    					{
+	        	    						Level1CardsStart[i-8] = Level1Cards.get(rng);
+	        	    						Level1ImagesUsed[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						k--;
+	        	    					}
+	        	    						
+	        	    				}
+	        	    				
+	        	    				cycleTurn();
+	        	    			}
+	        	    		}
+	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
+	        	    		{
+	        	    			if(Level2CardsStart[i-4].canAfford(players[j])&& Level2CardsStart[i-4].getImage() != background)
+	        	    			{
+	        	    				if(Level2CardsStart[i-4].getCost().containsKey("black"))
+	        	    				{
+	        	    					if(Level2CardsStart[i-4].getCost().get("black") - players[j].getNumCard("black") >= 0)
+	        	    						numBlack += Level2CardsStart[i-4].getCost().get("black") - players[j].getNumCard("black");
+	        	    				}
+	        	    				if(Level2CardsStart[i-4].getCost().containsKey("blue"))
+	        	    				{
+	        	    					if(Level2CardsStart[i-4].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
+	        	    						numBlue += Level2CardsStart[i-4].getCost().get("blue") - players[j].getNumCard("blue");
+	        	    				}
+	        	    				if(Level2CardsStart[i-4].getCost().containsKey("red"))
+	        	    				{
+	        	    					if(Level2CardsStart[i-4].getCost().get("red") - players[j].getNumCard("red") >= 0)
+	        	    						numRed += Level2CardsStart[i-4].getCost().get("red") - players[j].getNumCard("red");
+	        	    				}
+	        	    				if(Level2CardsStart[i-4].getCost().containsKey("green"))
+	        	    				{
+	        	    					if(Level2CardsStart[i-4].getCost().get("green") - players[j].getNumCard("green") >= 0)
+	        	    						numGreen += Level2CardsStart[i-4].getCost().get("green") - players[j].getNumCard("green");
+	        	    				}
+	        	    				if(Level2CardsStart[i-4].getCost().containsKey("white"))
+	        	    				{
+	        	    					if(Level2CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white") >= 0)
+	        	    						numWhite += Level2CardsStart[i-4].getCost().get("white") - players[j].getNumCard("white");
+	        	    				}
+	        	    				players[j].buyCard(Level2CardsStart[i-4]);
+	        	    				rng = 0;
+	        	    				for(int x = 0; x < 5; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
+	        	    					{
+	        	    						players[j].buyPatron(PatronStart[rng]);
+	        	    						PatronStart[rng].setImage(background);
+	        	    						PatronBoughts[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						if( rng<5 )
+	        	    						{
+	        	    							rng++;
+	        	    						}
+	        	    					}
+	        	    				}
+	        	    				if(players[j].getPoints() >= 15)
+	        	    					gameEnd = true;
+	        	    				for( int k = 0;k<1;k++ )
+	        	    				{
+	        	    					rng = rnd.nextInt(30);
+	        	    					if( !Level2ImagesUsed[rng])
+	        	    					{
+	        	    						Level2CardsStart[i-4] = Level2Cards.get(rng);
+	        	    						Level2ImagesUsed[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						k--;
+	        	    					}
+	        	    						
+	        	    				}
+	        	    				cycleTurn();
+	        	    			}
+	        	    		}
+	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
+	        	    		{
+	        	    			if(Level3CardsStart[i].canAfford(players[j]) && Level3CardsStart[i].getImage() != background)
+	        	    			{
+	        	    				if(Level3CardsStart[i].getCost().containsKey("black"))
+	        	    				{
+	        	    					if(Level3CardsStart[i].getCost().get("black") - players[j].getNumCard("black") >= 0)
+	        	    						numBlack += Level3CardsStart[i].getCost().get("black") - players[j].getNumCard("black");
+	        	    				}
+	        	    				if(Level3CardsStart[i].getCost().containsKey("blue"))
+	        	    				{
+	        	    					if(Level3CardsStart[i].getCost().get("blue") - players[j].getNumCard("blue") >= 0)
+	        	    						numBlue += Level3CardsStart[i].getCost().get("blue") - players[j].getNumCard("blue");
+	        	    				}
+	        	    				if(Level3CardsStart[i].getCost().containsKey("red"))
+	        	    				{
+	        	    					if(Level3CardsStart[i].getCost().get("red") - players[j].getNumCard("red") >= 0)
+	        	    						numRed += Level3CardsStart[i].getCost().get("red") - players[j].getNumCard("red");
+	        	    				}
+	        	    				if(Level3CardsStart[i].getCost().containsKey("green"))
+	        	    				{
+	        	    					if(Level3CardsStart[i].getCost().get("green") - players[j].getNumCard("green") >= 0)
+	        	    						numGreen += Level3CardsStart[i].getCost().get("green") - players[j].getNumCard("green");
+	        	    				}
+	        	    				if(Level3CardsStart[i].getCost().containsKey("white"))
+	        	    				{
+	        	    					if(Level3CardsStart[i].getCost().get("white") - players[j].getNumCard("white") >= 0)
+	        	    						numWhite += Level3CardsStart[i].getCost().get("white") - players[j].getNumCard("white");
+	        	    				}
+	        	    				players[j].buyCard(Level3CardsStart[i]);
+	        	    				rng = 0;
+	        	    				for(int x = 0; x < 5; x++)
+	        	    				{
+	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
+	        	    					{
+	        	    						players[j].buyPatron(PatronStart[rng]);
+	        	    						PatronStart[rng].setImage(background);
+	        	    						PatronBoughts[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						if( rng<5 )
+	        	    						{
+	        	    							rng++;
+	        	    						}
+	        	    					}
+	        	    				}
+	        	    				if(players[j].getPoints() >= 15)
+	        	    					gameEnd = true;
+	        	    				for( int k = 0;k<1;k++ )
+	        	    				{
+	        	    					rng = rnd.nextInt(20);
+	        	    					if( !Level3ImagesUsed[rng])
+	        	    					{
+	        	    						Level3CardsStart[i] = Level3Cards.get(rng);
+	        	    						Level3ImagesUsed[rng] = true;
+	        	    					}
+	        	    					else
+	        	    					{
+	        	    						k--;
+	        	    					}
+	        	    						
+	        	    				}
+	        	    				cycleTurn();
+	        	    			}
+	        	    		}
+	        	    		break;
+	        	    	}
+	        	    }
+	    			
+	    			break;
+	    		} 
+			}
+			int[][] gemPositions = {
+		        {685, 845}, // Brown
+			    {790, 845}, // Blue
+			    {895, 845}, // Red
+			    {1000,845}, // Green
+			    {1105, 845}, // White
+		        {1210, 845}  // Yellow
+		        };
+		    int gemRadius = 40;
+		    for (int[] gem : gemPositions) {
+		        int gemX = gem[0];
+		        int gemY = 845;
+		        int distanceSquared = (mouseX - gemX) * (mouseX - gemX) + (mouseY - gemY) * (mouseY - gemY);
+		        
+		        if (distanceSquared <= gemRadius * gemRadius) {
+		        	if (gemX == 685 && numBlack > 0) {
+		        	    System.out.println("black");
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawBlack && actions > 0 )
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawBlack = false;
+		        	    			numBlack--;
+		        	    			players[i].addChip("black");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numBlack >= 4 && actions == 3  )
+		        	    		{
+		        	    			actions = 0;
+		        	    			numBlack = numBlack - 2;
+		        	    			players[i].addChip("black");
+		        	    			players[i].addChip("black");
+		        	    			out.println(numBlack);
+		        	    			cycleTurn();
+		        	    		}	
+		        	    		break;
+		        	    	}
+		        	    }
+		        	}
+
+		        	if (gemX == 790 && numBlue > 0) {
+		        	    System.out.println("blue");
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawBlue && actions > 0 )
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawBlue = false;
+		        	    			numBlue--;
+		        	    			players[i].addChip("blue");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numBlue >= 4 && actions == 3 )
+		        	    		{
+		        	    			actions = 0;
+		        	    			numBlue = numBlue - 2;
+		        	    			players[i].addChip("blue");
+		        	    			players[i].addChip("blue");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
+		        	}
+		        	if (gemX == 895 && numRed > 0) {
+		        	    System.out.println("red");
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawRed && actions > 0 )
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawRed = false;
+		        	    			numRed--;
+		        	    			players[i].addChip("red");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numRed >= 4 && actions == 3 )
+		        	    		{
+		        	    			actions = 0;
+		        	    			numRed = numRed - 2;
+		        	    			players[i].addChip("red");
+		        	    			players[i].addChip("red");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
+		        	}
+		        	if (gemX == 1000 && numGreen > 0) {
+		        	    System.out.println("green");
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawGreen && actions > 0 )
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawGreen = false;
+		        	    			numGreen--;
+		        	    			players[i].addChip("green");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numGreen >= 4 && actions == 3 )
+		        	    		{
+		        	    			actions = 0;
+		        	    			numGreen = numGreen - 2;
+		        	    			players[i].addChip("green");
+		        	    			players[i].addChip("green");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
+		        	}
+		        	if (gemX == 1105 && numWhite > 0) {
+		        	    System.out.println("white");
+		        	    for(int i = 0; i < 4; i++)
+		        	    {
+		        	    	if(turns[i])
+		        	    	{
+		        	    		if(draw1 && canDrawWhite && actions > 0 )
+		        	    		{
+		        	    			actions--;
+		        	    			canDrawWhite = false;
+		        	    			numWhite--;
+		        	    			players[i].addChip("white");
+		        	    			if(actions == 0)
+		        	    				cycleTurn();
+		        	    		}
+		        	    		else if(draw1 == false && numWhite >= 4 && actions == 3 )
+		        	    		{
+		        	    			actions = 0;
+		        	    			numWhite = numWhite - 2;
+		        	    			players[i].addChip("white");
+		        	    			players[i].addChip("white");
+		        	    			cycleTurn();
+		        	    		}
+		        	    		break;
+		        	    	}
+		        	    }
+		        	}
+		            break;
+		        }
+		    }
+	    }
+	    repaint();
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		int mouseX = e.getX();
+		int mouseY = e.getY();
+		for (int i = 0; i < 12; i++) {
+			if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i]
+					&& mouseY < cardY[i] + cardHeight) {
+				showCardHighlight = true;
+				cardHighlightX = cardX[i] - 5;
+				cardHighlightY = cardY[i] - 5;
+				break;
+			} else {
+				showCardHighlight = false;
+			}
+		}
+		int[][] gemPositions = {
+		        {685, 845}, // Brown
+		        {790, 845}, // Blue
+		        {895, 845}, // Red
+		        {1000,845}, // Green
+		        {1105, 845}, // White
+		    };
+		    int gemRadius = 40;
+		    for (int[] gem : gemPositions) {
+		        int gemX = gem[0];
+		        int gemY = gem[1];
+		        int distanceSquared = (mouseX - gemX) * (mouseX - gemX) + (mouseY - gemY) * (mouseY - gemY);
+		        
+		        if (distanceSquared <= gemRadius * gemRadius) {
+		        	showGemHighlight = true;
+		            gemHighlightX = gemX;
+		            gemHighlightY = gemY;
+		            break;
+		        }else {
+		        	showGemHighlight = false;
+		        }
+		        
+		    }
+		repaint();
+	}
+
+	public void mouseDragged(MouseEvent e) {
+
+	}
+
+	public void assignImages() {
+		try {
+			// Cards by color
+			// level 1
+			for (int k = 0; k < 5; k++) {
+				for (int i = 1; i <= 8; i++) {
+					if (k == 0) {
+						Level1Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/BlackCard" + i + "Level1.png")));
+					} else if (k == 1) {
+						Level1Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level1.png")));
+					} else if (k == 2) {
+						Level1Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level1.png")));
+					} else if (k == 3) {
+						Level1Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level1.png")));
+					} else if (k == 4) {
+						Level1Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level1.png")));
+					}
+
+				}
+			}
+			// adding card class objects into list
+			// adding black
+			TreeMap<String, Integer> map = new TreeMap<String, Integer>();
+			map.put("blue", 4);
+			Level1Cards.add(new Card(1, "black", Level1Images.get(0), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 3);
+			Level1Cards.add(new Card(0, "black", Level1Images.get(1), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 2);
+			map.put("red", 1);
+			Level1Cards.add(new Card(0, "black", Level1Images.get(2), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("green", 2);
+			Level1Cards.add(new Card(0, "black", Level1Images.get(3), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("blue", 2);
+			map.put("red", 1);
+			Level1Cards.add(new Card(0, "black", Level1Images.get(4), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 1);
+			map.put("red", 3);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "black", Level1Images.get(5), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("blue", 1);
+			map.put("green", 1);
+			map.put("red", 1);
+			Level1Cards.add(new Card(0, "black", Level1Images.get(6), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("blue", 2);
+			map.put("green", 1);
+			map.put("red", 1);
+			Level1Cards.add(new Card(0, "black", Level1Images.get(7), map));
+			// Adding blue cards now
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("green", 1);
+			map.put("red", 1);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "blue", Level1Images.get(8), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("green", 1);
+			map.put("red", 2);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "blue", Level1Images.get(9), map));
+			map = new TreeMap<String, Integer>();
+			map.put("red", 4);
+			Level1Cards.add(new Card(1, "blue", Level1Images.get(10), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 1);
+			map.put("green", 3);
+			map.put("red", 1);
+			Level1Cards.add(new Card(0, "blue", Level1Images.get(11), map));
+			map = new TreeMap<String, Integer>();
+			map.put("black", 3);
+			Level1Cards.add(new Card(0, "blue", Level1Images.get(12), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("black", 2);
+			Level1Cards.add(new Card(0, "blue", Level1Images.get(13), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 2);
+			map.put("black", 2);
+			Level1Cards.add(new Card(0, "blue", Level1Images.get(14), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("green", 2);
+			map.put("red", 2);
+			Level1Cards.add(new Card(0, "blue", Level1Images.get(15), map));
+			// adding green
+			map = new TreeMap<String, Integer>();
+			map.put("black", 4);
+			Level1Cards.add(new Card(1, "green", Level1Images.get(16), map));
+			map = new TreeMap<String, Integer>();
+			map.put("red", 3);
+			Level1Cards.add(new Card(0, "green", Level1Images.get(17), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("blue", 1);
+			Level1Cards.add(new Card(0, "green", Level1Images.get(18), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("blue", 3);
+			map.put("green", 1);
+			Level1Cards.add(new Card(0, "green", Level1Images.get(19), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 1);
+			map.put("red", 2);
+			map.put("black", 2);
+			Level1Cards.add(new Card(0, "green", Level1Images.get(20), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 2);
+			map.put("red", 2);
+			Level1Cards.add(new Card(0, "green", Level1Images.get(21), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("blue", 1);
+			map.put("red", 1);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "green", Level1Images.get(22), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("blue", 1);
+			map.put("red", 1);
+			map.put("black", 2);
+			Level1Cards.add(new Card(0, "green", Level1Images.get(23), map));
+			// adding red
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("green", 1);
+			map.put("black", 2);
+			Level1Cards.add(new Card(0, "red", Level1Images.get(24), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			Level1Cards.add(new Card(0, "red", Level1Images.get(25), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("red", 1);
+			map.put("black", 3);
+			Level1Cards.add(new Card(0, "red", Level1Images.get(26), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 2);
+			map.put("green", 1);
+			Level1Cards.add(new Card(0, "red", Level1Images.get(27), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("red", 2);
+			Level1Cards.add(new Card(0, "red", Level1Images.get(28), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("red", 1);
+			map.put("black", 3);
+			Level1Cards.add(new Card(0, "red", Level1Images.get(29), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("blue", 1);
+			map.put("green", 1);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "red", Level1Images.get(30), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("blue", 1);
+			map.put("green", 1);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "red", Level1Images.get(31), map));
+			// adding white
+			map = new TreeMap<String, Integer>();
+			map.put("green", 4);
+			Level1Cards.add(new Card(1, "white", Level1Images.get(32), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 2);
+			map.put("black", 2);
+			Level1Cards.add(new Card(0, "white", Level1Images.get(33), map));
+			map = new TreeMap<String, Integer>();
+			map.put("red", 2);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "white", Level1Images.get(34), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 3);
+			Level1Cards.add(new Card(0, "white", Level1Images.get(35), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 1);
+			map.put("green", 1);
+			map.put("red", 1);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "white", Level1Images.get(36), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 1);
+			map.put("green", 2);
+			map.put("red", 1);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "white", Level1Images.get(37), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 2);
+			map.put("green", 2);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "white", Level1Images.get(38), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("blue", 1);
+			map.put("black", 1);
+			Level1Cards.add(new Card(0, "white", Level1Images.get(39), map));
+
+			// level 2
+			for (int k = 0; k < 5; k++) {
+				for (int i = 1; i <= 6; i++) {
+					if (k == 0) {
+						Level2Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/BlackCard" + i + "Level2.png")));
+					} else if (k == 1) {
+						Level2Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level2.png")));
+					} else if (k == 2) {
+						Level2Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level2.png")));
+					} else if (k == 3) {
+						Level2Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level2.png")));
+					} else if (k == 4) {
+						Level2Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level2.png")));
+					}
+
+				}
+			}
+			// adding Level2 cards
+			// adding black cards
+			map = new TreeMap<String, Integer>();
+			map.put("black", 6);
+			Level2Cards.add(new Card(3, "black", Level2Images.get(0), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 5);
+			Level2Cards.add(new Card(2, "black", Level2Images.get(1), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 5);
+			map.put("red", 3);
+			Level2Cards.add(new Card(2, "black", Level2Images.get(2), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 1);
+			map.put("green", 4);
+			map.put("red", 2);
+			Level2Cards.add(new Card(2, "black", Level2Images.get(3), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("green", 3);
+			map.put("black", 2);
+			Level2Cards.add(new Card(1, "black", Level2Images.get(4), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("blue", 2);
+			map.put("green", 2);
+			Level2Cards.add(new Card(1, "black", Level2Images.get(5), map));
+			//
+			// Adding blue cards now
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 6);
+			Level2Cards.add(new Card(3, "blue", Level2Images.get(6), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 5);
+			Level2Cards.add(new Card(2, "blue", Level2Images.get(7), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("red", 1);
+			map.put("black", 4);
+			Level2Cards.add(new Card(2, "blue", Level2Images.get(8), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 5);
+			map.put("blue", 3);
+			Level2Cards.add(new Card(2, "blue", Level2Images.get(9), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 2);
+			map.put("green", 3);
+			map.put("black", 3);
+			Level2Cards.add(new Card(1, "blue", Level2Images.get(10), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 2);
+			map.put("green", 2);
+			map.put("red", 3);
+			Level2Cards.add(new Card(1, "blue", Level2Images.get(11), map));
+			//
+			// adding green
+			map = new TreeMap<String, Integer>();
+			map.put("green", 6);
+			Level2Cards.add(new Card(3, "green", Level2Images.get(12), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 5);
+			map.put("green", 3);
+			Level2Cards.add(new Card(2, "green", Level2Images.get(13), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 5);
+			Level2Cards.add(new Card(2, "green", Level2Images.get(14), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 4);
+			map.put("blue", 2);
+			map.put("black", 1);
+			Level2Cards.add(new Card(2, "green", Level2Images.get(15), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("green", 2);
+			map.put("red", 3);
+			Level2Cards.add(new Card(1, "green", Level2Images.get(16), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("blue", 3);
+			map.put("black", 2);
+			Level2Cards.add(new Card(1, "green", Level2Images.get(17), map));
+			//
+			// adding red
+			map = new TreeMap<String, Integer>();
+			map.put("red", 6);
+			Level2Cards.add(new Card(3, "red", Level2Images.get(18), map));
+			map = new TreeMap<String, Integer>();
+			map.put("black", 5);
+			Level2Cards.add(new Card(2, "red", Level2Images.get(19), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("black", 5);
+			Level2Cards.add(new Card(2, "red", Level2Images.get(20), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 1);
+			map.put("blue", 4);
+			map.put("green", 2);
+			Level2Cards.add(new Card(2, "red", Level2Images.get(21), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 3);
+			map.put("red", 2);
+			map.put("black", 3);
+			Level2Cards.add(new Card(1, "red", Level2Images.get(22), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("red", 2);
+			map.put("black", 3);
+			Level2Cards.add(new Card(1, "red", Level2Images.get(23), map));
+			//
+			// adding white
+			map = new TreeMap<String, Integer>();
+			map.put("white", 6);
+			Level2Cards.add(new Card(3, "white", Level2Images.get(24), map));
+			map = new TreeMap<String, Integer>();
+			map.put("red", 5);
+			map.put("black", 3);
+			Level2Cards.add(new Card(2, "white", Level2Images.get(25), map));
+			map = new TreeMap<String, Integer>();
+			map.put("red", 5);
+			Level2Cards.add(new Card(2, "white", Level2Images.get(26), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 1);
+			map.put("red", 4);
+			map.put("black", 2);
+			Level2Cards.add(new Card(2, "white", Level2Images.get(27), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 2);
+			map.put("blue", 3);
+			map.put("red", 3);
+			Level2Cards.add(new Card(1, "white", Level2Images.get(28), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 3);
+			map.put("red", 2);
+			map.put("black", 2);
+			Level2Cards.add(new Card(1, "white", Level2Images.get(29), map));
+			//
+			// level 3
+			for (int k = 0; k < 5; k++) {
+				for (int i = 1; i <= 4; i++) {
+					if (k == 0) {
+						Level3Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/BlackCard" + i + "Level3.png")));
+					} else if (k == 1) {
+						Level3Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level3.png")));
+					} else if (k == 2) {
+						Level3Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level3.png")));
+					} else if (k == 3) {
+						Level3Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level3.png")));
+					} else if (k == 4) {
+						Level3Images.add(
+								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level3.png")));
+					}
+
+				}
+			}
+			// adding Level3 cards
+			// adding black cards
+			map = new TreeMap<String, Integer>();
+			map.put("red", 7);
+			map.put("black", 3);
+			Level3Cards.add(new Card(5, "black", Level3Images.get(0), map));
+			map = new TreeMap<String, Integer>();
+			map.put("red", 7);
+			Level3Cards.add(new Card(4, "black", Level3Images.get(1), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 3);
+			map.put("red", 6);
+			map.put("black", 3);
+			Level3Cards.add(new Card(4, "black", Level3Images.get(2), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("blue", 3);
+			map.put("green", 5);
+			map.put("red", 3);
+			Level3Cards.add(new Card(3, "black", Level3Images.get(3), map));
+			//
+			// Adding blue cards now
+			map = new TreeMap<String, Integer>();
+			map.put("white", 7);
+			map.put("blue", 3);
+			Level3Cards.add(new Card(5, "blue", Level3Images.get(4), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 6);
+			map.put("blue", 3);
+			map.put("black", 3);
+			Level3Cards.add(new Card(4, "blue", Level3Images.get(5), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 7);
+			Level3Cards.add(new Card(4, "blue", Level3Images.get(6), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("green", 3);
+			map.put("red", 3);
+			map.put("black", 5);
+			Level3Cards.add(new Card(3, "blue", Level3Images.get(7), map));
+			//
+			// adding green
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 7);
+			map.put("green", 3);
+			Level3Cards.add(new Card(5, "green", Level3Images.get(8), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("blue", 6);
+			map.put("green", 3);
+			Level3Cards.add(new Card(4, "green", Level3Images.get(9), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 7);
+			Level3Cards.add(new Card(4, "green", Level3Images.get(10), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 5);
+			map.put("blue", 3);
+			map.put("red", 3);
+			map.put("black", 3);
+			Level3Cards.add(new Card(3, "green", Level3Images.get(11), map));
+			//
+			// adding red
+			map = new TreeMap<String, Integer>();
+			map.put("green", 7);
+			map.put("red", 3);
+			Level3Cards.add(new Card(5, "red", Level3Images.get(12), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 3);
+			map.put("green", 6);
+			map.put("red", 3);
+			Level3Cards.add(new Card(4, "red", Level3Images.get(13), map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 7);
+			Level3Cards.add(new Card(4, "red", Level3Images.get(14), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("blue", 5);
+			map.put("green", 3);
+			map.put("black", 3);
+			Level3Cards.add(new Card(3, "red", Level3Images.get(15), map));
+			//
+			// adding white
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("black", 7);
+			Level3Cards.add(new Card(5, "white", Level3Images.get(16), map));
+			map = new TreeMap<String, Integer>();
+			map.put("black", 7);
+			Level3Cards.add(new Card(4, "white", Level3Images.get(17), map));
+			map = new TreeMap<String, Integer>();
+			map.put("white", 3);
+			map.put("red", 3);
+			map.put("black", 6);
+			Level3Cards.add(new Card(4, "white", Level3Images.get(18), map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 3);
+			map.put("green", 3);
+			map.put("red", 5);
+			map.put("black", 3);
+			Level3Cards.add(new Card(3, "white", Level3Images.get(19), map));
+
+			//
+			for (int i = 0; i < 4; i++) {
+				int rng = rnd.nextInt(40);
+				if (Level1ImagesUsed[rng] == false) {
+					Level1CardsStart[i] = Level1Cards.get(rng);
+					Level1ImagesUsed[rng] = true;
+				} else
+					i--;
+			}
+			for (int i = 0; i < 4; i++) {
+				int rng = rnd.nextInt(30);
+				if (Level2ImagesUsed[rng] == false) {
+					Level2CardsStart[i] = Level2Cards.get(rng);
+					Level2ImagesUsed[rng] = true;
+				} else
+					i--;
+			}
+			for (int i = 0; i < 4; i++) {
+				int rng = rnd.nextInt(20);
+				if (Level3ImagesUsed[rng] == false) {
+					Level3CardsStart[i] = Level3Cards.get(rng);
+					Level3ImagesUsed[rng] = true;
+				} else
+					i--;
+			}
+
+			// PatronImages
+			for (int i = 1; i <= 10; i++) {
+				PatronImages[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/Patreon" + i + ".png"));
+			}
+			// assigning the patreon images to a Patron class obj
+			//
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 4);
+			map.put("green", 4);
+			PatronCards.add(new Patron(3, PatronImages[0], map));
+			map = new TreeMap<String, Integer>();
+			map.put("black", 4);
+			map.put("red", 4);
+			PatronCards.add(new Patron(3, PatronImages[1], map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 3);
+			map.put("blue", 3);
+			map.put("red", 3);
+			PatronCards.add(new Patron(3, PatronImages[2], map));
+			map = new TreeMap<String, Integer>();
+			map.put("black", 3);
+			map.put("red", 3);
+			map.put("white", 3);
+			PatronCards.add(new Patron(3, PatronImages[3], map));
+			map = new TreeMap<String, Integer>();
+			map.put("black", 3);
+			map.put("red", 3);
+			map.put("green", 3);
+			PatronCards.add(new Patron(3, PatronImages[4], map));
+			map = new TreeMap<String, Integer>();
+			map.put("blue", 4);
+			map.put("white", 4);
+			PatronCards.add(new Patron(3, PatronImages[5], map));
+			map = new TreeMap<String, Integer>();
+			map.put("red", 4);
+			map.put("green", 4);
+			PatronCards.add(new Patron(3, PatronImages[6], map));
+			map = new TreeMap<String, Integer>();
+			map.put("green", 3);
+			map.put("blue", 3);
+			map.put("white", 3);
+			PatronCards.add(new Patron(3, PatronImages[7], map));
+			map = new TreeMap<String, Integer>();
+			map.put("black", 3);
+			map.put("blue", 3);
+			map.put("white", 3);
+			PatronCards.add(new Patron(3, PatronImages[8], map));
+			map = new TreeMap<String, Integer>();
+			map.put("black", 4);
+			map.put("white", 4);
+			PatronCards.add(new Patron(3, PatronImages[9], map));
+			for (int i = 0; i < 5; i++) {
+				int rng = rnd.nextInt(10);
+				if (PatronUsed[rng] == false) {
+					PatronStart[i] = PatronCards.get(rng);
+					PatronUsed[rng] = true;
+				} else
+					i--;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Error loading images");
+		}
+
+	}
+
+	private Polygon createHexagon(int centerX, int centerY, int radius) {  //this is just for me, don't worry about it
+    Polygon hexagon = new Polygon();
+    for (int i = 0; i < 6; i++) {
+        double angle = Math.toRadians(60 * i); // No offset needed for a side-up alignment
+        int x = (int) (centerX + (radius+13) * Math.cos(angle));
+        int y = (int) (centerY + (radius+13) * Math.sin(angle));
+        hexagon.addPoint(x, y);
+    }
+    return hexagon;
+}
+}
