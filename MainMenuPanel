@@ -6,6 +6,8 @@ import java.io.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+
 import javax.swing.border.Border;
 
 public class MainMenuPanel extends JPanel implements Runnable, MouseListener, MouseMotionListener {
@@ -22,6 +24,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
     private boolean forward = true;
     private GameBoardPanel gameBoardPanel;
     private int rulesButtonX = -100, rulesButtonY = -50; // Adjusted further to the left
+    private boolean playButtonPositionSet = false;
 
     public MainMenuPanel(boolean bool) {
         phase = 0;
@@ -32,28 +35,26 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         xloc = 450; yloc = 550; fontSize = 100;
 
         try {
-            // Load images with the correct package path
-	        background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/MainMenuBackground.png"));
+            background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/MainMenuBackground.jpg"));
             splendorImage = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
             rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.PNG"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Initialize the play button
         playButton = new JButton("Play");
-        playButton.setFont(new Font("Arial", Font.BOLD, 36));
+        playButton.setFont(new Font("Arial", Font.BOLD, 48));
         playButton.setBackground(Color.WHITE);
         playButton.setForeground(Color.BLACK);
         playButton.setFocusPainted(false);
-        playButton.setBorder(new RoundedBorder(20)); // Curved edges
-        playButton.setBounds(0, 0, 300, 100); // Larger size for the button
-
+        playButton.setBorder(new RoundedBorder(20));
+        playButton.setSize(400, 150);
+        
         playButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                playButton.setBackground(new Color(60, 60, 60)); // Rainbow-blackish color
-                playButton.setForeground(new Color(255, 0, 255)); // Complementary color for contrast
+                playButton.setBackground(new Color(60, 60, 60));
+                playButton.setForeground(new Color(255, 0, 255));
             }
 
             @Override
@@ -66,24 +67,24 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(MainMenuPanel.this);
                 topFrame.getContentPane().removeAll();
-                topFrame.add(gameBoardPanel); // Transition to the GameBoardPanel
+                topFrame.add(gameBoardPanel);
                 topFrame.revalidate();
                 topFrame.repaint();
             }
         });
 
-        setLayout(null);
-        
-
-        if (bool) {
+        if (!bool) {
+            phase = 1;
+            setPlayButtonPosition();
+            add(playButton);
+        } else {
             new Thread(() -> {
                 animateStart();
-                animateStart(); // Call the animation method
                 phase = 1;
+                setPlayButtonPosition();
+                SwingUtilities.invokeLater(() -> add(playButton));
                 repaint();
             }).start();
-        } else {
-            phase = 1;
         }
 
         addMouseListener(this);
@@ -91,17 +92,73 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         setFocusable(true);
     }
 
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        SwingUtilities.invokeLater(this::setPlayButtonPosition);
+    }
+
+    private void setPlayButtonPosition() {
+        if (!playButtonPositionSet) {
+            int imageWidth = getWidth() / 3;
+            int imageHeight = getHeight() / 3;
+            int imageX = (getWidth() - imageWidth) / 2;
+            int imageY = (getHeight() - imageHeight) / 2 - 50;
+            int playButtonX = imageX + (imageWidth - playButton.getWidth()) / 2;
+            int playButtonY = imageY + imageHeight - 1000;
+            playButton.setBounds(playButtonX, playButtonY, playButton.getPreferredSize().width, playButton.getPreferredSize().height);
+            //playButton.setLocation(playButtonX, playButtonY);
+            playButtonPositionSet = true;
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+
+        if (phase == 0) {
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.fillRect(0, 0, getWidth(), getHeight());
+            g2d.setColor(Color.WHITE);
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
+            g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
+            g2d.drawString(word, xloc, yloc);
+        } else if (phase == 1) {
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+            g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+
+            int imageWidth = getWidth() / 3;
+            int imageHeight = getHeight() / 3;
+            int imageX = (getWidth() - imageWidth) / 2;
+            int imageY = (getHeight() - imageHeight) / 2 - 50;
+            g2d.drawImage(splendorImage, imageX, imageY, imageWidth, imageHeight, null);
+
+            AffineTransform originalTransform = g2d.getTransform();
+
+            g2d.rotate(Math.toRadians(theta), rulesButtonX + rulesButton.getWidth() / 2, rulesButtonY + rulesButton.getHeight() / 2);
+            g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, rulesButton.getWidth() + 100, rulesButton.getHeight() + 100, null);
+
+            g2d.setTransform(originalTransform);
+            paintChildren(g2d);
+        }
+    }
+
+    @Override
     public void mouseClicked(MouseEvent e) {
         int mouseX = e.getX();
         int mouseY = e.getY();
 
-        // Calculate Rules button bounds
+        // Calculate Rules button bounds after applying transformation
         if (phase == 1) {
-            int rulesButtonWidth = rulesButton.getWidth();
-            int rulesButtonHeight = rulesButton.getHeight();
-
-            if (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButtonWidth &&
-                mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButtonHeight) {
+            int rulesButtonWidth = rulesButton.getWidth() + 100;
+            int rulesButtonHeight = rulesButton.getHeight() + 100;
+            
+            AffineTransform transform = new AffineTransform();
+            transform.rotate(Math.toRadians(theta), rulesButtonX + rulesButtonWidth / 2, rulesButtonY + rulesButtonHeight / 2);
+            Shape transformedRulesButton = transform.createTransformedShape(new Rectangle(rulesButtonX, rulesButtonY, rulesButtonWidth, rulesButtonHeight));
+            
+            if (transformedRulesButton.contains(mouseX, mouseY)) {
                 // Rules button clicked, show the rules
                 JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
                 topFrame.getContentPane().removeAll();
@@ -111,6 +168,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
             }
         }
     }
+
 
     public void mouseReleased(MouseEvent e) { }
 
@@ -192,47 +250,6 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
-		 if(phase==0) {
-			  g2d.setColor(Color.darkGray);
-			  g2d.fillRect(0, 0, 1920, 1080);
-			  g2d.setColor(Color.WHITE);
-			  g2d.setComposite(alphaComposite);
-			  g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
-			  g2d.drawString(word,xloc,yloc);
-		  }else if(phase==1){
-			  alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f);
-			  g2d.setComposite(alphaComposite);
-			  
-        g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
-        g2d = (Graphics2D) g;
-        // Draw the splendorImage a bit above the middle
-        int imageWidth = getWidth() / 3;
-        int imageHeight = getHeight() / 3;
-        int imageX = (getWidth() - imageWidth) / 2;
-        int imageY = (getHeight() - imageHeight) / 2 - 50; // Slightly above center
-        g.drawImage(splendorImage, imageX, imageY, imageWidth, imageHeight, null);
-
-        // Calculate the position of the Play button to be below the splendorImage
-        int playButtonX = imageX + (imageWidth - playButton.getWidth()) / 2;
-        int playButtonY = imageY + imageHeight + 50; // Positioned further down
-        playButton.setLocation(playButtonX, playButtonY);
-        add(playButton);
-
-        // Ensure the play button is visible and does not move with the rules button
-        playButton.setVisible(true);
-
-        // Draw the Rules button at the top-left position with its animations
-        
-        g2d.rotate(Math.toRadians(theta), rulesButtonX + rulesButton.getWidth() / 2, rulesButtonY + rulesButton.getHeight() / 2);
-        g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, rulesButton.getWidth() + 100, rulesButton.getHeight() + 100, null); // Made the rulesButton larger
-		  }
     }
 
     @Override
