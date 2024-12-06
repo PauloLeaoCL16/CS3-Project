@@ -1,5 +1,3 @@
-
-
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -8,216 +6,243 @@ import java.io.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.util.*;
-import java.lang.System.*;
+import javax.swing.border.Border;
+
 public class MainMenuPanel extends JPanel implements Runnable, MouseListener, MouseMotionListener {
-	private String word;
-	private float transparency;
-	private int xloc,yloc,fontSize;
-	private BufferedImage background;   // The full background (splendorbackground.jpg)
-    private BufferedImage splendorImage; // The left side image (weeedwd.jpg)
-    private BufferedImage playButton;   // Play button
-    private BufferedImage rulesButton;  // Rules button
+    private String word;
+    private float transparency;
+    private int xloc, yloc, fontSize;
+    private BufferedImage background;   // The full background (splendorbackground.jpg)
+    private BufferedImage splendorImage; // The center image (weeedwd.jpg)
+    private BufferedImage rulesButton;  // Rules button as an image
     private int phase;
-    private int theta =0;
-    private int playButtonX;
-    private int playButtonY;
-    private int  rulesButtonX = 1340 , rulesButtonY = 550;
-    private boolean animate =false;
-    private Thread animationThread;
+    private JButton playButton;   // Play button as JButton
+    private int theta = 0;
+    private boolean animate = false;
     private boolean forward = true;
     private GameBoardPanel gameBoardPanel;
-    	public MainMenuPanel(boolean bool) {
-		phase=0;
-		gameBoardPanel = new GameBoardPanel();
-		new Thread(() ->gameBoardPanel.loadImages()).start();
-		transparency=0.01f;
-		word="PAULOLDS PRESENTS";
-		xloc=450; yloc=550; fontSize=100;
-		   try {
-	            // Load images with the correct package path
-	            background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorbackground.jpg"));
-	            splendorImage = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/weeedwd.jpg"));
-	            playButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/playButton.PNG"));
-	            rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.PNG"));
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        } // Add mouse listener so the panel responds to mouse events
-	        addMouseListener(this);
-	        addMouseMotionListener(this);
-	        // Set this panel to be focusable to ensure mouse events work
-	        setFocusable(true);
-		if(bool) {
-			new Thread(new Runnable() {
+    private int rulesButtonX = -100, rulesButtonY = -50; // Adjusted further to the left
+
+    public MainMenuPanel(boolean bool) {
+        phase = 0;
+        gameBoardPanel = new GameBoardPanel();
+        new Thread(() -> gameBoardPanel.loadImages()).start();
+        transparency = 0.01f;
+        word = "PAULOLDS PRESENTS";
+        xloc = 450; yloc = 550; fontSize = 100;
+
+        try {
+            // Load images with the correct package path
+            background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/MainMenuBackground.jpg"));
+            splendorImage = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
+            rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.PNG"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Initialize the play button
+        playButton = new JButton("Play");
+        playButton.setFont(new Font("Arial", Font.BOLD, 36));
+        playButton.setBackground(Color.WHITE);
+        playButton.setForeground(Color.BLACK);
+        playButton.setFocusPainted(false);
+        playButton.setBorder(new RoundedBorder(20)); // Curved edges
+        playButton.setBounds(0, 0, 300, 100); // Larger size for the button
+
+        playButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void run() {
-                animateStart();
-                animateStart();// Call the animation method
-                phase=1;
-                repaint();
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                playButton.setBackground(new Color(60, 60, 60)); // Rainbow-blackish color
+                playButton.setForeground(new Color(255, 0, 255)); // Complementary color for contrast
             }
-			}).start(); 
-		}else {
-			phase=1;
-		}
-		
-	}
-	 public void mouseClicked(MouseEvent e) {
-	        int mouseX = e.getX();
-	        int mouseY = e.getY();
 
-	        // Calculate Play button bounds
-		    if(phase==1) {
-	        	int playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
-		        int playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
-		        if (mouseX >= playButtonX && mouseX <= playButtonX + playButton.getWidth() &&
-		            mouseY >= playButtonY && mouseY <= playButtonY + playButton.getHeight()) {
-		            // Play button clicked, go to the game board panel
-		            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-		            topFrame.getContentPane().removeAll();
-		            topFrame.add(gameBoardPanel); // Transition to the GameBoardPanel
-		            topFrame.revalidate();
-		            topFrame.repaint();
-		        }
-	
-		        // Calculate Rules button bounds
-		        int rulesButtonX = getWidth() * 3 / 4 - rulesButton.getWidth() / 2;
-		        int rulesButtonY = playButtonY + playButton.getHeight() + 20;  // Rules button is placed directly below Play button
-		        if (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButton.getWidth() &&
-		            mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButton.getHeight()) {
-		            // Rules button clicked, show the rules
-		            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-		            topFrame.getContentPane().removeAll();
-		            topFrame.add(new RulesPanel()); // Navigate to RulesPanel
-		            topFrame.revalidate();
-		            topFrame.repaint();
-		        }
-		    }
-	    }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                playButton.setBackground(Color.WHITE);
+                playButton.setForeground(Color.BLACK);
+            }
 
-	  public void mouseReleased(MouseEvent e)
-	  {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(MainMenuPanel.this);
+                topFrame.getContentPane().removeAll();
+                topFrame.add(gameBoardPanel); // Transition to the GameBoardPanel
+                topFrame.revalidate();
+                topFrame.repaint();
+            }
+        });
 
-	  }
+        setLayout(null);
+        add(playButton);
 
-	  public void mousePressed(MouseEvent e)
-	  {
+        if (bool) {
+            new Thread(() -> {
+                animateStart();
+                animateStart(); // Call the animation method
+                phase = 1;
+                repaint();
+            }).start();
+        } else {
+            phase = 1;
+        }
 
-	  }
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        setFocusable(true);
+    }
 
-	  public void mouseEntered(MouseEvent e) {
-		   
-		}
+    public void mouseClicked(MouseEvent e) {
+        int mouseX = e.getX();
+        int mouseY = e.getY();
 
-	  public void mouseMoved(MouseEvent e) {
-		    // Continuously check if the mouse is over the rulesButton
-		    int mouseX = e.getX();
-		    int mouseY = e.getY();
+        // Calculate Rules button bounds
+        if (phase == 1) {
+            int rulesButtonWidth = rulesButton.getWidth();
+            int rulesButtonHeight = rulesButton.getHeight();
 
-		    // Stop the animation if the mouse is no longer over the rulesButton
-		    boolean isOverRulesButton = (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButton.getWidth() &&
-                    mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButton.getHeight());
+            if (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButtonWidth &&
+                mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButtonHeight) {
+                // Rules button clicked, show the rules
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                topFrame.getContentPane().removeAll();
+                topFrame.add(new RulesPanel()); // Navigate to RulesPanel
+                topFrame.revalidate();
+                topFrame.repaint();
+            }
+        }
+    }
 
-			if (isOverRulesButton && !animate) {
-				animate = true;
-				theta=-30;
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-		            	animateRules();
-		            }
-					}).start(); 
-			} else if (!isOverRulesButton && animate) {
-				animate = false;
-				 theta = 0;
-				 rulesButtonX = 1340;
-				 rulesButtonY = 550;
-			     repaint();
-			}
-		}
-	  public void mouseDragged(MouseEvent e) {
-		  
-	  }
+    public void mouseReleased(MouseEvent e) { }
 
-	  public void mouseExited(MouseEvent e)
-	  {
-		  
-	  }
-	  public void animateStart() {
-		   while(transparency<0.99) {
-				  transparency+=0.01;
-				  repaint();
-				  try {
-		              Thread.sleep(10); 
-		          } catch (InterruptedException e) {
-		              e.printStackTrace();
-		          }
-			  }
-		   while(transparency>0.01) {
-				  transparency-=0.01;
-				  repaint();
-				  try {
-		              Thread.sleep(10); 
-		          } catch (InterruptedException e) {
-		              e.printStackTrace();
-		          }
-		    }
-		  word="Splendor";
-		  transparency = 0.01f;
-		  xloc=590;
-		  yloc=540;
-		  fontSize=200;
-	  }
-	 public void animateRules() {
-		 while (animate) {
-			 if(theta==30) {
-				 forward=true;
-			 }else if(theta==-30) {
-				 forward=false;
-			 }
-             if(forward) { 
-            	 theta = theta - 1;
-            	 rulesButtonX++;
-            	 rulesButtonY--;
-             }
-             else {
-            	 theta = theta + 1;
-            	 rulesButtonX--;
-            	 rulesButtonY++;
-             }
-            	 repaint();
-                 try {
-                     Thread.sleep(10);
-                 } catch (InterruptedException e) {
-                     e.printStackTrace();
-                 }
-             }
-          
-         }
-	  public void paint(Graphics g) {
-		  Graphics2D g2d = (Graphics2D)g;
-		  AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
-		  if(phase==0) {
-			  g2d.setColor(Color.darkGray);
-			  g2d.fillRect(0, 0, 1920, 1080);
-			  g2d.setColor(Color.WHITE);
-			  g2d.setComposite(alphaComposite);
-			  g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
-			  g2d.drawString(word,xloc,yloc);
-			  
-		  }else if(phase==1){
-			  g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
-	        // Draw the splendorImage (weeedwd.jpg) on the left side (half the width)
-			playButtonX = getWidth() * 3 / 4 - playButton.getWidth() / 2;
-			playButtonY = getHeight() / 2 - playButton.getHeight() / 2;
-			    // Calculate the position of the Rules button, directly below the Play button
-		     // Rules button is placed directly below Play button, 20px gap
-	        g.drawImage(splendorImage, 0, 0, getWidth() / 2, getHeight(), null);
-	        g.drawImage(playButton, playButtonX, playButtonY, null);
+    public void mousePressed(MouseEvent e) { }
 
-	        // Calculate the position of the Play button
-	        g2d.rotate(Math.toRadians(theta),1340+rulesButton.getWidth()/2 , 550+rulesButton.getHeight()/2 );
-	        g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, null);
-		  }
-	  }
+    public void mouseEntered(MouseEvent e) { }
+
+    public void mouseMoved(MouseEvent e) {
+        // Continuously check if the mouse is over the rulesButton
+        int mouseX = e.getX();
+        int mouseY = e.getY();
+
+        boolean isOverRulesButton = (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButton.getWidth() &&
+                mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButton.getHeight());
+
+        if (isOverRulesButton && !animate) {
+            animate = true;
+            theta = -30;
+            new Thread(this::animateRules).start();
+        } else if (!isOverRulesButton && animate) {
+            animate = false;
+            theta = 0;
+            rulesButtonX = -100;
+            rulesButtonY = -50; // Adjusted further to the left
+            repaint();
+        }
+    }
+
+    public void mouseDragged(MouseEvent e) { }
+
+    public void mouseExited(MouseEvent e) { }
+
+    public void animateStart() {
+        while (transparency < 0.99) {
+            transparency += 0.01;
+            repaint();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        while (transparency > 0.01) {
+            transparency -= 0.01;
+            repaint();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        word = "Splendor";
+        transparency = 0.01f;
+        xloc = 590;
+        yloc = 540;
+        fontSize = 200;
+    }
+
+    public void animateRules() {
+        while (animate) {
+            if (theta == 30) {
+                forward = true;
+            } else if (theta == -30) {
+                forward = false;
+            }
+            if (forward) {
+                theta = theta - 1;
+                rulesButtonX++;
+                rulesButtonY--;
+            } else {
+                theta = theta + 1;
+                rulesButtonX--;
+                rulesButtonY++;
+            }
+            repaint();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        // Draw the splendorImage a bit above the middle
+        int imageWidth = getWidth() / 3;
+        int imageHeight = getHeight() / 3;
+        int imageX = (getWidth() - imageWidth) / 2;
+        int imageY = (getHeight() - imageHeight) / 2 - 50; // Slightly above center
+        g.drawImage(splendorImage, imageX, imageY, imageWidth, imageHeight, null);
+
+        // Calculate the position of the Play button to be below the splendorImage
+        int playButtonX = imageX + (imageWidth - playButton.getWidth()) / 2;
+        int playButtonY = imageY + imageHeight + 50; // Positioned further down
+        playButton.setLocation(playButtonX, playButtonY);
+
+        // Ensure the play button is visible and does not move with the rules button
+        playButton.setVisible(true);
+
+        // Draw the Rules button at the top-left position with its animations
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.rotate(Math.toRadians(theta), rulesButtonX + rulesButton.getWidth() / 2, rulesButtonY + rulesButton.getHeight() / 2);
+        g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, rulesButton.getWidth() + 100, rulesButton.getHeight() + 100, null); // Made the rulesButton larger
+    }
+
+    @Override
+    public void run() { }
+
+    // Custom Border class for rounded corners
+    class RoundedBorder implements Border {
+        private int radius;
+
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+        public Insets getBorderInsets(Component c) {
+            return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
+        }
+
+        public boolean isBorderOpaque() {
+            return true;
+        }
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
+    }
 }
