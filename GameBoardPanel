@@ -60,7 +60,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private int totalTurns = 4;
 	private boolean gameHasEnded = false;
 	private boolean end = false;
-
+	private BufferedImage animatingCard;
+    private int animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,targetX,targetY;
+    private boolean cardAnimating = false;
+    
     
 	
 
@@ -286,6 +289,9 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			int tempCardHeight = 100;
 			int tempCardX = gemBoxX + 10;
 			int tempCardY = gemBoxY + gemBoxHeight + 10;
+		if(cardAnimating) {
+	   		g2d.drawImage(animatingCard,animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,this);
+	   	}	
 		if(player.getShowDeck())
 		{
 			for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
@@ -451,11 +457,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    			System.out.println("card " + i);
 	    			for(int j = 0; j < 4; j++)
 	        	    {
-	        	    	if(turns[j] && actions == 3)
-	        	    	{
 	        	    		int rng = 0;
 	        	    		if((i == 8 || i == 9 || i == 10 || i == 11) && Level1CardsStart[i-8].getImage() != background && players[j].getReserves().size() < 3)
 	        	    		{
+	        	    			if(Level1CardsStart[i-8].canAfford(players[j]))
+	        	    			{
 	        	    			players[j].addReserve(Level1CardsStart[i-8]);
 	        	    			if(numWild > 0)
 	        	    			{
@@ -491,6 +497,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if((i == 4 || i == 5 || i == 6 || i == 7 ) && Level2CardsStart[i-4].getImage() != background  && players[j].getReserves().size() < 3)
 	        	    		{
+	        	    			
+	        	    	
 	        	    			players[j].addReserve(Level2CardsStart[i-4]);
 	        	    			if(numWild > 0)
 	        	    			{
@@ -603,8 +611,49 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    				int rng;
 	        	    	if(turns[j] && actions == 3)
 	        	    	{
+	        	    		if(turns[j] && actions == 3)
+		        	    	{
+		        	    		if(j==0) {
+	    	    					targetX=30;
+	    	    					targetY=128;
+	    	    				}else if(j==2) {
+	    	    					targetX=1310;
+	    	    					targetY=128;
+	    	    				}else if(j==1) {
+	    	    					targetX=30;
+	    	    					targetY=692;
+	    	    				}else {
+	    	    					targetX=1310;
+	    	    					targetY=692;
+	    	    				}
+		        	    	}
 	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
 	        	    		{
+	        	    			String color = Level1CardsStart[i-8].getType();
+        	    				if(players[j].getCards().get(color)!=null) {
+        	    					targetY+=players[j].getCards().get(color).size()*40;
+        	    				}
+     
+        		                else if(color.equals("blue")) {
+        		                	targetX+=90;
+        		                }
+        		                else if(color.equals("red")) {
+        		                	targetX+=180;
+        		                }
+        		                else if(color.equals("green")) {
+        		                	targetX+=270;
+        		                }
+        		                else if(color.equals("white")) {
+        		                	targetX+=360;
+        		                }
+        	    				final BufferedImage img = Level1CardsStart[i-8].getImage();
+        	    				int index = i-8;
+        	    				new Thread(new Runnable() {
+	                                @Override
+	                                public void run() {
+	                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
+	                                }
+	                            }).start();
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]) && Level1CardsStart[i-8].getImage() != background)
 	        	    			{
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("black"))
@@ -702,6 +751,32 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
 	        	    		{
+	        	    			String color = Level2CardsStart[i-4].getType();
+        	    				if(players[j].getCards().get(color)!=null) {
+        	    					targetY+=players[j].getCards().get(color).size()*40;
+        	    				}
+     
+        		                else if(color.equals("blue")) {
+        		                	targetX+=90;
+        		                }
+        		                else if(color.equals("red")) {
+        		                	targetX+=180;
+        		                }
+        		                else if(color.equals("green")) {
+        		                	targetX+=270;
+        		                }
+        		                else if(color.equals("white")) {
+        		                	targetX+=360;
+        		                }
+        	    				final BufferedImage img = Level2CardsStart[i-4].getImage();
+        	    				int index = i-4;
+        	    				new Thread(new Runnable() {
+	                                @Override
+	                                public void run() {
+	                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
+	                                }
+	                            }).start();
+	        	    		
 	        	    			if(Level2CardsStart[i-4].canAfford(players[j])&& Level2CardsStart[i-4].getImage() != background)
 	        	    			{
 	        	    				if(Level2CardsStart[i-4].getCost().containsKey("black"))
@@ -793,6 +868,31 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		}
 	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
 	        	    		{
+	        	    			String color = Level3CardsStart[i].getType();
+        	    				if(players[j].getCards().get(color)!=null) {
+        	    					targetY+=players[j].getCards().get(color).size()*40;
+        	    				}
+     
+        		                else if(color.equals("blue")) {
+        		                	targetX+=90;
+        		                }
+        		                else if(color.equals("red")) {
+        		                	targetX+=180;
+        		                }
+        		                else if(color.equals("green")) {
+        		                	targetX+=270;
+        		                }
+        		                else if(color.equals("white")) {
+        		                	targetX+=360;
+        		                }
+        	    				final BufferedImage img = Level3CardsStart[i].getImage();
+        	    				int index=i;
+        	    				new Thread(new Runnable() {
+	                                @Override
+	                                public void run() {
+	                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
+	                                }
+	                            }).start();
 	        	    			if(Level3CardsStart[i].canAfford(players[j]) && Level3CardsStart[i].getImage() != background)
 	        	    			{
 	        	    				if(Level3CardsStart[i].getCost().containsKey("black"))
@@ -1711,4 +1811,48 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
     }
     return hexagon;
 }
+	public void startCardAnimation(BufferedImage card, int startX, int startY, int targetX, int targetY, int targetWidth, int targetHeight) {
+	    animatingCard = card;
+	    animCurrentX = startX;
+	    animCurrentY = startY;
+	    animCurrentWidth = 115;  // Initial width
+	    animCurrentHeight = 165; // Initial height
+	    cardAnimating = true;
+	    targetWidth+=15;
+	    targetHeight+=15;
+	    int duration = 3000;
+	    // Create a new thread to handle the animation
+	            long startTime = System.currentTimeMillis();
+
+	            while (cardAnimating) {
+	                long currentTime = System.currentTimeMillis();
+	                double elapsed = (double) (currentTime - startTime) / duration;
+
+	                if (elapsed >= 4.0) {
+	                    // End animation and set final state
+	                    animCurrentX = targetX;
+	                    animCurrentY = targetY;
+	                    animCurrentWidth = targetWidth;
+	                    animCurrentHeight = targetHeight;
+	                    cardAnimating = false;
+	                } else {
+	                    // Eased animation calculation
+	                    double t = Math.min(elapsed, 1.0);
+	                    double easedT = 1 - Math.pow(1 - t, 2);
+	                    animCurrentX = (int) (startX + (targetX - startX) * easedT);
+	                    animCurrentY = (int) (startY + (targetY - startY) * easedT);
+	                    animCurrentWidth = (int) (60 + (targetWidth - 60) * easedT);
+	                    animCurrentHeight = (int) (80 + (targetHeight - 80) * easedT);
+	                }
+
+	                // Repaint the component to reflect the new animation frame
+	                repaint();
+
+	                try {
+	                    Thread.sleep(16); 
+	                } catch (InterruptedException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	}
 }
