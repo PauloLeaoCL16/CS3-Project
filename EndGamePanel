@@ -3,57 +3,72 @@ import javax.swing.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.io.*;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseEvent;
-import java.util.*;
-import java.lang.System.*;
 
-public class EndGamePanel extends JPanel implements MouseListener
-{
-  public void drawEndGame()
-  {
-    
-  }
+public class EndGamePanel extends JPanel {
 
-  public void drawWinner()
-  {
-    
-  }
+    private BufferedImage background;
+    private JButton backButton;
 
-  public void drawLeaderBoard()
-  {
+    public EndGamePanel() {
+        try {
+            background = ImageIO.read(EndGamePanel.class.getResource("/splendorImages/creamylol.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-  }
+        // Initialize the back button
+        backButton = new JButton("Back to Home");
+        backButton.setFont(new Font("Arial", Font.BOLD, 18));
+        backButton.setBackground(Color.WHITE);
+        backButton.setForeground(Color.BLACK);
+        backButton.setOpaque(true);
+        backButton.setBorderPainted(false);
 
-  public void drawPlayAgainButton()
-  {
+        backButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                backButton.setBackground(Color.RED);
+                backButton.setForeground(Color.WHITE);
+            }
 
-  }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                backButton.setBackground(Color.WHITE);
+                backButton.setForeground(Color.BLACK);
+            }
 
-  public void mouseClicked(MouseEvent e)
-  {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(EndGamePanel.this);
+                topFrame.getContentPane().removeAll();
+                topFrame.add(new MainMenuPanel(false)); // Return to the MainMenuPanel
+                topFrame.revalidate();
+                topFrame.repaint();
+            }
+        });
 
-  }
+        setLayout(null);
+        add(backButton);
+        backButton.setBounds(750, 700, 200, 50); // Position and size of the button
+    }
 
-  public void mouseReleased(MouseEvent e)
-  {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-  }
+        // Draw the background image
+        g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
-  public void mousePressed(MouseEvent e)
-  {
+        // Draw the larger centered rectangle
+        int rectWidth = 800;
+        int rectHeight = 600;
+        int rectX = (getWidth() - rectWidth) / 2;
+        int rectY = (getHeight() - rectHeight) / 2;
+        g.setColor(new Color(173, 216, 230)); // Light blue color
+        g.fillRect(rectX, rectY, rectWidth, rectHeight);
 
-  }
-
-  public void mouseEntered(MouseEvent e)
-  {
-
-  }
-
-  public void mouseExited(MouseEvent e)
-  {
-
-  }
-
-
+        // Update the back button position to be centered below the rectangle
+        backButton.setLocation(rectX + (rectWidth - backButton.getWidth()) / 2, rectY + rectHeight + 20);
+    }
 }
+
