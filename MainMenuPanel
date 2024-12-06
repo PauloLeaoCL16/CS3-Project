@@ -126,14 +126,10 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
             g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
             g2d.drawString(word, xloc, yloc);
         } else if (phase == 1) {
-            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
-            int imageWidth = getWidth() / 3;
-            int imageHeight = getHeight() / 3;
-            int imageX = (getWidth() - imageWidth) / 2;
-            int imageY = (getHeight() - imageHeight) / 2 - 50;
-            g2d.drawImage(splendorImage, imageX, imageY, imageWidth, imageHeight, null);
+          
 
             AffineTransform originalTransform = g2d.getTransform();
 
