@@ -131,6 +131,19 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        super.paintComponent(g);
 	        Graphics2D g2d = (Graphics2D) g;
 
+	        for(  PlayerHand p:players)
+	        {
+	        	if( p.getPoints() >= 15 && turns[0] )
+	        	{
+	        		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(GameBoardPanel.this);
+	                topFrame.getContentPane().removeAll();
+	                topFrame.add(new EndGamePanel()); // Transition to the GameBoardPanel
+	                topFrame.revalidate();
+	                topFrame.repaint();
+	        	}
+	        	
+	        }
+	        
 	        // Background
 	        g2d.drawImage(background, 0, 0, getWidth(), getHeight(), this);
 
@@ -441,6 +454,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			canDrawWhite = true;
 			if(end)
 				totalTurns--;
+		}
+		else
+		{
+			turns[0] = true;
+			turns[3] = false;
 		}
 	}
 
