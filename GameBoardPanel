@@ -1,4 +1,5 @@
 
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -304,7 +305,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			int tempCardY = gemBoxY + gemBoxHeight + 10;
 		if(cardAnimating) {
 	   		g2d.drawImage(animatingCard,animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,this);
-	   	}else {	
+	   	}
 			if(player.getShowDeck())
 			{
 				for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
@@ -344,7 +345,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 				}
 			
 			}
-	   	}
+	   	
 		
 		// draw string that shows whos turn it is
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
@@ -669,8 +670,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         		                	targetX+=360;
         		                }
         	    				final BufferedImage img = Level1CardsStart[i-8].getImage();
-        	    				int index = i-8;
-        	    				
+        	    				int index = i;
         	    				
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]) && Level1CardsStart[i-8].getImage() != background)
 	        	    			{	
@@ -796,7 +796,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         		                	targetX+=360;
         		                }
         	    				final BufferedImage img = Level2CardsStart[i-4].getImage();
-        	    				int index = i-4;
+        	    				int index = i;
         	    				
 	        	    		
 	        	    			if(Level2CardsStart[i-4].canAfford(players[j])&& Level2CardsStart[i-4].getImage() != background)
