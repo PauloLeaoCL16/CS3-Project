@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -216,8 +217,8 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         
     	int baseX = -100;      // Starting X position
         int baseY = -50;      // Starting Y position
-        int amplitudeX = 10;  // Maximum sway distance left and right
-        int amplitudeY = 5;   // Maximum sway distance up and down
+        int amplitudeX = 20;  // Maximum sway distance left and right
+        int amplitudeY = 10;   // Maximum sway distance up and down
         double speed = 0.05;  // Adjust speed for smoother/slower motion
         double angle = 0;     // Starting angle for sine wave
 
