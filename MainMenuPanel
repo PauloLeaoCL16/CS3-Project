@@ -35,7 +35,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         xloc = 450; yloc = 550; fontSize = 100;
 
         try {
-            background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/MainMenuBackground.jpg"));
+            background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
             splendorImage = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
             rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.PNG"));
         } catch (IOException e) {
@@ -75,14 +75,14 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 
         if (!bool) {
             phase = 1;
-            setPlayButtonPosition();
+            //setPlayButtonPosition();
             add(playButton);
         } else {
             new Thread(() -> {
                 animateStart();
                 animateStart();
                 phase = 1;
-                setPlayButtonPosition();
+                //setPlayButtonPosition();
                 SwingUtilities.invokeLater(() -> add(playButton));
                 repaint();
             }).start();
@@ -93,27 +93,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         setFocusable(true);
     }
 
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        SwingUtilities.invokeLater(this::setPlayButtonPosition);
-    }
 
-    private void setPlayButtonPosition() {
-        if (!playButtonPositionSet) {
-            int imageWidth = getWidth() / 3;
-            int imageHeight = getHeight() / 3;
-            int imageX = (getWidth() - imageWidth) / 2;
-            int imageY = (getHeight() - imageHeight) / 2 - 50;
-            int playButtonX = imageX + (imageWidth - playButton.getWidth()) / 2;
-            int playButtonY = imageY + imageHeight - 1000;
-            playButton.setBounds(playButtonX, playButtonY, playButton.getPreferredSize().width, playButton.getPreferredSize().height);
-            //playButton.setLocation(playButtonX, playButtonY);
-            playButtonPositionSet = true;
-        }
-    }
-
-    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
@@ -126,15 +106,23 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
             g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
             g2d.drawString(word, xloc, yloc);
         } else if (phase == 1) {
-            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
             g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
-          
-
+            int imageWidth = getWidth() / 3;
+            int imageHeight = getHeight() / 3;
+            int imageX = (getWidth() - imageWidth) / 2;
+            int imageY = (getHeight() - imageHeight) / 2 - 50;
+            g2d.drawImage(splendorImage, imageX, imageY, imageWidth, imageHeight, null);
+            int buttonWidth = imageWidth + 100; // Make the button wider
+            int buttonHeight = 70;             // Make the button taller
+            int buttonX = (getWidth() - buttonWidth) / 2;
+            int buttonY = imageY + imageHeight + 30; // 30px gap below the image
+            playButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
             AffineTransform originalTransform = g2d.getTransform();
 
             g2d.rotate(Math.toRadians(theta), rulesButtonX + rulesButton.getWidth() / 2, rulesButtonY + rulesButton.getHeight() / 2);
-            g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, rulesButton.getWidth() + 100, rulesButton.getHeight() + 100, null);
+            g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, rulesButton.getWidth() + 150, rulesButton.getHeight() + 150, null);
 
             g2d.setTransform(originalTransform);
             paintChildren(g2d);
@@ -174,7 +162,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
     public void mouseEntered(MouseEvent e) { }
 
     public void mouseMoved(MouseEvent e) {
-        // Continuously check if the mouse is over the rulesButton
+      
         int mouseX = e.getX();
         int mouseY = e.getY();
 
@@ -183,13 +171,13 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 
         if (isOverRulesButton && !animate) {
             animate = true;
-            theta = -30;
             new Thread(this::animateRules).start();
         } else if (!isOverRulesButton && animate) {
             animate = false;
-            theta = 0;
-            rulesButtonX = -100;
-            rulesButtonY = -50; // Adjusted further to the left
+            // Reset position but keep it consistent
+            rulesButtonX = -100; // Use a predefined starting position
+            rulesButtonY = -50;
+            theta = 0; // Ensure it resets to no rotation
             repaint();
         }
     }
@@ -225,24 +213,31 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
     }
 
     public void animateRules() {
+        
+    	int baseX = -100;      // Starting X position
+        int baseY = -50;      // Starting Y position
+        int amplitudeX = 10;  // Maximum sway distance left and right
+        int amplitudeY = 5;   // Maximum sway distance up and down
+        double speed = 0.05;  // Adjust speed for smoother/slower motion
+        double angle = 0;     // Starting angle for sine wave
+
         while (animate) {
-            if (theta == 30) {
-                forward = true;
-            } else if (theta == -30) {
-                forward = false;
+            // Update X and Y based on a sine wave for natural swaying
+            rulesButtonX = (int) (baseX + amplitudeX * Math.sin(angle));
+            rulesButtonY = (int) (baseY + amplitudeY * Math.cos(angle));
+
+            // Increment angle for continuous movement
+            angle += speed;
+
+            // Reset angle to prevent overflow (optional but good for long-running animations)
+            if (angle > 2 * Math.PI) {
+                angle -= 2 * Math.PI;
             }
-            if (forward) {
-                theta = theta - 1;
-                rulesButtonX++;
-                rulesButtonY--;
-            } else {
-                theta = theta + 1;
-                rulesButtonX--;
-                rulesButtonY++;
-            }
+
+            // Repaint the component to reflect new positions
             repaint();
             try {
-                Thread.sleep(10);
+                Thread.sleep(20); // Adjust animation smoothness
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
