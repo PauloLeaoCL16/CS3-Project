@@ -63,7 +63,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private BufferedImage animatingCard;
     private int animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,targetX,targetY;
     private boolean cardAnimating = false;
-    
+    private Thread thread;
     
 	
 
@@ -160,10 +160,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        int playerXRight = 2 * sectionWidth + 10;
 	        int playerY = 10;
 
-	        for (int i = 0; i < 2; i++) {
-	            drawPlayerArea(g2d, playerXLeft, playerY + i * (playerBoxHeight + 20), playerBoxWidth, playerBoxHeight, players[i],i+1);
-	            drawPlayerArea(g2d, playerXRight, playerY + i * (playerBoxHeight + 20), playerBoxWidth, playerBoxHeight, players[i+2],i+3);
-	        }
+	        
 	        
 	        
 	        // Draw the PatronImages above the grid
@@ -196,7 +193,6 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	            		BufferedImage card = Level1CardsStart[col].getImage();
 		            	g2d.drawImage(card, gridX + col * (cardWidth + cardSpacing), gridY + row * (cardHeight + cardSpacing), cardWidth, cardHeight, this);
 	            	}
-	            	
 	            }
 	        }
 		
@@ -224,6 +220,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        
 	        // Draw gems below the green line in the middle section
 	        //
+			for (int i = 0; i < 2; i++) {
+	            drawPlayerArea(g2d, playerXLeft, playerY + i * (playerBoxHeight + 20), playerBoxWidth, playerBoxHeight, players[i],i+1);
+	            drawPlayerArea(g2d, playerXRight, playerY + i * (playerBoxHeight + 20), playerBoxWidth, playerBoxHeight, players[i+2],i+3);
+	        }
 	        //
 			g2d.setColor(Color.BLACK);
 			g2d.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 40));;
@@ -304,46 +304,47 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			int tempCardY = gemBoxY + gemBoxHeight + 10;
 		if(cardAnimating) {
 	   		g2d.drawImage(animatingCard,animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,this);
-	   	}	
-		if(player.getShowDeck())
-		{
-			for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
-		        if (player.getCards().get(color) != null) {
-		            for (int i = 0; i < player.getCards().get(color).size(); i++) {
-		                BufferedImage card = player.getCards().get(color).get(i);
-		                if(color.equals("black"))
-		                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		                else if(color.equals("blue"))
-		                	g2d.drawImage(card, tempCardX+90, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		                else if(color.equals("red"))
-		                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		                else if(color.equals("green"))
-		                	g2d.drawImage(card, tempCardX+270, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		                else if(color.equals("white"))
-		                	g2d.drawImage(card, tempCardX+360, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
-		            }
-		        }
-			}
-	
-			
-			// X-location = 490
-			// Y-location = 135
-			// Width = 100
-			// Height = 100
-			for( int i =0; i<player.getPatrons().size(); i++)
+	   	}else {	
+			if(player.getShowDeck())
 			{
-				Patron p = player.getPatrons().get(i);
-				g2d.drawImage(p.getImage(), 490 , tempCardY+i*60, 100, 100, this);
-			}
-		}
-		else
-		{
-			for(int i = 0; i<player.getReserves().size(); i++)
-			{
-				g2d.drawImage(player.getReserves().get(i).getImage(), tempCardX+200*(i), tempCardY+75, 150, 200, this);
-			}
+				for (String color : new String[]{"black", "blue", "red", "green", "white"}) {
+			        if (player.getCards().get(color) != null) {
+			            for (int i = 0; i < player.getCards().get(color).size(); i++) {
+			                BufferedImage card = player.getCards().get(color).get(i);
+			                if(color.equals("black"))
+			                	g2d.drawImage(card, tempCardX, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+			                else if(color.equals("blue"))
+			                	g2d.drawImage(card, tempCardX+90, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+			                else if(color.equals("red"))
+			                	g2d.drawImage(card, tempCardX+180, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+			                else if(color.equals("green"))
+			                	g2d.drawImage(card, tempCardX+270, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+			                else if(color.equals("white"))
+			                	g2d.drawImage(card, tempCardX+360, tempCardY+i*40, tempCardWidth+15, tempCardHeight+15, this);
+			            }
+			        }
+				}
 		
-		}
+				
+				// X-location = 490
+				// Y-location = 135
+				// Width = 100
+				// Height = 100
+				for( int i =0; i<player.getPatrons().size(); i++)
+				{
+					Patron p = player.getPatrons().get(i);
+					g2d.drawImage(p.getImage(), 490 , tempCardY+i*60, 100, 100, this);
+				}
+			}
+			else
+			{
+				for(int i = 0; i<player.getReserves().size(); i++)
+				{
+					g2d.drawImage(player.getReserves().get(i).getImage(), tempCardX+200*(i), tempCardY+75, 150, 200, this);
+				}
+			
+			}
+	   	}
 		
 		// draw string that shows whos turn it is
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
@@ -595,6 +596,9 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			}
 	    }
 	    if (e.getButton() == MouseEvent.BUTTON1) {
+	    	if(cardAnimating) {	
+	    		cardAnimating = false;
+	    	}
 	    	if( mouseX >= 464 && mouseX <= (464+174) && mouseY >=10 && mouseY<= (10+39) )
 	    		if( players[0].getShowDeck() )
 	    			players[0].setShowDeck(false);
@@ -666,14 +670,19 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         		                }
         	    				final BufferedImage img = Level1CardsStart[i-8].getImage();
         	    				int index = i-8;
-        	    				new Thread(new Runnable() {
-	                                @Override
-	                                public void run() {
-	                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
-	                                }
-	                            }).start();
+        	    				
+        	    				
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]) && Level1CardsStart[i-8].getImage() != background)
-	        	    			{
+	        	    			{	
+	        	    				if(thread!=null)
+	        	    				thread.interrupt();
+	        	    				thread = new Thread(new Runnable() {
+	        	    				    @Override
+	        	    				    public void run() {
+	        	    				        startCardAnimation(img, cardX[index], cardY[index], targetX, targetY, 60, 100);
+	        	    				    }
+	        	    				});
+	        	    				thread.start();
 	        	    				if(Level1CardsStart[i-8].getCost().containsKey("black"))
 	        	    				{
 	        	    					if(Level1CardsStart[i-8].getCost().get("black") - players[j].getNumCard("black") >= 0 && !Level1CardsStart[i-8].wildNeeded(players[j]))
@@ -788,15 +797,19 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         		                }
         	    				final BufferedImage img = Level2CardsStart[i-4].getImage();
         	    				int index = i-4;
-        	    				new Thread(new Runnable() {
-	                                @Override
-	                                public void run() {
-	                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
-	                                }
-	                            }).start();
+        	    				
 	        	    		
 	        	    			if(Level2CardsStart[i-4].canAfford(players[j])&& Level2CardsStart[i-4].getImage() != background)
 	        	    			{
+	        	    				if(thread!=null)
+		        	    				thread.interrupt();
+	        	    				thread = new Thread(new Runnable() {
+	        	    				    @Override
+	        	    				    public void run() {
+	        	    				        startCardAnimation(img, cardX[index], cardY[index], targetX, targetY, 60, 100);
+	        	    				    }
+	        	    				});
+	        	    				thread.start();
 	        	    				if(Level2CardsStart[i-4].getCost().containsKey("black"))
 	        	    				{
 	        	    					if(Level2CardsStart[i-4].getCost().get("black") - players[j].getNumCard("black") >= 0 && !Level2CardsStart[i-4].wildNeeded(players[j]))
@@ -905,14 +918,18 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         		                }
         	    				final BufferedImage img = Level3CardsStart[i].getImage();
         	    				int index=i;
-        	    				new Thread(new Runnable() {
-	                                @Override
-	                                public void run() {
-	                                    startCardAnimation(img,cardX[index],cardY[index],targetX,targetY,60,100);
-	                                }
-	                            }).start();
+        	    				
 	        	    			if(Level3CardsStart[i].canAfford(players[j]) && Level3CardsStart[i].getImage() != background)
 	        	    			{
+	        	    				if(thread!=null)
+	        	    					thread.interrupt();
+	        	    				thread = new Thread(new Runnable() {
+	        	    				    @Override
+	        	    				    public void run() {
+	        	    				        startCardAnimation(img, cardX[index], cardY[index], targetX, targetY, 60, 100);
+	        	    				    }
+	        	    				});
+	        	    				thread.start();
 	        	    				if(Level3CardsStart[i].getCost().containsKey("black"))
 	        	    				{
 	        	    					if(Level3CardsStart[i].getCost().get("black") - players[j].getNumCard("black") >= 0 && !Level3CardsStart[i].wildNeeded(players[j]))
@@ -1846,7 +1863,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	                long currentTime = System.currentTimeMillis();
 	                double elapsed = (double) (currentTime - startTime) / duration;
 
-	                if (elapsed >= 4.0) {
+	                if (elapsed >= 2.0) {
 	                    // End animation and set final state
 	                    animCurrentX = targetX;
 	                    animCurrentY = targetY;
@@ -1865,11 +1882,12 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 
 	                // Repaint the component to reflect the new animation frame
 	                repaint();
-
 	                try {
 	                    Thread.sleep(16); 
 	                } catch (InterruptedException e) {
-	                    e.printStackTrace();
+	                	Thread.currentThread().interrupt();
+	                	cardAnimating=false;
+	                    break;
 	                }
 	            }
 	}
