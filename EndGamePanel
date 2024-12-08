@@ -3,20 +3,34 @@ import javax.swing.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.io.*;
+import java.util.*;
+import javax.swing.Timer;
 
 public class EndGamePanel extends JPanel {
 
     private BufferedImage background;
+    private BufferedImage crownImage;
     private JButton backButton;
+    private ArrayList<PlayerScore> scores;
+    private ArrayList<Confetti> confettiList;
 
-    public EndGamePanel() {
+    public EndGamePanel(int p1, int p2, int p3, int p4) {
         try {
             background = ImageIO.read(EndGamePanel.class.getResource("/splendorImages/creamylol.jpg"));
+            crownImage = ImageIO.read(EndGamePanel.class.getResource("/splendorImages/crownImage.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Initialize the back button
+        scores = new ArrayList<>();
+        scores.add(new PlayerScore("Player 1", p1));
+        scores.add(new PlayerScore("Player 2", p2));
+        scores.add(new PlayerScore("Player 3", p3));
+        scores.add(new PlayerScore("Player 4", p4));
+
+        scores.sort((a, b) -> Integer.compare(b.getPoints(), a.getPoints()));
+
+        //back button
         backButton = new JButton("Back to Home");
         backButton.setFont(new Font("Arial", Font.BOLD, 18));
         backButton.setBackground(Color.WHITE);
@@ -41,7 +55,7 @@ public class EndGamePanel extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(EndGamePanel.this);
                 topFrame.getContentPane().removeAll();
-                topFrame.add(new MainMenuPanel(false)); // Return to the MainMenuPanel
+                topFrame.add(new MainMenuPanel(false)); 
                 topFrame.revalidate();
                 topFrame.repaint();
             }
@@ -50,6 +64,21 @@ public class EndGamePanel extends JPanel {
         setLayout(null);
         add(backButton);
         backButton.setBounds(750, 700, 200, 50); // Position and size of the button
+
+        // Initialize confetti
+        confettiList = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            confettiList.add(new Confetti());
+        }
+
+   
+        Timer timer = new Timer(30, e -> {
+            for (Confetti confetti : confettiList) {
+                confetti.update();
+            }
+            repaint();
+        });
+        timer.start();
     }
 
     @Override
@@ -59,16 +88,87 @@ public class EndGamePanel extends JPanel {
         // Draw the background image
         g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
-        // Draw the larger centered rectangle
+        // Draw the larger centered rectangle with rounded corners
         int rectWidth = 800;
         int rectHeight = 600;
         int rectX = (getWidth() - rectWidth) / 2;
         int rectY = (getHeight() - rectHeight) / 2;
         g.setColor(new Color(173, 216, 230)); // Light blue color
-        g.fillRect(rectX, rectY, rectWidth, rectHeight);
+        g.fillRoundRect(rectX, rectY, rectWidth, rectHeight, 50, 50);
 
-        // Update the back button position to be centered below the rectangle
+        // Draw player scores inside the rectangle
+        g.setFont(new Font("Arial", Font.BOLD, 24));
+        g.setColor(Color.BLACK);
+        int y = rectY + 50;
+        PlayerScore winner = scores.get(0);
+        g.drawString(winner.getPlayer() + " won the game with " + winner.getPoints() + " points!", rectX + 50, y);
+        y += 40;
+
+        for (int i = 1; i < scores.size(); i++) {
+            PlayerScore score = scores.get(i);
+            g.drawString((i + 1) + "nd place: " + score.getPlayer() + " with " + score.getPoints() + " points", rectX + 50, y);
+            y += 40;
+        }
+
+        // Draw crown
+        int crownWidth = 200;
+        int crownHeight = 200;
+        int crownX = rectX + (rectWidth - crownWidth) / 2;
+        int crownY = rectY + rectHeight - crownHeight - 30;
+        g.drawImage(crownImage, crownX, crownY, crownWidth, crownHeight, null);
+
+        // Draw confetti
+        for (Confetti confetti : confettiList) {
+            confetti.draw(g);
+        }
+
         backButton.setLocation(rectX + (rectWidth - backButton.getWidth()) / 2, rectY + rectHeight + 20);
     }
-}
 
+    // player score data
+    static class PlayerScore {
+        private String player;
+        private int points;
+
+        public PlayerScore(String player, int points) {
+            this.player = player;
+            this.points = points;
+        }
+
+        public String getPlayer() {
+            return player;
+        }
+
+        public int getPoints() {
+            return points;
+        }
+    }
+
+    // confetti class
+    static class Confetti {
+        private int x, y, size, speedY;
+        private Color color;
+        private static final Random random = new Random();
+
+        public Confetti() {
+            x = random.nextInt(1920); 
+            y = random.nextInt(1080); 
+            size = random.nextInt(10) + 5;
+            speedY = random.nextInt(5) + 2;
+            color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        }
+
+        public void update() {
+            y += speedY;
+            if (y > 1080) { 
+                y = -size;
+                x = random.nextInt(1920);
+            }
+        }
+
+        public void draw(Graphics g) {
+            g.setColor(color);
+            g.fillRect(x, y, size, size);
+        }
+    }
+}
