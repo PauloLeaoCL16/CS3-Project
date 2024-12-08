@@ -145,7 +145,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	{
 	        		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(GameBoardPanel.this);
 	                topFrame.getContentPane().removeAll();
-	                topFrame.add(new EndGamePanel()); // Transition to the GameBoardPanel
+	                int p1 = players[0].getPoints();
+                    int p2 = players[1].getPoints();
+                    int p3 = players[2].getPoints();
+                    int p4 = players[3].getPoints();
+	                topFrame.add(new EndGamePanel(p1,p2,p3,p4)); // Transition to the GameBoardPanel
 	                topFrame.revalidate();
 	                topFrame.repaint();
 	        	}
@@ -282,25 +286,25 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		// Draw player gems inside the gem boxes
 		int gemSize = 50; // Bigger gems
 		int gemSpacing = 40; // More space between each gem
-		int playerGemX = gemBoxX + 10;
+		int playerGemX = gemBoxX + 35;
 		int playerGemY = gemBoxY + (gemBoxHeight - gemSize) / 2;
 		g2d.drawImage(blackGem, playerGemX, playerGemY, gemSize, gemSize-5, this);
-    	g2d.drawString(player.getChip("black")+"", playerGemX + gemSize + 5, playerGemY + gemSize / 2);
+    	g2d.drawString(player.getChip("black")+"", playerGemX + gemSize + 5, playerGemY + gemSize / 2+10);
 
     	g2d.drawImage(blueGem, playerGemX + (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
-    	g2d.drawString(player.getChip("blue")+"", playerGemX + (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+    	g2d.drawString(player.getChip("blue")+"", playerGemX + (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2+10);
 
     	g2d.drawImage(redGem, playerGemX + 2 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
-    	g2d.drawString(player.getChip("red")+"", playerGemX + 2 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+    	g2d.drawString(player.getChip("red")+"", playerGemX + 2 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2+10);
 
     	g2d.drawImage(greenGem, playerGemX + 3 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
-    	g2d.drawString(player.getChip("green")+"", playerGemX + 3 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+    	g2d.drawString(player.getChip("green")+"", playerGemX + 3 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2+10);
 
     	g2d.drawImage(whiteGem, playerGemX + 4 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
-    	g2d.drawString(player.getChip("white")+"", playerGemX + 4 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+    	g2d.drawString(player.getChip("white")+"", playerGemX + 4 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2+10);
 
     	g2d.drawImage(reserveGem, playerGemX + 5 * (gemSize + gemSpacing), playerGemY, gemSize, gemSize-5, this);
-    	g2d.drawString(player.getChip("yellow")+"", playerGemX + 5 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2);
+    	g2d.drawString(player.getChip("yellow")+"", playerGemX + 5 * (gemSize + gemSpacing) + gemSize + 5, playerGemY + gemSize / 2+10);
 
 
 			// Draw single, smaller tempCard image inside player box, aligned to the left
@@ -346,11 +350,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			if(showReserved[playerNum-1]){
 					g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
 					g2d.setColor(Color.darkGray);
-
 					g2d.fillRect(x+437, y+40,174, height-70);
 					for(int i = 0; i<player.getReserves().size(); i++)
 					{	
-							g2d.drawImage(player.getReserves().get(i).getImage(), x+47, tempCardY+140*i, 80, 115, this);
+						g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+							g2d.drawImage(player.getReserves().get(i).getImage(), x+484, y+60+140*i, 80, 115, this);
 					}
 			}
 			
