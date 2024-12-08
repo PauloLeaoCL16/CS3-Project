@@ -61,12 +61,19 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private int totalTurns = 4;
 	private boolean gameHasEnded = false;
 	private boolean end = false;
+	private boolean showReserved[] = {false,false,false,false};
 	private BufferedImage animatingCard;
     private int animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,targetX,targetY;
     private boolean cardAnimating = false;
     private Thread thread;
-    
-	
+    private int[][]reservedXY = {{498,20},{498,586},{1775,20},{1775,586}};
+  
+    //width = 80, height = 115
+    //Every card is in reserved is 140 y apart from each other, so if the first card has a y of 20, the next is 160 and the third is 300
+    //double array, where the row gives the coordinates of a play. reservedXY[0][] gives the xy of player 1
+    //reservedXY[][0] gives the x coordinate of that player and reservedXY[][1] gives the y coordinate.
+		
+
 
 	public GameBoardPanel() {
 		addMouseMotionListener(this);
@@ -261,8 +268,6 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
 		g2d.drawString("Reserves", x + (width - titleWidth) / 2 +180, y+30);
-		
-
 		// Draw smaller gem boxes inside the player area
 		int gemBoxWidth = width - 20;
 		int gemBoxHeight = height / 8;
@@ -337,17 +342,22 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 					g2d.drawImage(p.getImage(), 490 , tempCardY+i*60, 100, 100, this);
 				}
 			}
-			else
-			{
-				for(int i = 0; i<player.getReserves().size(); i++)
-				{
-					g2d.drawImage(player.getReserves().get(i).getImage(), tempCardX+200*(i), tempCardY+75, 150, 200, this);
-				}
 			
+			if(showReserved[playerNum-1]){
+					g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+					g2d.setColor(Color.darkGray);
+
+					g2d.fillRect(x+437, y+40,174, height-70);
+					for(int i = 0; i<player.getReserves().size(); i++)
+					{	
+							g2d.drawImage(player.getReserves().get(i).getImage(), x+47, tempCardY+140*i, 80, 115, this);
+					}
 			}
-	   	
+			
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 		
 		// draw string that shows whos turn it is
+		g2d.setColor(Color.BLACK);
 		g2d.setFont(new Font("Arial", Font.BOLD, 30));
 		g2d.drawString(currentTurn, 875, 65);
 		g2d.setFont(new Font("Arial", Font.BOLD, 18));
@@ -600,26 +610,14 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    	if(cardAnimating) {	
 	    		cardAnimating = false;
 	    	}
-	    	if( mouseX >= 464 && mouseX <= (464+174) && mouseY >=10 && mouseY<= (10+39) )
-	    		if( players[0].getShowDeck() )
-	    			players[0].setShowDeck(false);
-	    		else
-	    			players[0].setShowDeck(true);
-	    	if( mouseX >= 464 && mouseX <= (464+174) && mouseY >=538 && mouseY<= (538+39) )
-	    		if( players[1].getShowDeck() )
-	    			players[1].setShowDeck(false);
-	    		else
-	    			players[1].setShowDeck(true);
-	    	if( mouseX >= 1744 && mouseX <= (1744+174) && mouseY >=10 && mouseY<= (10+39) )
-	    		if( players[2].getShowDeck() )
-	    			players[2].setShowDeck(false);
-	    		else
-	    			players[2].setShowDeck(true);
-	    	if( mouseX >= 1744 && mouseX <= (1744+174) && mouseY >=538 && mouseY<= (538+39) )
-	    		if( players[3].getShowDeck() )
-	    			players[3].setShowDeck(false);
-	    		else
-	    			players[3].setShowDeck(true);
+	    	if( mouseX >= 447 && mouseX <= 619 && mouseY >=10 && mouseY<= 47 )
+		    	showReserved[0]=!showReserved[0];
+		    if( mouseX >= 447 && mouseX <= 619 && mouseY >=576 && mouseY<= 613 )
+		    	showReserved[1]=!showReserved[1];
+		   	if( mouseX >= 1728 && mouseX <= 1900 && mouseY >=10 && mouseY<= 47 )
+		   		showReserved[2]=!showReserved[2];
+		   	if( mouseX >= 1728 && mouseX <= 1900 && mouseY >=576 && mouseY<= 613 )
+		   		showReserved[3]=!showReserved[3];
 	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010)
 	    		cycleTurn();
 	    	if(mouseX >= 700 && mouseX <= 900 && mouseY >= 900 && mouseY <= 950)
@@ -1208,6 +1206,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	public void mouseMoved(MouseEvent e) {
 		int mouseX = e.getX();
 		int mouseY = e.getY();
+		
 		for (int i = 0; i < 12; i++) {
 			if (mouseX > cardX[i] && mouseX < cardX[i] + cardWidth && mouseY > cardY[i]
 					&& mouseY < cardY[i] + cardHeight) {
@@ -1219,6 +1218,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 				showCardHighlight = false;
 			}
 		}
+		
 		int[][] gemPositions = {
 		        {685, 845}, // Brown
 		        {790, 845}, // Blue
