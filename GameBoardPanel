@@ -66,7 +66,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
     private int animCurrentX, animCurrentY, animCurrentWidth, animCurrentHeight,targetX,targetY;
     private boolean cardAnimating = false;
     private Thread thread;
-    private int[][]reservedXY = {{490,70},{490,636},{1771,70},{1771,636}};
+    private int[][]reservedXY = {{495,70},{495,574},{1775,70},{1775,575}};
   
     //width = 80, height = 115
     //Every card is in reserved is 140 y apart from each other, so if the first card has a y of 20, the next is 160 and the third is 300
@@ -617,7 +617,84 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    		for(int i = 0; i < players[h].getReserves().size(); i++)
 	    		{
 	    			if(mouseX > reservedXY[h][0] && mouseX < reservedXY[h][0] + 80 && mouseY > reservedXY[h][1] + i * 140 && mouseY < reservedXY[h][1] + i * 140 + 115)
-	    				System.out.println("player " + h + " card clicked");
+	    			{
+	    				System.out.println("player " + (h+1) + " card clicked");
+        	    		if(players[h].getReserves().get(i).canAfford(players[h]))
+        	    		{
+        	    			if(players[h].getReserves().get(i).getCost().containsKey("black"))
+        	    			{
+        	    				if(players[h].getReserves().get(i).getCost().get("black") - players[h].getNumCard("black") >= 0 && !players[h].getReserves().get(i).wildNeeded(players[h]))
+        	    					numBlack += players[h].getReserves().get(i).getCost().get("black") - players[h].getNumCard("black");
+        	    				if(players[h].getReserves().get(i).wildNeeded(players[h]) && players[h].getReserves().get(i).whichType(players[h]).containsKey("black"))
+        	    				{
+        	   						numBlack += players[h].getChip("black");
+        	   						numWild += players[h].getReserves().get(i).whichType(players[h]).get("black");
+        	   					}
+        	   				}
+            				if(players[h].getReserves().get(i).getCost().containsKey("blue"))
+       	    				{
+       	    					if(players[h].getReserves().get(i).getCost().get("blue") - players[h].getNumCard("blue") >= 0 && !players[h].getReserves().get(i).wildNeeded(players[h]))
+       	    						numBlue += players[h].getReserves().get(i).getCost().get("blue") - players[h].getNumCard("blue");
+       	    					if(players[h].getReserves().get(i).wildNeeded(players[h]) && players[h].getReserves().get(h).whichType(players[h]).containsKey("blue"))
+       	    					{
+       	    						numBlue += players[h].getChip("blue");
+       	    						numWild += players[h].getReserves().get(i).whichType(players[h]).get("blue");
+       	    					}
+        	    			}
+        	    			if(players[h].getReserves().get(i).getCost().containsKey("red"))
+        	    			{
+        	   					if(players[h].getReserves().get(i).getCost().get("red") - players[h].getNumCard("red") >= 0 && !players[h].getReserves().get(i).wildNeeded(players[h]))
+        	   						numRed += players[h].getReserves().get(i).getCost().get("red") - players[h].getNumCard("red");
+        	   					if(players[h].getReserves().get(i).wildNeeded(players[h]) && players[h].getReserves().get(i).whichType(players[h]).containsKey("red"))
+        	   					{
+            						numRed += players[h].getChip("red");
+       	    						numWild += players[h].getReserves().get(i).whichType(players[h]).get("red");
+       	    					}
+       	    				}
+       	    				if(players[h].getReserves().get(i).getCost().containsKey("green"))
+       	    				{
+       	    					if(players[h].getReserves().get(i).getCost().get("green") - players[h].getNumCard("green") >= 0 && !players[h].getReserves().get(i).wildNeeded(players[h]))
+       	    						numGreen += players[h].getReserves().get(i).getCost().get("green") - players[h].getNumCard("green");
+        	    				if(players[h].getReserves().get(i).wildNeeded(players[h]) && players[h].getReserves().get(i).whichType(players[h]).containsKey("green"))
+        	    				{
+        	    					numGreen += players[h].getChip("green");
+        	   						numWild += players[h].getReserves().get(i).whichType(players[h]).get("green");
+        	   					}
+        	   				}
+        	   				if(players[h].getReserves().get(i).getCost().containsKey("white"))
+            				{
+       	    					if(players[h].getReserves().get(i).getCost().get("white") - players[h].getNumCard("white") >= 0 && !players[h].getReserves().get(i).wildNeeded(players[h]))
+       	    						numWhite += players[h].getReserves().get(i).getCost().get("white") - players[h].getNumCard("white");
+       	    					if(players[h].getReserves().get(i).wildNeeded(players[h]) && players[h].getReserves().get(i).whichType(players[h]).containsKey("white"))
+       	    					{
+        	    					numWhite += players[h].getChip("white");
+        	   						numWild += players[h].getReserves().get(i).whichType(players[h]).get("white");
+        	   					}
+        	   				}
+        	   				players[h].buyCard(players[h].getReserves().get(i));
+        	   				players[h].removeReserve(players[h].getReserves().get(i));
+            				int rng = 0;
+       	    				for(int x = 0; x < 5; x++)
+       	    				{
+       	    					if(players[h].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
+        	    				{
+        	   						players[h].buyPatron(PatronStart[rng]);
+        	   						PatronStart[rng].setImage(background);
+        	   						PatronBoughts[rng] = true;
+        	   					}
+            					else
+       	    					{
+       	    						if( rng<5 )
+       	    						{
+       	    							rng++;
+       	    						}
+       	    					}
+            				}
+       	    				if(players[h].getPoints() >= 15)
+       	    					gameEnd = true;
+       	    				cycleTurn();
+       	    			}
+	    			}
 	    		}
 	    	}
 	    	if( mouseX >= 447 && mouseX <= 619 && mouseY >=10 && mouseY<= 47 )
