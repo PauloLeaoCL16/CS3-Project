@@ -762,7 +762,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                else if(color.equals("blue")) {
+        		                if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
@@ -887,7 +887,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                else if(color.equals("blue")) {
+        		                if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
@@ -1008,7 +1008,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                else if(color.equals("blue")) {
+        		                if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
