@@ -497,7 +497,10 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		int mouseX = e.getX();
 	    int mouseY = e.getY();
 	    out.println("X-Location: " + mouseX + "\n" + "Y-Location: " + mouseY);
-	    
+	    if(cardAnimating) {
+	    	
+	    	
+	    }else {
 	    if (e.getButton() == MouseEvent.BUTTON3) {
 	    	System.out.println("right click");
 	    	for (int i = 0; i < 12; i++) {
@@ -772,9 +775,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    				int index = i;
         	    				
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]) && Level1CardsStart[i-8].getImage() != background)
-	        	    			{	
-	        	    				if(thread!=null)
-	        	    				thread.interrupt();
+	        	    			{
 	        	    				thread = new Thread(new Runnable() {
 	        	    				    @Override
 	        	    				    public void run() {
@@ -838,7 +839,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					}
 	        	    				}
 	        	    				players[j].buyCard(Level1CardsStart[i-8]);
-							lastBought = Level1CardsStart[i-8].getImage();
+	        	    				lastBought = Level1CardsStart[i-8].getImage();
         	    					rng = 0;
 	        	    				for(int x = 0; x < 5; x++)
 	        	    				{
@@ -901,8 +902,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		
 	        	    			if(Level2CardsStart[i-4].canAfford(players[j])&& Level2CardsStart[i-4].getImage() != background)
 	        	    			{
-	        	    				if(thread!=null)
-		        	    				thread.interrupt();
+	        	    			
 	        	    				thread = new Thread(new Runnable() {
 	        	    				    @Override
 	        	    				    public void run() {
@@ -1022,8 +1022,6 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    				
 	        	    			if(Level3CardsStart[i].canAfford(players[j]) && Level3CardsStart[i].getImage() != background)
 	        	    			{
-	        	    				if(thread!=null)
-	        	    					thread.interrupt();
 	        	    				thread = new Thread(new Runnable() {
 	        	    				    @Override
 	        	    				    public void run() {
@@ -1124,8 +1122,9 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    }
 	    			
 	    			break;
-	    		} 
+	    		}
 			}
+	    }
 			int[][] gemPositions = {
 		        {685, 845}, // Brown
 			    {790, 845}, // Blue
@@ -1391,7 +1390,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    		}
 		        	    		break;
 		        	    	}
-		        	    }
+		        	    	
+		        		}
 		        	}
 		            break;
 		        }
@@ -2093,10 +2093,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	                // Repaint the component to reflect the new animation frame
 	                repaint();
 	                try {
-	                    Thread.sleep(16); 
+	                    Thread.sleep(10); 
 	                } catch (InterruptedException e) {
 	                	Thread.currentThread().interrupt();
 	                	cardAnimating=false;
+	                	lastBought=null;
 	                    break;
 	                }
 	            }
