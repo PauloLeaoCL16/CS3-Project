@@ -152,7 +152,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
                     int p2 = players[1].getPoints();
                     int p3 = players[2].getPoints();
                     int p4 = players[3].getPoints();
-	                topFrame.add(new EndGamePanel(p1,p2,p3,p4)); // Transition to the GameBoardPanel
+                    int p1c = players[0].getNumC();
+                    int p2c = players[1].getNumC();
+                    int p3c = players[2].getNumC();
+                    int p4c = players[3].getNumC();
+	                topFrame.add(new EndGamePanel(p1,p2,p3,p4, p1c, p2c, p3c, p4c)); // Transition to the GameBoardPanel
 	                topFrame.revalidate();
 	                topFrame.repaint();
 	        	}
@@ -762,7 +766,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                if(color.equals("blue")) {
+        		                else if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
@@ -778,7 +782,9 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    				int index = i;
         	    				
 	        	    			if(Level1CardsStart[i-8].canAfford(players[j]) && Level1CardsStart[i-8].getImage() != background)
-	        	    			{
+	        	    			{	
+	        	    				if(thread!=null)
+	        	    				thread.interrupt();
 	        	    				thread = new Thread(new Runnable() {
 	        	    				    @Override
 	        	    				    public void run() {
@@ -842,14 +848,14 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					}
 	        	    				}
 	        	    				players[j].buyCard(Level1CardsStart[i-8]);
-	        	    				lastBought = Level1CardsStart[i-8].getImage();
+							lastBought = Level1CardsStart[i-8].getImage();
         	    					rng = 0;
 	        	    				for(int x = 0; x < 5; x++)
 	        	    				{
 	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
 	        	    					{
-	        	    						Patron buy = PatronStart[rng];
-	        	    						players[j].buyPatron(buy);
+	        	    						players[j].buyPatron(PatronStart[rng]);
+	        	    						PatronStart[rng].setImage(background);
 	        	    						PatronBoughts[rng] = true;
 	        	    					}
 	        	    					else
@@ -880,6 +886,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    				cycleTurn();
 	        	    			}
 	        	    		}
+	        	    		
+    		
 	        	    		if(i == 4 || i == 5 || i == 6 || i == 7)
 	        	    		{
 	        	    			String color = Level2CardsStart[i-4].getType();
@@ -887,7 +895,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                if(color.equals("blue")) {
+        		                else if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
@@ -905,7 +913,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    		
 	        	    			if(Level2CardsStart[i-4].canAfford(players[j])&& Level2CardsStart[i-4].getImage() != background)
 	        	    			{
-	        	    			
+	        	    				if(thread!=null)
+		        	    				thread.interrupt();
 	        	    				thread = new Thread(new Runnable() {
 	        	    				    @Override
 	        	    				    public void run() {
@@ -970,8 +979,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    				{
 	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
 	        	    					{
-	        	    						Patron buy = PatronStart[rng];
-	        	    						players[j].buyPatron(buy);
+	        	    						players[j].buyPatron(PatronStart[rng]);
+	        	    						PatronStart[rng].setImage(background);
 	        	    						PatronBoughts[rng] = true;
 	        	    					}
 	        	    					else
@@ -1001,6 +1010,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    				cycleTurn();
 	        	    			}
 	        	    		}
+	        	    		
+
 	        	    		if(i == 0 || i == 1 || i == 2 || i == 3)
 	        	    		{
 	        	    			String color = Level3CardsStart[i].getType();
@@ -1008,7 +1019,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                if(color.equals("blue")) {
+        		                else if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
@@ -1025,6 +1036,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    				
 	        	    			if(Level3CardsStart[i].canAfford(players[j]) && Level3CardsStart[i].getImage() != background)
 	        	    			{
+	        	    				if(thread!=null)
+	        	    					thread.interrupt();
 	        	    				thread = new Thread(new Runnable() {
 	        	    				    @Override
 	        	    				    public void run() {
@@ -1089,8 +1102,8 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    				{
 	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
 	        	    					{
-	        	    						Patron buy = PatronStart[rng];
-	        	    						players[j].buyPatron(buy);
+	        	    						players[j].buyPatron(PatronStart[rng]);
+	        	    						PatronStart[rng].setImage(background);
 	        	    						PatronBoughts[rng] = true;
 	        	    					}
 	        	    					else
@@ -1120,14 +1133,15 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    				cycleTurn();
 	        	    			}
 	        	    		}
+	        	    		
+
 	        	    		break;
 	        	    	}
 	        	    }
 	    			
 	    			break;
-	    		}
+	    		} 
 			}
-	    }
 			int[][] gemPositions = {
 		        {685, 845}, // Brown
 			    {790, 845}, // Blue
