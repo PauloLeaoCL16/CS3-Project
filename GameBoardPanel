@@ -612,6 +612,14 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    	if(cardAnimating) {	
 	    		cardAnimating = false;
 	    	}
+	    	for(int h = 0; h < 4; h++)
+	    	{
+	    		for(int i = 0; i < players[h].getReserves().size(); i++)
+	    		{
+	    			if(mouseX > reservedXY[h][0] && mouseX < reservedXY[h][0] + 80 && mouseY > reservedXY[h][1] + i * 140 && mouseY < reservedXY[h][1] + i * 140 + 115)
+	    				System.out.println("player " + h + " card clicked");
+	    		}
+	    	}
 	    	if( mouseX >= 447 && mouseX <= 619 && mouseY >=10 && mouseY<= 47 )
 		    	showReserved[0]=!showReserved[0];
 		    if( mouseX >= 447 && mouseX <= 619 && mouseY >=576 && mouseY<= 613 )
