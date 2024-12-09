@@ -238,27 +238,42 @@ class PlayerHand
 		  if(wilds.containsKey("black"))
 		  {
 			  chips.put("black", 0);
-			  chips.put("yellow", chips.get("yellow") - wilds.get("black"));
+			  if(chips.get("yellow") - wilds.get("black") < 0)
+				  chips.put("yellow", 0);
+			  else
+				  chips.put("yellow", chips.get("yellow") - wilds.get("black"));
 		  }
 		  if(wilds.containsKey("blue"))
 		  {
 			  chips.put("blue", 0);
-			  chips.put("yellow", chips.get("yellow") - wilds.get("blue"));
+			  if(chips.get("yellow") - wilds.get("blue") < 0)
+				  chips.put("yellow", 0);
+			  else
+				  chips.put("yellow", chips.get("yellow") - wilds.get("blue"));
 		  }
 		  if(wilds.containsKey("red"))
 		  {
 			  chips.put("red", 0);
-			  chips.put("yellow", chips.get("yellow") - wilds.get("red"));
+			  if(chips.get("yellow") - wilds.get("red") < 0)
+				  chips.put("yellow", 0);
+			  else
+				  chips.put("yellow", chips.get("yellow") - wilds.get("red"));
 		  }
 		  if(wilds.containsKey("green"))
 		  {
 			  chips.put("green", 0);
-			  chips.put("yellow", chips.get("yellow") - wilds.get("green"));
+			  if(chips.get("yellow") - wilds.get("green") < 0)
+				  chips.put("yellow", 0);
+			  else
+				  chips.put("yellow", chips.get("yellow") - wilds.get("green"));
 		  }
 		  if(wilds.containsKey("white"))
 		  {
 			  chips.put("white", 0);
-			  chips.put("yellow", chips.get("yellow") - wilds.get("white"));
+			  if(chips.get("yellow") - wilds.get("white") < 0)
+				  chips.put("yellow", 0);
+			  else
+				  chips.put("yellow", chips.get("yellow") - wilds.get("white"));
 		  }
 	  }
 	  addCard(card.getType(), card.getImage());
