@@ -129,8 +129,9 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
             paintChildren(g2d);
             
             g2d.setColor(Color.RED);
-            g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, 30));
-            g2d.drawString("DISCLAIMER: RIGHT CLICK TO RESERVE CARDS AND CLICK RESERVED TO SEE WHICH ONES HAVE BEEN RESERVED!", 500, 600);
+            g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, 22));
+            g2d.drawString("DISCLAIMER: RIGHT CLICK TO RESERVE CARDS AND CLICK RESERVED TO SEE WHICH ONES HAVE BEEN RESERVED!", buttonX-250, buttonY-80);
+            g2d.drawString("Turns automatically end when a round is played. If not, click end turn button. Only use when gems are all taken and cannot do anything but proceed", buttonX-300, buttonY-50);
         }
     }
 
