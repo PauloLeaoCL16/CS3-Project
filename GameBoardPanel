@@ -622,11 +622,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    	}
 	    	if( mouseX >= 447 && mouseX <= 619 && mouseY >=10 && mouseY<= 47 )
 		    	showReserved[0]=!showReserved[0];
-		    if( mouseX >= 447 && mouseX <= 619 && mouseY >=576 && mouseY<= 613 )
+		    if( mouseX >= 447 && mouseX <= 620 && mouseY >=514 && mouseY<= 550 )
 		    	showReserved[1]=!showReserved[1];
 		   	if( mouseX >= 1728 && mouseX <= 1900 && mouseY >=10 && mouseY<= 47 )
 		   		showReserved[2]=!showReserved[2];
-		   	if( mouseX >= 1728 && mouseX <= 1900 && mouseY >=576 && mouseY<= 613 )
+		   	if( mouseX >= 1728 && mouseX <= 1900 && mouseY >=515 && mouseY<= 550 )
 		   		showReserved[3]=!showReserved[3];
 	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010)
 	    		cycleTurn();
