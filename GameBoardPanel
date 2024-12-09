@@ -1142,6 +1142,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    			break;
 	    		} 
 			}
+	}
 			int[][] gemPositions = {
 		        {685, 845}, // Brown
 			    {790, 845}, // Blue
