@@ -50,6 +50,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	private int numWhite = 7;
 	private int numWild = 5;
 	private int actions = 3;
+	private int totalGems = numBlack + numBlue + numRed + numGreen + numWhite;
 	private PlayerHand[] players = {new PlayerHand(), new PlayerHand(), new PlayerHand(), new PlayerHand()};
 	private String currentTurn = "Player 1 turn";
 	private boolean canDrawBlack = true;
@@ -67,6 +68,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
     private boolean cardAnimating = false;
     private Thread thread;
     private int[][]reservedXY = {{495,70},{495,574},{1775,70},{1775,575}};
+    private boolean discardChips = false;
   
     //width = 80, height = 115
     //Every card is in reserved is 140 y apart from each other, so if the first card has a y of 20, the next is 160 and the third is 300
@@ -380,6 +382,15 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 			g2d.setColor(Color.BLACK);
 		}
 		
+		//draw string if need to discard
+		if(discardChips)
+		{
+			g2d.setColor(Color.RED);
+			g2d.drawString("Player " + currentTurn.substring(7,8) + " has more than 10 chips", 830, 80);
+			g2d.drawString("Click on gems at the bottom to discard", 800, 100);
+			g2d.setColor(Color.BLACK);
+		}
+			
 		//draw buttons for draw1/2 modes
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(697, 897, 206, 56);
@@ -1130,25 +1141,46 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawBlack && actions > 0 && players[i].getTotalChips() < 10)
+		        	    		if(discardChips == true)
+		        	    		{
+		        	    			players[i].RemoveChip("black");
+		        	    			numBlack++;
+		        	    			if(players[i].getTotalChips() == 10)
+		        	    			{
+		        	    				discardChips = false;
+		        	    				cycleTurn();
+		        	    			}
+		        	    		}
+		        	    		else if(draw1 && canDrawBlack && actions > 0)
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawBlack = false;
 		        	    			numBlack--;
 		        	    			players[i].addChip("black");
-		        	    			if(players[i].getTotalChips() >= 10)
+		        	    			if(players[i].getTotalChips() > 10 && actions == 0)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else if(totalGems == 0)
 		        	    				cycleTurn();
 		        	    			else if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numBlack >= 4 && actions == 3 && players[i].getTotalChips() < 9)
+		        	    		else if(draw1 == false && numBlack >= 4 && actions == 3)
 		        	    		{
 		        	    			actions = 0;
 		        	    			numBlack = numBlack - 2;
 		        	    			players[i].addChip("black");
 		        	    			players[i].addChip("black");
 		        	    			out.println(numBlack);
-		        	    			cycleTurn();
+		        	    			if(players[i].getTotalChips() > 10)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else
+		        	    				cycleTurn();
 		        	    		}	
 		        	    		break;
 		        	    	}
@@ -1161,24 +1193,45 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawBlue && actions > 0 && players[i].getTotalChips() < 10)
+		        	    		if(discardChips == true)
+		        	    		{
+		        	    			players[i].RemoveChip("blue");
+		        	    			numBlue++;
+		        	    			if(players[i].getTotalChips() == 10)
+		        	    			{
+		        	    				discardChips = false;
+		        	    				cycleTurn();
+		        	    			}
+		        	    		}
+		        	    		else if(draw1 && canDrawBlue && actions > 0)
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawBlue = false;
 		        	    			numBlue--;
 		        	    			players[i].addChip("blue");
-		        	    			if(players[i].getTotalChips() >= 10)
+		        	    			if(players[i].getTotalChips() > 10 && actions == 0)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else if(totalGems == 0)
 		        	    				cycleTurn();
 		        	    			else if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numBlue >= 4 && actions == 3 && players[i].getTotalChips() < 9)
+		        	    		else if(draw1 == false && numBlue >= 4 && actions == 3)
 		        	    		{
 		        	    			actions = 0;
 		        	    			numBlue = numBlue - 2;
 		        	    			players[i].addChip("blue");
 		        	    			players[i].addChip("blue");
-		        	    			cycleTurn();
+		        	    			if(players[i].getTotalChips() > 10)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else
+		        	    				cycleTurn();
 		        	    		}
 		        	    		break;
 		        	    	}
@@ -1190,24 +1243,45 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawRed && actions > 0 && players[i].getTotalChips() < 10)
+		        	    		if(discardChips == true)
+		        	    		{
+		        	    			players[i].RemoveChip("red");
+		        	    			numRed++;
+		        	    			if(players[i].getTotalChips() == 10)
+		        	    			{
+		        	    				discardChips = false;
+		        	    				cycleTurn();
+		        	    			}
+		        	    		}
+		        	    		else if(draw1 && canDrawRed && actions > 0)
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawRed = false;
 		        	    			numRed--;
 		        	    			players[i].addChip("red");
-		        	    			if(players[i].getTotalChips() >= 10)
+		        	    			if(players[i].getTotalChips() > 10 && actions == 0)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else if(totalGems == 0)
 		        	    				cycleTurn();
 		        	    			else if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numRed >= 4 && actions == 3 && players[i].getTotalChips() < 9)
+		        	    		else if(draw1 == false && numRed >= 4 && actions == 3)
 		        	    		{
 		        	    			actions = 0;
 		        	    			numRed = numRed - 2;
 		        	    			players[i].addChip("red");
 		        	    			players[i].addChip("red");
-		        	    			cycleTurn();
+		        	    			if(players[i].getTotalChips() > 10)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else
+		        	    				cycleTurn();
 		        	    		}
 		        	    		break;
 		        	    	}
@@ -1219,24 +1293,45 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawGreen && actions > 0 && players[i].getTotalChips() < 10)
+		        	    		if(discardChips == true)
+		        	    		{
+		        	    			players[i].RemoveChip("green");
+		        	    			numGreen++;
+		        	    			if(players[i].getTotalChips() == 10)
+		        	    			{
+		        	    				discardChips = false;
+		        	    				cycleTurn();
+		        	    			}
+		        	    		}
+		        	    		else if(draw1 && canDrawGreen && actions > 0)
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawGreen = false;
 		        	    			numGreen--;
 		        	    			players[i].addChip("green");
-		        	    			if(players[i].getTotalChips() >= 10)
+		        	    			if(players[i].getTotalChips() > 10 && actions == 0)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else if(totalGems == 0)
 		        	    				cycleTurn();
 		        	    			else if(actions == 0)
 		        	    				cycleTurn();
 		        	    		}
-		        	    		else if(draw1 == false && numGreen >= 4 && actions == 3 && players[i].getTotalChips() < 9)
+		        	    		else if(draw1 == false && numGreen >= 4 && actions == 3)
 		        	    		{
 		        	    			actions = 0;
 		        	    			numGreen = numGreen - 2;
 		        	    			players[i].addChip("green");
 		        	    			players[i].addChip("green");
-		        	    			cycleTurn();
+		        	    			if(players[i].getTotalChips() > 10)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else
+		        	    				cycleTurn();
 		        	    		}
 		        	    		break;
 		        	    	}
@@ -1248,13 +1343,28 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    {
 		        	    	if(turns[i])
 		        	    	{
-		        	    		if(draw1 && canDrawWhite && actions > 0 && players[i].getTotalChips() < 10)
+		        	    		if(discardChips == true)
+		        	    		{
+		        	    			players[i].RemoveChip("white");
+		        	    			numWhite++;
+		        	    			if(players[i].getTotalChips() == 10)
+		        	    			{
+		        	    				discardChips = false;
+		        	    				cycleTurn();
+		        	    			}
+		        	    		}
+		        	    		else if(draw1 && canDrawWhite && actions > 0)
 		        	    		{
 		        	    			actions--;
 		        	    			canDrawWhite = false;
 		        	    			numWhite--;
 		        	    			players[i].addChip("white");
-		        	    			if(players[i].getTotalChips() >= 10)
+		        	    			if(players[i].getTotalChips() > 10 && actions == 0)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else if(totalGems == 0)
 		        	    				cycleTurn();
 		        	    			else if(actions == 0)
 		        	    				cycleTurn();
@@ -1265,7 +1375,13 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    			numWhite = numWhite - 2;
 		        	    			players[i].addChip("white");
 		        	    			players[i].addChip("white");
-		        	    			cycleTurn();
+		        	    			if(players[i].getTotalChips() > 10)
+		        	    			{
+		        	    				discardChips = true;
+		        	    				break;
+		        	    			}
+		        	    			else
+		        	    				cycleTurn();
 		        	    		}
 		        	    		break;
 		        	    	}
