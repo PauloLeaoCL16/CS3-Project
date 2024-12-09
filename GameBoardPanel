@@ -70,6 +70,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
     private int[][]reservedXY = {{495,70},{495,574},{1775,70},{1775,575}};
     private boolean discardChips = false;
  private BufferedImage lastBought;
+ private Color lightblue = new Color(51,153,255);
   
     //width = 80, height = 115
     //Every card is in reserved is 140 y apart from each other, so if the first card has a y of 20, the next is 160 and the third is 300
@@ -193,7 +194,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        }
 	        
 	        if (showCardHighlight) {
-				g2d.setColor(Color.YELLOW);
+				g2d.setColor(lightblue);
 				g2d.fillRoundRect(cardHighlightX, cardHighlightY, cardWidth + 10, cardHeight + 10, 15, 15);    
 			}
 	        // Draw the 4x3 grid of cards in the middle section
@@ -234,7 +235,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        // Draw the green line below all elements in the middle section
 	        
 			if (showGemHighlight) {
-		        g2d.setColor(Color.YELLOW); 
+		        g2d.setColor(lightblue); 
 		        Polygon hexagon = createHexagon(gemHighlightX, gemHighlightY, 30); // Radius = 40
 		        g2d.fillPolygon(hexagon);
 			}
@@ -1142,7 +1143,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    			break;
 	    		} 
 			}
-	}
+	    }
 			int[][] gemPositions = {
 		        {685, 845}, // Brown
 			    {790, 845}, // Blue
