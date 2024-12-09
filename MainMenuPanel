@@ -38,7 +38,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
         try {
             background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
             splendorImage = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
-            rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.PNG"));
+            rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
