@@ -734,16 +734,16 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		        	    	{
 		        	    		if(j==0) {
 	    	    					targetX=30;
-	    	    					targetY=128;
+	    	    					targetY=122;
 	    	    				}else if(j==2) {
 	    	    					targetX=1310;
-	    	    					targetY=128;
+	    	    					targetY=122;
 	    	    				}else if(j==1) {
 	    	    					targetX=30;
-	    	    					targetY=692;
+	    	    					targetY=650;
 	    	    				}else {
 	    	    					targetX=1310;
-	    	    					targetY=692;
+	    	    					targetY=650;
 	    	    				}
 		        	    	}
 	        	    		if(i == 8 || i == 9 || i == 10 || i == 11)
