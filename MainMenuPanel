@@ -114,7 +114,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
             int imageHeight = getHeight() / 3;
             int imageX = (getWidth() - imageWidth) / 2;
             int imageY = (getHeight() - imageHeight) / 2 - 50;
-            g2d.drawImage(splendorImage, imageX, imageY, imageWidth, imageHeight, null);
+            g2d.drawImage(splendorImage, imageX, 200, imageWidth, imageHeight, null);
             int buttonWidth = imageWidth + 100; // Make the button wider
             int buttonHeight = 70;             // Make the button taller
             int buttonX = (getWidth() - buttonWidth) / 2;
@@ -127,6 +127,10 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
 
             g2d.setTransform(originalTransform);
             paintChildren(g2d);
+            
+            g2d.setColor(Color.RED);
+            g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, 40));
+            g2d.drawString("DISCLAIMER: RIGHT CLICK TO RESERVE CARDS!", 500, 600);
         }
     }
 
