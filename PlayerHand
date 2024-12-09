@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 
 class PlayerHand
 {
-  private int totalChips;
   private TreeMap<String, Integer> chips;
   private TreeMap<String, ArrayList<BufferedImage>> cards;
   private ArrayList<Card> reserved = new ArrayList<Card>();
@@ -19,7 +18,6 @@ class PlayerHand
 
   public PlayerHand()
   {
-    totalChips = 0;
     chips = new TreeMap<String, Integer>();
     cards = new TreeMap<String, ArrayList<BufferedImage>>();
     chips.put("black", 0);
@@ -47,7 +45,7 @@ class PlayerHand
   
   public int getTotalChips()
   {
-    return totalChips;
+    return chips.get("black") + chips.get("blue") + chips.get("red") + chips.get("green") + chips.get("white") + chips.get("yellow");
   }
   
   public ArrayList<Patron> getPatrons()
@@ -193,6 +191,11 @@ class PlayerHand
   public void addChip(String color)
   {
 	  chips.put(color, chips.get(color) + 1);
+  }
+  public void RemoveChip(String color)
+  {
+	  if(chips.get(color) > 0)
+		  chips.put(color, chips.get(color) - 1);
   }
   
   public int getChip(String color)
