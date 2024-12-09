@@ -2072,13 +2072,14 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	                long currentTime = System.currentTimeMillis();
 	                double elapsed = (double) (currentTime - startTime) / duration;
 
-	                if (elapsed >= 2.0) {
+	                if (elapsed >= 1.0) {
 	                    // End animation and set final state
 	                    animCurrentX = targetX;
 	                    animCurrentY = targetY;
 	                    animCurrentWidth = targetWidth;
 	                    animCurrentHeight = targetHeight;
 	                    cardAnimating = false;
+	                    lastBought=null;
 	                } else {
 	                    // Eased animation calculation
 	                    double t = Math.min(elapsed, 1.0);
