@@ -129,7 +129,7 @@ public class MainMenuPanel extends JPanel implements Runnable, MouseListener, Mo
             paintChildren(g2d);
             
             g2d.setColor(Color.RED);
-            g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, 40));
+            g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, 30));
             g2d.drawString("DISCLAIMER: RIGHT CLICK TO RESERVE CARDS AND CLICK RESERVED TO SEE WHICH ONES HAVE BEEN RESERVED!", 500, 600);
         }
     }
