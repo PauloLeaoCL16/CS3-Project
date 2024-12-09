@@ -93,23 +93,23 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	Arrays.fill(PatronBoughts, false);
 	        	
 	            // Background
-	            background = ImageIO.read(getClass().getResource("/splendorImages/creamylol.jpg"));
+	            background = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/creamylol.jpg"));
 
 	            // Gems
-	            blackGem = ImageIO.read(getClass().getResource("/splendorImages/BlackGem.png"));
-	            blueGem = ImageIO.read(getClass().getResource("/splendorImages/BlueGem.png"));
-	            redGem = ImageIO.read(getClass().getResource("/splendorImages/RedGem.png"));
-	            greenGem = ImageIO.read(getClass().getResource("/splendorImages/GreenGem.png"));
-	            whiteGem = ImageIO.read(getClass().getResource("/splendorImages/WhiteGem.png"));
-	            reserveGem = ImageIO.read(getClass().getResource("/splendorImages/ReserveGem.png"));
+	            blackGem = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/BlackGem.png"));
+	            blueGem = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/BlueGem.png"));
+	            redGem = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/RedGem.png"));
+	            greenGem = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/GreenGem.png"));
+	            whiteGem = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/WhiteGem.png"));
+	            reserveGem = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/ReserveGem.png"));
 
-	            tempCard = ImageIO.read(getClass().getResource("/splendorImages/creamylol.JPG"));
+	            tempCard = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/creamylol.jpg"));
 	            
 	            // Deck levels
 
-	            level1Card = ImageIO.read(getClass().getResource("/splendorImages/Level1Card.png"));
-	            level2Card = ImageIO.read(getClass().getResource("/splendorImages/Level2Card.png"));
-	            level3Card = ImageIO.read(getClass().getResource("/splendorImages/Level3Card.png"));
+	            level1Card = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/Level1Card.png"));
+	            level2Card = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/Level2Card.png"));
+	            level3Card = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/Level3Card.png"));
 	            
 	            sectionWidth = 640;
 	            patronWidth = 115;
@@ -1460,19 +1460,19 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 				for (int i = 1; i <= 8; i++) {
 					if (k == 0) {
 						Level1Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/BlackCard" + i + "Level1.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/BlackCard" + i + "Level1.png")));
 					} else if (k == 1) {
 						Level1Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level1.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/BlueCard" + i + "Level1.png")));
 					} else if (k == 2) {
 						Level1Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level1.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/GreenCard" + i + "Level1.png")));
 					} else if (k == 3) {
 						Level1Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level1.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/RedCard" + i + "Level1.png")));
 					} else if (k == 4) {
 						Level1Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level1.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/WhiteCard" + i + "Level1.png")));
 					}
 
 				}
@@ -1671,19 +1671,19 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 				for (int i = 1; i <= 6; i++) {
 					if (k == 0) {
 						Level2Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/BlackCard" + i + "Level2.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/BlackCard" + i + "Level2.png")));
 					} else if (k == 1) {
 						Level2Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level2.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/BlueCard" + i + "Level2.png")));
 					} else if (k == 2) {
 						Level2Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level2.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/GreenCard" + i + "Level2.png")));
 					} else if (k == 3) {
 						Level2Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level2.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/RedCard" + i + "Level2.png")));
 					} else if (k == 4) {
 						Level2Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level2.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/WhiteCard" + i + "Level2.png")));
 					}
 
 				}
@@ -1829,19 +1829,19 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 				for (int i = 1; i <= 4; i++) {
 					if (k == 0) {
 						Level3Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/BlackCard" + i + "Level3.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/BlackCard" + i + "Level3.png")));
 					} else if (k == 1) {
 						Level3Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/BlueCard" + i + "Level3.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/BlueCard" + i + "Level3.png")));
 					} else if (k == 2) {
 						Level3Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/GreenCard" + i + "Level3.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/GreenCard" + i + "Level3.png")));
 					} else if (k == 3) {
 						Level3Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/RedCard" + i + "Level3.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/RedCard" + i + "Level3.png")));
 					} else if (k == 4) {
 						Level3Images.add(
-								ImageIO.read(getClass().getResource("/splendorImages/WhiteCard" + i + "Level3.png")));
+								ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/WhiteCard" + i + "Level3.png")));
 					}
 
 				}
@@ -1975,7 +1975,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 
 			// PatronImages
 			for (int i = 1; i <= 10; i++) {
-				PatronImages[i - 1] = ImageIO.read(getClass().getResource("/splendorImages/Patreon" + i + ".png"));
+				PatronImages[i - 1] = ImageIO.read(GameBoardPanel.class.getResource("/splendorImages/Patreon" + i + ".png"));
 			}
 			// assigning the patreon images to a Patron class obj
 			//
