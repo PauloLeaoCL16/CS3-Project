@@ -14,21 +14,26 @@ public class EndGamePanel extends JPanel {
     private ArrayList<PlayerScore> scores;
     private ArrayList<Confetti> confettiList;
 
-    public EndGamePanel(int p1, int p2, int p3, int p4) {
+    public EndGamePanel(int p1, int p2, int p3, int p4, int p1c, int p2c, int p3c, int p4c) {
         try {
-            background = ImageIO.read(EndGamePanel.class.getResource("/splendorImages/creamylol.jpg"));
+            background = ImageIO.read(EndGamePanel.class.getResource("/splendorImages/EndGameBackground.png"));
             crownImage = ImageIO.read(EndGamePanel.class.getResource("/splendorImages/crownImage.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         scores = new ArrayList<>();
-        scores.add(new PlayerScore("Player 1", p1));
-        scores.add(new PlayerScore("Player 2", p2));
-        scores.add(new PlayerScore("Player 3", p3));
-        scores.add(new PlayerScore("Player 4", p4));
+        scores.add(new PlayerScore("Player 1", p1, p1c));
+        scores.add(new PlayerScore("Player 2", p2, p2c));
+        scores.add(new PlayerScore("Player 3", p3, p3c));
+        scores.add(new PlayerScore("Player 4", p4, p4c));
 
-        scores.sort((a, b) -> Integer.compare(b.getPoints(), a.getPoints()));
+        scores.sort((a, b) -> {
+            if (b.getPoints() == a.getPoints()) {
+                return Integer.compare(a.getCards(), b.getCards()); // less cards wins if points are equal
+            }
+            return Integer.compare(b.getPoints(), a.getPoints());
+        });
 
         //back button
         backButton = new JButton("Back to Home");
@@ -71,7 +76,6 @@ public class EndGamePanel extends JPanel {
             confettiList.add(new Confetti());
         }
 
-   
         Timer timer = new Timer(30, e -> {
             for (Confetti confetti : confettiList) {
                 confetti.update();
@@ -100,8 +104,14 @@ public class EndGamePanel extends JPanel {
         g.setFont(new Font("Arial", Font.BOLD, 24));
         g.setColor(Color.BLACK);
         int y = rectY + 50;
+
         PlayerScore winner = scores.get(0);
-        g.drawString(winner.getPlayer() + " won the game with " + winner.getPoints() + " points!", rectX + 50, y);
+        if (scores.size() > 1 && scores.get(1).getPoints() == winner.getPoints()) {
+            PlayerScore tiedPlayer = scores.get(1);
+            g.drawString(winner.getPlayer() + " won the game with " + winner.getPoints() + " points and had less cards than " + tiedPlayer.getPlayer() + "!", rectX + 50, y);
+        } else {
+            g.drawString(winner.getPlayer() + " won the game with " + winner.getPoints() + " points!", rectX + 50, y);
+        }
         y += 40;
 
         for (int i = 1; i < scores.size(); i++) {
@@ -125,14 +135,16 @@ public class EndGamePanel extends JPanel {
         backButton.setLocation(rectX + (rectWidth - backButton.getWidth()) / 2, rectY + rectHeight + 20);
     }
 
-    // player score data
+    // Player score data class
     static class PlayerScore {
         private String player;
         private int points;
+        private int cards;
 
-        public PlayerScore(String player, int points) {
+        public PlayerScore(String player, int points, int cards) {
             this.player = player;
             this.points = points;
+            this.cards = cards;
         }
 
         public String getPlayer() {
@@ -142,9 +154,13 @@ public class EndGamePanel extends JPanel {
         public int getPoints() {
             return points;
         }
+
+        public int getCards() {
+            return cards;
+        }
     }
 
-    // confetti class
+    // Confetti class
     static class Confetti {
         private int x, y, size, speedY;
         private Color color;
@@ -172,3 +188,4 @@ public class EndGamePanel extends JPanel {
         }
     }
 }
+
