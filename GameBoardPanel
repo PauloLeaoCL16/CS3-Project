@@ -360,7 +360,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 				}
 			}
 			
-			if(showReserved[playerNum-1]){
+			if(showReserved[playerNum-1]&&turns[playerNum-1]){
 					g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
 					g2d.setColor(Color.darkGray);
 					g2d.fillRect(x+437, y+40,174, height-70);
@@ -497,6 +497,9 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		{
 			turns[0] = true;
 			turns[3] = false;
+		}
+		for(int i =0;i<showReserved.length;i++) {
+			showReserved[i]=false;
 		}
 	}
 
@@ -641,7 +644,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	    	{
 	    		for(int i = 0; i < players[h].getReserves().size(); i++)
 	    		{
-	    			if(mouseX > reservedXY[h][0] && mouseX < reservedXY[h][0] + 80 && mouseY > reservedXY[h][1] + i * 140 && mouseY < reservedXY[h][1] + i * 140 + 115)
+	    			if(mouseX > reservedXY[h][0] && mouseX < reservedXY[h][0] + 80 && mouseY > reservedXY[h][1] + i * 140 && mouseY < reservedXY[h][1] + i * 140 + 115&&turns[h])
 	    			{
 	    				System.out.println("player " + (h+1) + " card clicked");
         	    		if(players[h].getReserves().get(i).canAfford(players[h]))
@@ -730,7 +733,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		   		showReserved[2]=!showReserved[2];
 		   	if( mouseX >= 1728 && mouseX <= 1900 && mouseY >=515 && mouseY<= 570 )
 		   		showReserved[3]=!showReserved[3];
-	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010 && totalGems == 0)
+	    	if(mouseX >= 850 && mouseX <= 1050 && mouseY >= 960 && mouseY <= 1010) // && totalGems == 0)
 	    		cycleTurn();
 	    	if(mouseX >= 700 && mouseX <= 900 && mouseY >= 900 && mouseY <= 950)
 	    		draw1 = true;
@@ -767,7 +770,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                else if(color.equals("blue")) {
+        		                if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
@@ -856,7 +859,6 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
 	        	    					{
 	        	    						players[j].buyPatron(PatronStart[rng]);
-	        	    						PatronStart[rng].setImage(background);
 	        	    						PatronBoughts[rng] = true;
 	        	    					}
 	        	    					else
@@ -896,7 +898,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                else if(color.equals("blue")) {
+        		                if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
@@ -981,7 +983,6 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
 	        	    					{
 	        	    						players[j].buyPatron(PatronStart[rng]);
-	        	    						PatronStart[rng].setImage(background);
 	        	    						PatronBoughts[rng] = true;
 	        	    					}
 	        	    					else
@@ -1020,7 +1021,7 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
         	    					targetY+=players[j].getCards().get(color).size()*40;
         	    				}
      
-        		                else if(color.equals("blue")) {
+        		                if(color.equals("blue")) {
         		                	targetX+=90;
         		                }
         		                else if(color.equals("red")) {
@@ -1097,14 +1098,13 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 	        	    					}
 	        	    				}
 	        	    				players[j].buyCard(Level3CardsStart[i]);
-							lastBought = Level3CardsStart[i].getImage();
+	        	    				lastBought = Level3CardsStart[i].getImage();
 	        	    				rng = 0;
 	        	    				for(int x = 0; x < 5; x++)
 	        	    				{
 	        	    					if(players[j].canAffordPatron(PatronStart[rng]) && !PatronBoughts[rng])
 	        	    					{
 	        	    						players[j].buyPatron(PatronStart[rng]);
-	        	    						PatronStart[rng].setImage(background);
 	        	    						PatronBoughts[rng] = true;
 	        	    					}
 	        	    					else
