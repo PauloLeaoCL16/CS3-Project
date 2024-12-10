@@ -229,44 +229,49 @@ class PlayerHand
 	    if (card.canAfford(this) && card.wildNeeded(this)) {
 	        TreeMap<String, Integer> wilds = card.whichType(this);
 	        if (wilds.containsKey("black")) {
-	            chips.put("black", 0);
+	            
 	            if (chips.get("yellow") - wilds.get("black") < 0) {
 	                chips.put("yellow", 0);
 	            } else {
 	                chips.put("yellow", chips.get("yellow") - wilds.get("black"));
 	            }
+	            chips.put("black", 0);
 	        }
 	        if (wilds.containsKey("blue")) {
-	            chips.put("blue", 0);
+	           
 	            if (chips.get("yellow") - wilds.get("blue") < 0) {
 	                chips.put("yellow", 0);
 	            } else {
 	                chips.put("yellow", chips.get("yellow") - wilds.get("blue"));
 	            }
+	            chips.put("blue", 0);
 	        }
 	        if (wilds.containsKey("red")) {
-	            chips.put("red", 0);
+	            
 	            if (chips.get("yellow") - wilds.get("red") < 0) {
 	                chips.put("yellow", 0);
 	            } else {
 	                chips.put("yellow", chips.get("yellow") - wilds.get("red"));
 	            }
+	            chips.put("red", 0);
 	        }
 	        if (wilds.containsKey("green")) {
-	            chips.put("green", 0);
+	            
 	            if (chips.get("yellow") - wilds.get("green") < 0) {
 	                chips.put("yellow", 0);
 	            } else {
 	                chips.put("yellow", chips.get("yellow") - wilds.get("green"));
 	            }
+	            chips.put("green", 0);
 	        }
 	        if (wilds.containsKey("white")) {
-	            chips.put("white", 0);
+	            
 	            if (chips.get("yellow") - wilds.get("white") < 0) {
 	                chips.put("yellow", 0);
 	            } else {
 	                chips.put("yellow", chips.get("yellow") - wilds.get("white"));
 	            }
+	            chips.put("white", 0);
 	        }
 	    }
 	    addCard(card.getType(), card.getImage());
@@ -282,3 +287,5 @@ class PlayerHand
   }
 
 }
+
+
