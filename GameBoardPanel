@@ -420,6 +420,11 @@ public class GameBoardPanel extends JPanel implements MouseListener, MouseMotion
 		g2d.fillRect(850, 960, 200, 50);
 		g2d.setColor(Color.BLACK);
 		g2d.drawString("End Turn", 910, 990);
+		
+		//draw right click cause ppl are retarded
+		g2d.setColor(Color.RED);
+		g2d.setFont(new Font("Arial", Font.BOLD, 25));
+		g2d.drawString("RIGHT CLICK TO RESERVE CARDS", 750, 20);
 	}
 	
 	public void cycleTurn()
