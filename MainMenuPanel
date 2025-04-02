@@ -1,5 +1,4 @@
 
-
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
@@ -8,124 +7,274 @@ import java.io.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import static java.lang.System.*;
+import java.awt.geom.AffineTransform;
 
-import java.util.*;
+import javax.swing.border.Border;
 
 public class MainMenuPanel extends JPanel implements Runnable, MouseListener, MouseMotionListener {
-	private ArrayList<Player> playerList;
-	private ArrayList<Route> routes;
-	private Stack<TrainCard> trainDeck;
-	private Stack<TrainCard> discardedTrainDeck;
-	private Stack<TicketCard> ticketDeck ;
-	private HashMap<String,BufferedImage> images;
-	private TreeMap<String, City> cities;
-	private GameStage currentState;
-	private Player currentPlayer;
-	private boolean gameOver;
-	private int playerLastTurn;
-	private Font mainFont;
-	private GameStage currentStage;
-    
-	public MainMenuPanel(){
-		this.addMouseListener(this);
-    	this.addMouseMotionListener(this);
-		try{
-			mainFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("gamefont/CinzelDecorative-Regular.otf"));// download the file from github and upload to new package in eclipse name gamefont to use and hopefully wotks- to use basically do something like this in paint g.setFont(mainfont.deriveFont(Font.PLAIN, 68f)); the 68 is the size which will chnage but keep everyhting else the same
-		}catch (Exception e ){
-			e.printStackTrace();
-		}
-		out.println("intialized");
-		this.setLayout(null);
-		initializeMainMenuPanel();
-		
-	}
-	public void initializeMainMenuPanel() {
-		playerLastTurn=0;
-		currentStage=GameStage.START_SEQUENCE;
-		playerList = new ArrayList<Player>();
-		routes = new ArrayList<Route>();
-		trainDeck = new Stack<TrainCard>() ;
-		discardedTrainDeck = new Stack<TrainCard>();
-		ticketDeck = new Stack<TicketCard>();
-		images = new HashMap<String,BufferedImage>();
-		cities = new TreeMap<String, City>() ;
-		//currentState = state of game;
-		gameOver=false;
-		// currentPlayer = player1;
-		/*put the images here
-		for example  bufferedImage.put(gradient,ImageIO.read(StartPanel.class.getResource("/image/gradient.jpg")));
-		
-		To add a city do the following  
-		City city1 =  new City(String name, int[][] xCoordinate, int[][] yCoordinate);
-		City city2 =  new City(String name, int[][] xCoordinate, int[][] yCoordinate);
-		
-		Route route = new Route(City1,City2,int length,String color,int locomotivesNeeded,boolean isTunnelRoute); connect those two cities
-		You can add the coordinates later with addCoordinate();
-		
-		city1.addAdjacentCity(city2,route);
-		city2.addAdjacentCity(city1,route);  set them as adjacent cities
-		
-		cities.put(city.getName(),City);
-		routes.add(route);
-		You can put in another method if it takes up too much space 
-		
-		To add a ticket do the following
-		Ticket ticket = new Ticket(boolean isLongRoute,int points, City s, City d);
-		*/
-		
-		repaint();
-	}
-  public void run() {};
-  public void mouseClicked(MouseEvent e) {
-  }
-  public void mouseReleased(MouseEvent e) { }
-  public void mousePressed(MouseEvent e) { }
-  public void mouseEntered(MouseEvent e) { }
-  public void mouseMoved(MouseEvent e) {
-  }
-  public void mouseDragged(MouseEvent e) {}
-  public void mouseExited(MouseEvent e) {}
-  
-  
-  
-  public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-	  Graphics2D g2d = (Graphics2D)g;
-	  out.println("painted");
-	  out.println(currentStage+"");
-	  if(currentStage==GameStage.START_SEQUENCE) {
-		g2d.setColor(Color.BLACK);
-	    g2d.fillRect(0, 0, 1850, 1050);
-	    out.println("yippee");
-	}
-  }
-  
-  public void check() {
-	 //check if the deck is exhausted
-	 if(trainDeck.isEmpty()) {
-		 ArrayList<TrainCard> tempList = new ArrayList<>(discardedTrainDeck);
-		 discardedTrainDeck.clear();
-		 Collections.shuffle(tempList);
-		 for (TrainCard card : tempList) {
-		     trainDeck.push(card);
-		 }
-	 }
-	 //check if the game is over
-	 if(gameOver=true)
-		 playerLastTurn++;
-	 if(currentPlayer.getTrainCars()<=2)
-		 gameOver=true;
-	 if(playerLastTurn==4)
-		 add(new EndGamePanel(playerList));
-	 else
-		 nextPlayer();
-  }
-  public void nextPlayer() {
-	 int index = playerList.indexOf(currentPlayer);
-	 int nextPlayerIndex = index+1;
-	 if(index==4)
-		 nextPlayerIndex=0;
-	 currentPlayer = playerList.get(nextPlayerIndex);  
-  }
+private String word;
+private float transparency;
+private int xloc, yloc, fontSize;
+private BufferedImage background;   // The full background (splendorbackground.jpg)
+private BufferedImage splendorImage; // The center image (weeedwd.jpg)
+private BufferedImage rulesButton;  // Rules button as an image
+private int phase;
+private JButton playButton;   // Play button as JButton
+private int theta = 0;
+private boolean animate = false;
+private boolean forward = true;
+private GameBoardPanel gameBoardPanel;
+private int rulesButtonX = -100, rulesButtonY = -50; // Adjusted further to the left
+private boolean playButtonPositionSet = false;
+
+public MainMenuPanel(boolean bool) {
+phase = 0;
+gameBoardPanel = new GameBoardPanel();
+new Thread(() -> gameBoardPanel.loadImages()).start();
+transparency = 0.01f;
+word = "PAULOLDS PRESENTS";
+xloc = 450; yloc = 550; fontSize = 100;
+
+try {
+background = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
+splendorImage = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/splendorLogo.jpg"));
+rulesButton = ImageIO.read(MainMenuPanel.class.getResource("/splendorImages/rulesButton.png"));
+} catch (IOException e) {
+e.printStackTrace();
+}
+
+playButton = new JButton("Play");
+playButton.setFont(new Font("Arial", Font.BOLD, 48));
+playButton.setBackground(Color.WHITE);
+playButton.setForeground(Color.BLACK);
+playButton.setFocusPainted(false);
+playButton.setBorder(new RoundedBorder(20));
+playButton.setSize(400, 150);
+
+playButton.addMouseListener(new java.awt.event.MouseAdapter() {
+@Override
+public void mouseEntered(java.awt.event.MouseEvent evt) {
+playButton.setBackground(new Color(60, 60, 60));
+playButton.setForeground(new Color(255, 0, 255));
+}
+
+@Override
+public void mouseExited(java.awt.event.MouseEvent evt) {
+playButton.setBackground(Color.WHITE);
+playButton.setForeground(Color.BLACK);
+}
+
+@Override
+public void mouseClicked(java.awt.event.MouseEvent evt) {
+JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(MainMenuPanel.this);
+topFrame.getContentPane().removeAll();
+topFrame.add(gameBoardPanel);
+topFrame.revalidate();
+topFrame.repaint();
+}
+});
+
+if (!bool) {
+phase = 1;
+//setPlayButtonPosition();
+add(playButton);
+} else {
+new Thread(() -> {
+animateStart();
+animateStart();
+phase = 1;
+//setPlayButtonPosition();
+SwingUtilities.invokeLater(() -> add(playButton));
+repaint();
+}).start();
+}
+
+addMouseListener(this);
+addMouseMotionListener(this);
+setFocusable(true);
+}
+
+
+protected void paintComponent(Graphics g) {
+super.paintComponent(g);
+Graphics2D g2d = (Graphics2D) g;
+
+if (phase == 0) {
+g2d.setColor(Color.DARK_GRAY);
+g2d.fillRect(0, 0, getWidth(), getHeight());
+g2d.setColor(Color.WHITE);
+g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
+g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, fontSize));
+g2d.drawString(word, xloc, yloc);
+} else if (phase == 1) {
+g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+
+int imageWidth = getWidth() / 3;
+int imageHeight = getHeight() / 3;
+int imageX = (getWidth() - imageWidth) / 2;
+int imageY = (getHeight() - imageHeight) / 2 - 50;
+g2d.drawImage(splendorImage, imageX, 200, imageWidth, imageHeight, null);
+int buttonWidth = imageWidth + 100; // Make the button wider
+int buttonHeight = 70;             // Make the button taller
+int buttonX = (getWidth() - buttonWidth) / 2;
+int buttonY = imageY + imageHeight + 30; // 30px gap below the image
+playButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
+AffineTransform originalTransform = g2d.getTransform();
+
+g2d.rotate(Math.toRadians(theta), rulesButtonX + rulesButton.getWidth() / 2, rulesButtonY + rulesButton.getHeight() / 2);
+g2d.drawImage(rulesButton, rulesButtonX, rulesButtonY, rulesButton.getWidth() + 150, rulesButton.getHeight() + 150, null);
+
+g2d.setTransform(originalTransform);
+paintChildren(g2d);
+
+g2d.setColor(Color.RED);
+            g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, 30));
+            g2d.drawString("DISCLAIMER: RIGHT CLICK TO RESERVE CARDS AND CLICK RESERVED TO SEE WHICH ONES HAVE BEEN RESERVED!", 500, 600);
+            g2d.setFont(new Font("TIMES NEW ROMAN", Font.BOLD, 22));
+            g2d.drawString("DISCLAIMER: RIGHT CLICK TO RESERVE CARDS AND CLICK RESERVED TO SEE WHICH ONES HAVE BEEN RESERVED!", buttonX-250, buttonY-80);
+            g2d.drawString("Turns automatically end when a round is played. If not, click end turn button. Only use when gems are all taken and cannot do anything but proceed", buttonX-300, buttonY-50);
+}
+}
+
+@Override
+public void mouseClicked(MouseEvent e) {
+int mouseX = e.getX();
+int mouseY = e.getY();
+
+// Calculate Rules button bounds after applying transformation
+if (phase == 1) {
+int rulesButtonWidth = rulesButton.getWidth() + 100;
+int rulesButtonHeight = rulesButton.getHeight() + 100;
+
+AffineTransform transform = new AffineTransform();
+transform.rotate(Math.toRadians(theta), rulesButtonX + rulesButtonWidth / 2, rulesButtonY + rulesButtonHeight / 2);
+Shape transformedRulesButton = transform.createTransformedShape(new Rectangle(rulesButtonX, rulesButtonY, rulesButtonWidth, rulesButtonHeight));
+
+if (transformedRulesButton.contains(mouseX, mouseY)) {
+// Rules button clicked, show the rules
+JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+topFrame.getContentPane().removeAll();
+topFrame.add(new RulesPanel()); // Navigate to RulesPanel
+topFrame.revalidate();
+topFrame.repaint();
+}
+}
+}
+
+
+public void mouseReleased(MouseEvent e) { }
+
+public void mousePressed(MouseEvent e) { }
+
+public void mouseEntered(MouseEvent e) { }
+
+public void mouseMoved(MouseEvent e) {
+
+int mouseX = e.getX();
+int mouseY = e.getY();
+
+boolean isOverRulesButton = (mouseX >= rulesButtonX && mouseX <= rulesButtonX + rulesButton.getWidth() &&
+mouseY >= rulesButtonY && mouseY <= rulesButtonY + rulesButton.getHeight());
+
+if (isOverRulesButton && !animate) {
+animate = true;
+new Thread(this::animateRules).start();
+} else if (!isOverRulesButton && animate) {
+animate = false;
+// Reset position but keep it consistent
+rulesButtonX = -100; // Use a predefined starting position
+rulesButtonY = -50;
+theta = 0; // Ensure it resets to no rotation
+repaint();
+}
+}
+
+public void mouseDragged(MouseEvent e) { }
+
+public void mouseExited(MouseEvent e) { }
+
+public void animateStart() {
+while (transparency < 0.99) {
+transparency += 0.01;
+repaint();
+try {
+Thread.sleep(10);
+} catch (InterruptedException e) {
+e.printStackTrace();
+}
+}
+while (transparency > 0.01) {
+transparency -= 0.01;
+repaint();
+try {
+Thread.sleep(10);
+} catch (InterruptedException e) {
+e.printStackTrace();
+}
+}
+word = "Splendor";
+transparency = 0.01f;
+xloc = 590;
+yloc = 540;
+fontSize = 200;
+}
+
+public void animateRules() {
+
+int baseX = -100;      // Starting X position
+int baseY = -50;      // Starting Y position
+int amplitudeX = 20;  // Maximum sway distance left and right
+int amplitudeY = 10;   // Maximum sway distance up and down
+double speed = 0.05;  // Adjust speed for smoother/slower motion
+double angle = 0;     // Starting angle for sine wave
+
+while (animate) {
+// Update X and Y based on a sine wave for natural swaying
+rulesButtonX = (int) (baseX + amplitudeX * Math.sin(angle));
+rulesButtonY = (int) (baseY + amplitudeY * Math.cos(angle));
+
+// Increment angle for continuous movement
+angle += speed;
+
+// Reset angle to prevent overflow (optional but good for long-running animations)
+if (angle > 2 * Math.PI) {
+angle -= 2 * Math.PI;
+}
+
+// Repaint the component to reflect new positions
+repaint();
+try {
+Thread.sleep(20); // Adjust animation smoothness
+} catch (InterruptedException e) {
+e.printStackTrace();
+}
+}
+}
+
+@Override
+public void run() { }
+
+// Custom Border class for rounded corners
+class RoundedBorder implements Border {
+private int radius;
+
+RoundedBorder(int radius) {
+this.radius = radius;
+}
+
+public Insets getBorderInsets(Component c) {
+return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
+}
+
+public boolean isBorderOpaque() {
+return true;
+}
+
+public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+Graphics2D g2d = (Graphics2D) g;
+g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+g2d.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+}
+}
 }
